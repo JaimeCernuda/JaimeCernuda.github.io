@@ -47,12 +47,13 @@ projects:
   # youtube: your_username
 
 topics:
-  - name: CSS
-    web_url: https://github.com/topics/css
-    image_url: https://raw.githubusercontent.com/github/explore/6c6508f34230f0ac0d49e847a326429eefbfc030/topics/css/css.png
+  - name: Distributed Systems
+    image_url: https://petabridge.com/images/logo.png
+    web_url: https://github.com/topics/distributed-systems
 
-  - name: Web design
-
-  - name: Sass
-    web_url: https://github.com/topics/sass
-    image_url: https://raw.githubusercontent.com/github/explore/6c6508f34230f0ac0d49e847a326429eefbfc030/topics/sass/sass.png
+  - name: Data Streaming
+    web_url: https://github.com/topics/streaming-data
+    image_url: https://tr2.cbsistatic.com/hub/i/r/2017/08/23/6aabd01f-bc45-44dc-9fb9-dd484de4c376/resize/1200x/4fe4948459461743ee5778fa80e1f2dd/streamdata.jpg
+  - name: HPC
+    image_url: https://6lli539m39y3hpkelqsm3c2fg-wpengine.netdna-ssl.com/wp-content/uploads/2017/07/AI-HPC-Converge.jpg
+    web_url: https://github.com/topics/hpc
