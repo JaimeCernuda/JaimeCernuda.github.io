@@ -62,5 +62,5 @@ topics:
 projects:
   - name: Rhea
     image_url: https://docs.google.com/uc?id=1lMTrhpb0KycHFKbwbstrnjirRL2yJM8W
-    web_url: https://drive.google.com/open?id=15QPbaJ5dIsNtDTUfd99ZCbWcxnf4n7zV
+    web_url: https://drive.google.com/uc?id=15QPbaJ5dIsNtDTUfd99ZCbWcxnf4n7zV
     description: Real Time Data Flushing for Multi-Tiered Storage Systems 
