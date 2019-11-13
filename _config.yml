@@ -1,5 +1,7 @@
 layout: sidebar
-style: light
+style: dark
+
+email: jcernudagarcia@hawk.iit.edu
 
 plugins:
   - jekyll-octicons
@@ -61,6 +63,6 @@ topics:
 
 projects:
   - name: Rhea
-    image_url: https://docs.google.com/uc?id=1lMTrhpb0KycHFKbwbstrnjirRL2yJM8W
+    image_url: https://docs.google.com/uc?id=1HaOnYclQhOz1Ie_dYdB2TNDmTucE2Vuk
     web_url: https://drive.google.com/uc?id=15QPbaJ5dIsNtDTUfd99ZCbWcxnf4n7zV
     description: Real Time Data Flushing for Multi-Tiered Storage Systems 

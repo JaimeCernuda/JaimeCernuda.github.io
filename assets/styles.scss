@@ -52,3 +52,10 @@
 .min-height-full {
   min-height: 100vh;
 }
+
+.bg-card-dark  { 
+    background-color:#23232E;
+    border-color: #23232E;
+    border-radius: 5px;
+}
+    /*background-color: {% if site.style == 'dark' %} #2f363d {% else %} #000000 {% endif %};*/
