@@ -28,14 +28,14 @@ projects:
     projects:
     # - repo-name
 
-# social_media:
+social_media:
   # behance: your_username
   # dribbble: your_username
   # facebook: your_username
   # hackerrank: your_username
   # instagram: your_username
   # keybase: your_username
-  linkedin: https://www.linkedin.com/in/jaimecernuda/
+  linkedin: jaimecernuda
   # mastodon: your_username
   # medium: your_username
   # stackoverflow: your_user_id
@@ -44,7 +44,7 @@ projects:
   # unsplash: your_username
   # vk: your_username
   # website: http://your_website_url
-  youtube: baku95
+  # youtube: baku95
 
 topics:
   - name: Distributed Systems
@@ -54,6 +54,13 @@ topics:
   - name: Data Streaming
     web_url: https://github.com/topics/streaming-data
     image_url: https://tr2.cbsistatic.com/hub/i/r/2017/08/23/6aabd01f-bc45-44dc-9fb9-dd484de4c376/resize/1200x/4fe4948459461743ee5778fa80e1f2dd/streamdata.jpg
+  
   - name: HPC
     image_url: https://6lli539m39y3hpkelqsm3c2fg-wpengine.netdna-ssl.com/wp-content/uploads/2017/07/AI-HPC-Converge.jpg
     web_url: https://github.com/topics/hpc
+
+projects:
+  - name: Rhea
+    image_url: https://docs.google.com/uc?id=1lMTrhpb0KycHFKbwbstrnjirRL2yJM8W
+    web_url: https://drive.google.com/open?id=15QPbaJ5dIsNtDTUfd99ZCbWcxnf4n7zV
+    description: Real Time Data Flushing for Multi-Tiered Storage Systems 
