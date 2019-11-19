@@ -2,6 +2,7 @@ layout: sidebar
 style: dark
 
 email: jcernudagarcia@hawk.iit.edu
+cv: https://drive.google.com/uc?id=11MWOeKWBNPq0kjoelhY8ekNErrSrRADT
 
 plugins:
   - jekyll-octicons
