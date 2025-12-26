@@ -51,9 +51,25 @@ const Layout = () => {
                         <p className="text-gray-500 dark:text-gray-400 text-sm">
                             &copy; {new Date().getFullYear()} Jaime Cernuda
                         </p>
-                        <div className="flex gap-6 text-sm">
-                            <a href="https://linkedin.com" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">LinkedIn</a>
-                            <a href="https://github.com" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">GitHub</a>
+                        <div className="flex gap-4 text-gray-500 dark:text-gray-400">
+                            <a href="https://www.iit.edu" className="hover:text-primary transition-colors" title="Illinois Tech">
+                                <span className="material-symbols-outlined text-[20px]">account_balance</span>
+                            </a>
+                            <a href="#" className="hover:text-primary transition-colors" title="Chicago, IL">
+                                <span className="material-symbols-outlined text-[20px]">location_on</span>
+                            </a>
+                            <a href="mailto:jcernudagarcia@hawk.illinoistech.edu" className="hover:text-primary transition-colors" title="Email">
+                                <span className="material-symbols-outlined text-[20px]">mail</span>
+                            </a>
+                            <a href="https://scholar.google.com" className="hover:text-primary transition-colors" title="Google Scholar">
+                                <span className="material-symbols-outlined text-[20px]">school</span>
+                            </a>
+                            <a href="https://github.com" className="hover:text-primary transition-colors" title="GitHub">
+                                <span className="material-symbols-outlined text-[20px]">code</span>
+                            </a>
+                            <a href="https://linkedin.com" className="hover:text-primary transition-colors" title="LinkedIn">
+                                <span className="material-symbols-outlined text-[20px]">work</span>
+                            </a>
                         </div>
                     </div>
                 </footer>

@@ -96,8 +96,8 @@ const Publications = () => {
                 </p>
             </div>
 
-            {/* Featured Publication (Only in Grid View) */}
-            {viewMode === 'grid' && featuredPub && (
+            {/* Featured Publication */}
+            {featuredPub && (
                 <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark">
                     <div className="flex flex-col lg:flex-row">
                         <div className="w-full lg:w-2/5 h-64 lg:h-auto bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center p-8 relative">
