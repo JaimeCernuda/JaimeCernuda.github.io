@@ -89,7 +89,7 @@ const Projects = () => {
                         >
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-black/10"></div>
                             <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                                {featuredProject.label || 'Featured'}
+                                {featuredProject.label || 'Featured Project'}
                             </div>
                         </div>
                         <div className="flex w-full lg:w-3/5 flex-col justify-center gap-4 p-6 lg:p-8">
@@ -131,8 +131,8 @@ const Projects = () => {
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
                                 className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-5 transition-colors ${selectedCategory === cat
-                                        ? 'bg-primary text-white font-bold'
-                                        : 'bg-gray-200 dark:bg-surface-dark-lighter hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium'
+                                    ? 'bg-primary text-white font-bold'
+                                    : 'bg-gray-200 dark:bg-surface-dark-lighter hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium'
                                     }`}
                             >
                                 <span className="text-sm">{cat}</span>
@@ -184,14 +184,14 @@ const Projects = () => {
                                     ))}
                                 </div>
                                 <div className="flex items-center gap-4 pt-2 border-t border-gray-200 dark:border-border-dark">
-                                    <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
-                                        <span className="material-symbols-outlined text-[18px]">code</span>
-                                        Code
-                                    </a>
                                     <Link to={`/projects/${project.slug}`} className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
                                         <span className="material-symbols-outlined text-[18px]">article</span>
                                         Details
                                     </Link>
+                                    <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                                        <span className="material-symbols-outlined text-[18px]">code</span>
+                                        Code
+                                    </a>
                                 </div>
                             </div>
                         </div>

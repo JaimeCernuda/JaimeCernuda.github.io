@@ -5,5 +5,7 @@ export default {
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
     darkMode: "selector",
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/typography'),
+    ],
 }
