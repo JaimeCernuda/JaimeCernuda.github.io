@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #135bec;
+  --color-primary-hover: #0f4bc4;
+  --color-background-light: #f6f6f8;
+  --color-surface-light: #ffffff;
+  --color-surface-light-lighter: #f0f2f5;
+  --color-background-dark: #101622;
+  --color-surface-dark: #1a2230;
+  --color-surface-dark-lighter: #242e42;
+  --color-border-dark: #333d4f;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: #f6f6f8;
+    color: #1f2937;
+  }
+
+  html.dark {
+    background-color: #101622;
+    color: #f3f4f6;
+  }
+}

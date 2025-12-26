@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Projects - Dr. Alex Smith</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111318",
+                        "surface-dark": "#1e222b",
+                        "surface-border": "#282e39",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="border-b border-surface-border bg-background-dark sticky top-0 z-50">
+<div class="px-4 md:px-10 h-16 flex items-center justify-between max-w-7xl mx-auto w-full">
+<div class="flex items-center gap-4 text-white w-1/4">
+<div class="size-8 flex items-center justify-center rounded bg-primary/20 text-primary shrink-0">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] whitespace-nowrap">Dr. Alex Smith</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-center gap-6 lg:gap-8">
+<a class="text-slate-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Home</a>
+<a class="text-slate-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Publications</a>
+<a class="text-white text-sm font-medium leading-normal" href="#">Projects</a>
+<a class="text-slate-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">CV</a>
+<a class="text-slate-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Blog</a>
+</div>
+<div class="flex justify-end w-1/4 gap-2">
+<button class="flex items-center justify-center rounded-lg size-10 bg-surface-border text-white hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-[20px]">light_mode</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-center w-full px-4 md:px-10 py-5">
+<div class="flex flex-col max-w-[1080px] w-full gap-8">
+<div class="flex flex-col gap-3 py-4">
+<h1 class="text-white text-4xl md:text-5xl font-bold leading-tight tracking-[-0.033em]">Selected Projects</h1>
+<p class="text-[#9da6b9] text-lg font-normal leading-normal max-w-2xl">
+                    Bridging the gap between theoretical algorithms and practical systems through open-source contribution and rigorous experimentation.
+                </p>
+</div>
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary text-white px-5 transition-colors">
+<span class="text-sm font-bold">All</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-border hover:bg-slate-700 text-white px-5 transition-colors">
+<span class="text-sm font-medium">AI/ML</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-border hover:bg-slate-700 text-white px-5 transition-colors">
+<span class="text-sm font-medium">Systems</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-border hover:bg-slate-700 text-white px-5 transition-colors">
+<span class="text-sm font-medium">HCI</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-border hover:bg-slate-700 text-white px-5 transition-colors">
+<span class="text-sm font-medium">Security</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-border hover:bg-slate-700 text-white px-5 transition-colors">
+<span class="text-sm font-medium">Data Privacy</span>
+</button>
+</div>
+<div class="relative overflow-hidden rounded-xl bg-surface-dark border border-surface-border group">
+<div class="absolute inset-0 bg-gradient-to-r from-background-dark/90 to-surface-dark/40 z-10 pointer-events-none"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-20">
+<div class="flex flex-col justify-center gap-6 p-8 md:p-12">
+<div class="flex items-center gap-2">
+<span class="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Featured Research</span>
+<span class="text-slate-400 text-xs font-medium">NeurIPS 2023</span>
+</div>
+<h2 class="text-white text-3xl md:text-4xl font-bold leading-tight tracking-tight">
+                            Neural-Symbolic Reasoning Engine
+                        </h2>
+<p class="text-slate-300 text-base leading-relaxed">
+                            A framework integrating deep learning perception with symbolic logic for enhanced interpretability in autonomous systems. This engine achieves 40% higher accuracy on multi-hop reasoning tasks compared to standard transformers.
+                        </p>
+<div class="flex flex-wrap gap-2 mb-2">
+<span class="text-xs font-medium text-slate-400 bg-black/30 px-2 py-1 rounded border border-white/5">Python</span>
+<span class="text-xs font-medium text-slate-400 bg-black/30 px-2 py-1 rounded border border-white/5">PyTorch</span>
+<span class="text-xs font-medium text-slate-400 bg-black/30 px-2 py-1 rounded border border-white/5">Logic/Prolog</span>
+</div>
+<div class="flex flex-wrap gap-3">
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 text-white text-sm font-bold transition-colors">
+<span class="material-symbols-outlined text-[18px]">description</span>
+<span>Read Paper</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-surface-border hover:bg-slate-700 text-white text-sm font-bold transition-colors">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span>View Repo</span>
+</button>
+</div>
+</div>
+<div class="h-64 md:h-auto min-h-[300px] w-full relative">
+<img alt="Abstract visualization of neural network nodes connecting in a 3D space with glowing blue lines" class="absolute inset-0 w-full h-full object-cover opacity-60 md:opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Abstract visualization of neural network nodes connecting in a 3D space with glowing blue lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBShSkhYSB0LNS-knvUYkrhkGGHYLHWZA5r4XYPlpvGCCrzjWPsfpIzCi6nMqCD9531kRdQaUb62rrQ5fIB5Tl0Jz4nASwo5ZYj1wq65n1qYnhV_uhX8u-LAMoQeWDoY8cJ-9Xgf6P7W6buho4YgX-zqmMMaRqeN2FETX3opzUyY47pUQ1dq8i_eP4DBKm3rKndl4mDzgWhv_sf_JcZvfxEwsFZfPoSny4Wu5GJgZPcmZ3zyPulWnLKNbCZjghNeIyEqm-BHnSGbRA"/>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between border-b border-surface-border pb-4 mt-8">
+<h2 class="text-white text-2xl font-bold leading-tight">Project Archive</h2>
+<a class="text-primary text-sm font-bold hover:underline" href="#">View GitHub Profile</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="group flex flex-col bg-surface-dark border border-surface-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="h-48 overflow-hidden relative">
+<div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
+<img alt="Server racks in a dark data center with green status lights" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Server racks in a dark data center with green status lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA08k37anzo9PrAP0MdSYuRWPo1IlQLuTkdzPeGNPpsLGns66LfPVEaSuVxCp4oTjd7KK-thTxwXTenAca7ltOGbblTTFoXgfJOdFe0MjRgHyoRmC6wsJdsx0DuwipMV9CGaB0e_pFLz8TRWMMYBwN_KGkk0MaZXzd77PuLlPsvn2Dev9lpaZXmIG24_6r1_2KbdbRGoVkTn1U7dDgYdEoXCnqZbyzYwvFsuWMY0EpYt6e72qjOMw73MOa3OdBNcOzHHwv8zRVAf0I"/>
+</div>
+<div class="flex flex-col flex-1 p-5 gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors">Distributed Consensus</h3>
+<p class="text-xs text-slate-400 font-mono">Systems · 2022</p>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                            A Raft-based consensus protocol implementation optimized for high-latency networks. Demonstrated 15% throughput improvement over standard etcd benchmarks in simulated geo-distributed environments.
+                        </p>
+<div class="mt-auto flex flex-col gap-4">
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">Go</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">Docker</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">gRPC</span>
+</div>
+<div class="flex items-center gap-4 pt-2 border-t border-white/5">
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+                                    Code
+                                </a>
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">article</span>
+                                    Paper
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-surface-dark border border-surface-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="h-48 overflow-hidden relative">
+<img alt="Medical MRI scan imagery displayed on a digital screen with analysis overlays" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Medical MRI scan imagery displayed on a digital screen with analysis overlays" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkRoHtj5NJXKnEF73afJ1ig-u69-oYWwiFfITNXaPkSB9XyLSTmoECg0wbUAw1TsL6G2KdV9ZBitOLO340dTSWMDwQqIazu1TpaSaeoCW1TjeG4hS7c0gvmvAvoqfcpby33G3gXYgYvc9BonndVH3BMB4p8RSxNrtqD09JXTOMqCqBW7NE81EUPYgnu6Ys9MTPdoj4PHqXYGLDhsuiGiFvdxGUaexMfjeQBqFHYejA36Wcss5E0vdZtpl7K7r5F2tqTomDn6EOQ30"/>
+</div>
+<div class="flex flex-col flex-1 p-5 gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors">MedVision AI</h3>
+<p class="text-xs text-slate-400 font-mono">CV / Healthcare · 2021</p>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                            Computer vision pipeline for early detection of anomalies in MRI scans. Utilizes a novel attention mechanism to highlight regions of interest for radiologists.
+                        </p>
+<div class="mt-auto flex flex-col gap-4">
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">Python</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">PyTorch</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">OpenCV</span>
+</div>
+<div class="flex items-center gap-4 pt-2 border-t border-white/5">
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+                                    Code
+                                </a>
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+                                    Demo
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-surface-dark border border-surface-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="h-48 overflow-hidden relative">
+<img alt="Abstract digital lock interface symbolizing data privacy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Abstract digital lock interface symbolizing data privacy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3OnCqkKZgcujCwSwWDov2c9coYnl2wqfVC2G10Q-EkVrLfWWJsfbJ_YXMhm7aeOTRjYDy5vpLnK2fJ_kJ6lD6AjUxeyTY5DJxI4IbY7MWGyyMaIfuYHZyOdNNpvpcVNXVSaKKg3r0YUlfplSm5eGg4si24Df8lnNnLRenDkXsW1gxGKHrY7RrJUC-EiINJhNSkXaQ_uFT4tzNxDHNS5tWJAvnC5RM0XtWYxv0d6Hhb2oHOqibGZuZVyhSQNTuVYx9VeNS3R3ROXg"/>
+</div>
+<div class="flex flex-col flex-1 p-5 gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors">SecureShare</h3>
+<p class="text-xs text-slate-400 font-mono">Privacy / Security · 2023</p>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                            A prototype for privacy-preserving data mining using multiparty computation (MPC). Allows organizations to compute aggregate statistics without revealing individual records.
+                        </p>
+<div class="mt-auto flex flex-col gap-4">
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">C++</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">Rust</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">WASM</span>
+</div>
+<div class="flex items-center gap-4 pt-2 border-t border-white/5">
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+                                    Code
+                                </a>
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">article</span>
+                                    Paper
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-surface-dark border border-surface-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="h-48 overflow-hidden relative">
+<img alt="Data visualization dashboard on a screen showing charts and graphs" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Data visualization dashboard on a screen showing charts and graphs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOxCwYSFTPkTEqRnjlyxwwcDDid5bI7bHUbpZAgqrek_togY0-vvR4yTHjOptKz-XCWPS5fcZf-QcJpk9NS1UbKWLD7DNdNAqkZgIRn0f5Nn97ngQ287vT6BC2dk7rv1hD63JP5IVCXGEegvGCO1qTwBPjAiCmIGRis7PevWv62SL2Y6CrgPOXkAl4_RRsnhfV36C2pXLqwUobPGOAHSmZ5iW2pBNLS7UMKCsLMh86xXK3gaYwJjzLF4z_gAVKVSS9H2G0HPxWZIA"/>
+</div>
+<div class="flex flex-col flex-1 p-5 gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors">VisuaLog</h3>
+<p class="text-xs text-slate-400 font-mono">HCI / Vis · 2020</p>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                            An interactive visualization tool for debugging large-scale distributed logs. Featured in CHI 2020 workshops for its novel approach to temporal event folding.
+                        </p>
+<div class="mt-auto flex flex-col gap-4">
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">TypeScript</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">D3.js</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">React</span>
+</div>
+<div class="flex items-center gap-4 pt-2 border-t border-white/5">
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                                    Live Site
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-surface-dark border border-surface-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="h-48 overflow-hidden relative flex items-center justify-center bg-[#0d0f14]">
+<span class="material-symbols-outlined text-6xl text-slate-700">terminal</span>
+</div>
+<div class="flex flex-col flex-1 p-5 gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors">Compiler Opt.</h3>
+<p class="text-xs text-slate-400 font-mono">Systems / PL · 2019</p>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                            Optimization passes for the LLVM compiler infrastructure focusing on loop unrolling heuristics for ARM architecture.
+                        </p>
+<div class="mt-auto flex flex-col gap-4">
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">C++</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">LLVM</span>
+</div>
+<div class="flex items-center gap-4 pt-2 border-t border-white/5">
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+                                    Patch Notes
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="group flex flex-col bg-surface-dark border border-surface-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="h-48 overflow-hidden relative">
+<img alt="Matrix code rain style digital background" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Matrix code rain style digital background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1rU2pF8TZgpf4RGxfmXKcRyE1GcpUuiqjj66Rl_54JQ62u182CMZCZ9onhMG2B5VJL4vhjutCMe2Xi0afkta8lynaiKaqxt4Zefw4kpOngQNGrYXq4epnjIBaRWMQid9Ysxq2oUHrASXLc0_zrOBUpo-5Yhp0_AUouOHDbr4nnb1uhTWckzubUp-7FbQ0sCLeufXb0AtnctnOcLgjll9elVT9irc7_h8lEMD0HZR5p0dIJD8LS3svgqVVwMxlUHoaKZ3lWBEKQro"/>
+</div>
+<div class="flex flex-col flex-1 p-5 gap-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors">Zero-Day Hunter</h3>
+<p class="text-xs text-slate-400 font-mono">Security · 2021</p>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                            Automated fuzzing tool leveraging symbolic execution to find buffer overflow vulnerabilities in legacy binaries.
+                        </p>
+<div class="mt-auto flex flex-col gap-4">
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">Python</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-surface-border px-2 py-1 rounded">Assembly</span>
+</div>
+<div class="flex items-center gap-4 pt-2 border-t border-white/5">
+<a class="flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+                                    Private
+                                </a>
+<span class="text-xs text-slate-500 italic ml-auto">Pending Review</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer class="border-t border-surface-border bg-background-dark mt-auto">
+<div class="px-10 py-8 flex flex-col md:flex-row items-center justify-between gap-4 max-w-7xl mx-auto w-full text-slate-400">
+<p class="text-sm">© 2024 Dr. Alex Smith. All rights reserved.</p>
+<div class="flex items-center gap-6">
+<a class="text-sm hover:text-white transition-colors" href="#">Google Scholar</a>
+<a class="text-sm hover:text-white transition-colors" href="#">ResearchGate</a>
+<a class="text-sm hover:text-white transition-colors" href="#">Twitter/X</a>
+<a class="text-sm hover:text-white transition-colors" href="#">LinkedIn</a>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

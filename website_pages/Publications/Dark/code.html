@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Research &amp; Publications - Dr. Jane Doe</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white min-h-screen flex flex-col font-display">
+<header class="sticky top-0 z-50 w-full border-b border-[#f0f2f4] dark:border-gray-800 bg-white dark:bg-[#101622]">
+<div class="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+<div class="flex flex-1 items-center justify-start gap-4 text-[#111318] dark:text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-2xl">school</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Dr. Jane Doe</h2>
+</div>
+<nav class="hidden md:flex items-center justify-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors text-[#111318] dark:text-gray-300" href="#">Home</a>
+<a class="text-sm font-medium text-primary transition-colors" href="#">Publications</a>
+<a class="text-sm font-medium hover:text-primary transition-colors text-[#111318] dark:text-gray-300" href="#">Projects</a>
+<a class="text-sm font-medium hover:text-primary transition-colors text-[#111318] dark:text-gray-300" href="#">CV</a>
+<a class="text-sm font-medium hover:text-primary transition-colors text-[#111318] dark:text-gray-300" href="#">Blog</a>
+</nav>
+<div class="flex flex-1 items-center justify-end gap-4">
+<button aria-label="Toggle theme" class="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</button>
+<div class="md:hidden flex items-center">
+<span class="material-symbols-outlined cursor-pointer text-[#111318] dark:text-white">menu</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-10">
+<section class="flex flex-col lg:flex-row gap-8 lg:items-end justify-between">
+<div class="flex flex-col gap-3 max-w-2xl">
+<h1 class="text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]">Research &amp; Publications</h1>
+<p class="text-[#616f89] dark:text-gray-400 text-lg font-normal leading-normal">
+                    Exploring the intersection of Deep Learning and Medical Imaging through rigorous study and experimentation.
+                </p>
+</div>
+<div class="flex gap-4 shrink-0 overflow-x-auto pb-2">
+<div class="flex min-w-[120px] flex-col gap-1 rounded-lg border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">format_quote</span>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Citations</p>
+</div>
+<p class="text-2xl font-bold text-[#111318] dark:text-white">1,420</p>
+</div>
+<div class="flex min-w-[120px] flex-col gap-1 rounded-lg border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">bar_chart</span>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">H-Index</p>
+</div>
+<p class="text-2xl font-bold text-[#111318] dark:text-white">18</p>
+</div>
+<div class="flex min-w-[120px] flex-col gap-1 rounded-lg border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">leaderboard</span>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">i10-Index</p>
+</div>
+<p class="text-2xl font-bold text-[#111318] dark:text-white">24</p>
+</div>
+</div>
+</section>
+<section>
+<div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-[#1a2230] @container">
+<div class="flex flex-col lg:flex-row">
+<div class="w-full lg:w-2/5 h-64 lg:h-auto bg-cover bg-center relative" data-alt="Abstract visualization of neural networks connecting in a dark blue space" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD1vX9kq6LAGURPMr7O8vhcCaO-EJ53aiVBM1WLGW15TlJHwDzLq-jdCAypDVdDYApt1YXkJFHoBOx9bEsTmX4owrRmhuo0AfGOltlhsQ-V8CbYuDkk_QFpCn8tDkuahCCyD3NOizwvD-MFz2AgqUWX9uB6W87lI0JTfO9qS266yK8_R_gjZUYzsCEsYcilsxEndQtWMVQMrvT1MRViJ_V5X0ZhOZWPT0XGDL8MjMiOb7pN3pApkl7OxTBx-F77gq1SaAo6kxGP9H0");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-black/10"></div>
+<div class="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                            Featured Paper
+                         </div>
+</div>
+<div class="flex w-full lg:w-3/5 flex-col justify-center gap-4 p-6 lg:p-8">
+<div class="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+<span class="font-bold text-primary">ICCV 2023</span>
+<span>•</span>
+<span>Best Paper Award</span>
+</div>
+<h3 class="text-2xl md:text-3xl font-bold leading-tight text-[#111318] dark:text-white">Optimizing Neural Networks for Edge Devices</h3>
+<p class="text-[#616f89] dark:text-gray-300 text-base leading-relaxed">
+                            A novel approach to reducing latency in mobile-deployed transformers without sacrificing accuracy. We introduce a new pruning technique that adapts dynamically to hardware constraints.
+                        </p>
+<div class="flex flex-wrap items-center gap-4 mt-2">
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm shadow-primary/30">
+<span class="material-symbols-outlined text-[18px]">description</span>
+                                Read Full Paper
+                            </button>
+<button class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-[#111318] dark:text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">code</span>
+                                View Code
+                            </button>
+<button class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-[#111318] dark:text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">slideshow</span>
+                                Slides
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="sticky top-16 z-40 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm py-2 -mx-4 px-4 sm:mx-0 sm:px-0 border-b border-gray-200 dark:border-gray-800 lg:border-none lg:bg-transparent lg:backdrop-blur-none lg:static">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0 no-scrollbar">
+<button class="whitespace-nowrap flex h-9 items-center justify-center rounded-lg bg-[#111318] dark:bg-white text-white dark:text-[#111318] px-4 text-sm font-medium transition-colors">
+                        All Years
+                    </button>
+<button class="whitespace-nowrap flex h-9 items-center justify-center rounded-lg bg-white dark:bg-[#1a2230] border border-gray-200 dark:border-gray-700 px-4 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        2023
+                    </button>
+<button class="whitespace-nowrap flex h-9 items-center justify-center rounded-lg bg-white dark:bg-[#1a2230] border border-gray-200 dark:border-gray-700 px-4 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        2022
+                    </button>
+<button class="whitespace-nowrap flex h-9 items-center justify-center rounded-lg bg-white dark:bg-[#1a2230] border border-gray-200 dark:border-gray-700 px-4 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        AI &amp; Deep Learning
+                    </button>
+<button class="whitespace-nowrap flex h-9 items-center justify-center rounded-lg bg-white dark:bg-[#1a2230] border border-gray-200 dark:border-gray-700 px-4 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        Medical Imaging
+                    </button>
+</div>
+<div class="hidden sm:flex items-center relative">
+<span class="material-symbols-outlined absolute left-3 text-gray-400 text-[20px]">search</span>
+<input class="pl-10 pr-4 py-2 h-9 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2230] text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 text-[#111318] dark:text-white" placeholder="Search papers..." type="text"/>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="group flex flex-col justify-between rounded-xl border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+<div>
+<div class="mb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-xs font-bold text-primary ring-1 ring-inset ring-blue-700/10">CVPR 2023</span>
+<span class="text-xs text-gray-500 dark:text-gray-400 font-medium">Conference</span>
+</div>
+<div class="flex items-center text-gray-400 gap-1" title="Citations">
+<span class="material-symbols-outlined text-[16px]">format_quote</span>
+<span class="text-xs font-semibold">142</span>
+</div>
+</div>
+<h3 class="mb-3 text-lg font-bold text-[#111318] dark:text-white group-hover:text-primary transition-colors">
+                        Self-Supervised Learning for volumetric medical data
+                    </h3>
+<p class="mb-6 text-sm text-[#616f89] dark:text-gray-300 leading-relaxed line-clamp-3">
+                        We propose a novel pretext task for self-supervised learning on 3D medical images, leveraging geometric transformations specific to anatomical structures.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+<div class="flex gap-2">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#" title="Download PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</a>
+<a class="text-gray-400 hover:text-black dark:hover:text-white transition-colors" href="#" title="View Code">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</a>
+</div>
+<button class="flex items-center gap-1 text-xs font-bold text-primary uppercase tracking-wide hover:underline">
+                        Abstract
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+<div>
+<div class="mb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-green-50 dark:bg-green-900/30 px-2 py-1 text-xs font-bold text-green-700 dark:text-green-400 ring-1 ring-inset ring-green-600/20">Nature Elec.</span>
+<span class="text-xs text-gray-500 dark:text-gray-400 font-medium">Journal</span>
+</div>
+<div class="flex items-center text-gray-400 gap-1">
+<span class="material-symbols-outlined text-[16px]">format_quote</span>
+<span class="text-xs font-semibold">89</span>
+</div>
+</div>
+<h3 class="mb-3 text-lg font-bold text-[#111318] dark:text-white group-hover:text-primary transition-colors">
+                        Survey on Efficient Transformers
+                    </h3>
+<p class="mb-6 text-sm text-[#616f89] dark:text-gray-300 leading-relaxed line-clamp-3">
+                        A comprehensive survey of efficiency optimization methods for Transformer models, categorizing approaches into pruning, quantization, and architectural modifications.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+<div class="flex gap-2">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#" title="Download PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</a>
+<a class="text-gray-400 hover:text-black dark:hover:text-white transition-colors" href="#" title="View Code">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</a>
+</div>
+<button class="flex items-center gap-1 text-xs font-bold text-primary uppercase tracking-wide hover:underline">
+                        Abstract
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+<div>
+<div class="mb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-xs font-bold text-primary ring-1 ring-inset ring-blue-700/10">CHI 2022</span>
+<span class="text-xs text-gray-500 dark:text-gray-400 font-medium">Conference</span>
+</div>
+<div class="flex items-center text-gray-400 gap-1">
+<span class="material-symbols-outlined text-[16px]">format_quote</span>
+<span class="text-xs font-semibold">56</span>
+</div>
+</div>
+<h3 class="mb-3 text-lg font-bold text-[#111318] dark:text-white group-hover:text-primary transition-colors">
+                        Human-in-the-loop Reinforcement Learning for Robotic Control
+                    </h3>
+<p class="mb-6 text-sm text-[#616f89] dark:text-gray-300 leading-relaxed line-clamp-3">
+                        Investigating how human feedback can accelerate policy learning in complex robotic manipulation tasks through interactive reward shaping.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+<div class="flex gap-2">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#" title="Download PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</a>
+<a class="text-gray-400 hover:text-black dark:hover:text-white transition-colors" href="#" title="View Code">
+<span class="material-symbols-outlined text-[20px]">movie</span>
+</a>
+<a class="text-gray-400 hover:text-black dark:hover:text-white transition-colors" href="#" title="View Slides">
+<span class="material-symbols-outlined text-[20px]">slideshow</span>
+</a>
+</div>
+<button class="flex items-center gap-1 text-xs font-bold text-primary uppercase tracking-wide hover:underline">
+                        Abstract
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+<div>
+<div class="mb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-xs font-bold text-primary ring-1 ring-inset ring-blue-700/10">NeurIPS 2021</span>
+<span class="text-xs text-gray-500 dark:text-gray-400 font-medium">Conference</span>
+</div>
+<div class="flex items-center text-gray-400 gap-1">
+<span class="material-symbols-outlined text-[16px]">format_quote</span>
+<span class="text-xs font-semibold">210</span>
+</div>
+</div>
+<h3 class="mb-3 text-lg font-bold text-[#111318] dark:text-white group-hover:text-primary transition-colors">
+                        Understanding Contrastive Loss
+                    </h3>
+<p class="mb-6 text-sm text-[#616f89] dark:text-gray-300 leading-relaxed line-clamp-3">
+                        A theoretical analysis of contrastive loss landscapes and their impact on representation quality in self-supervised learning frameworks.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+<div class="flex gap-2">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#" title="Download PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</a>
+<a class="text-gray-400 hover:text-black dark:hover:text-white transition-colors" href="#" title="View Code">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</a>
+</div>
+<button class="flex items-center gap-1 text-xs font-bold text-primary uppercase tracking-wide hover:underline">
+                        Abstract
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+<div>
+<div class="mb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-green-50 dark:bg-green-900/30 px-2 py-1 text-xs font-bold text-green-700 dark:text-green-400 ring-1 ring-inset ring-green-600/20">IEEE TMI</span>
+<span class="text-xs text-gray-500 dark:text-gray-400 font-medium">Journal</span>
+</div>
+<div class="flex items-center text-gray-400 gap-1">
+<span class="material-symbols-outlined text-[16px]">format_quote</span>
+<span class="text-xs font-semibold">12</span>
+</div>
+</div>
+<h3 class="mb-3 text-lg font-bold text-[#111318] dark:text-white group-hover:text-primary transition-colors">
+                        Robust Segmentation of MRI
+                    </h3>
+<p class="mb-6 text-sm text-[#616f89] dark:text-gray-300 leading-relaxed line-clamp-3">
+                        Addressing the domain shift problem in MRI segmentation across different scanner vendors using a novel style-transfer augmentation pipeline.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+<div class="flex gap-2">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#" title="Download PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</a>
+</div>
+<button class="flex items-center gap-1 text-xs font-bold text-primary uppercase tracking-wide hover:underline">
+                        Abstract
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col justify-between rounded-xl border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-[#1a2230] p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+<div>
+<div class="mb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs font-bold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-600/10">Workshop 2020</span>
+<span class="text-xs text-gray-500 dark:text-gray-400 font-medium">Workshop</span>
+</div>
+<div class="flex items-center text-gray-400 gap-1">
+<span class="material-symbols-outlined text-[16px]">format_quote</span>
+<span class="text-xs font-semibold">8</span>
+</div>
+</div>
+<h3 class="mb-3 text-lg font-bold text-[#111318] dark:text-white group-hover:text-primary transition-colors">
+                         Early explorations in Neural Architecture Search
+                    </h3>
+<p class="mb-6 text-sm text-[#616f89] dark:text-gray-300 leading-relaxed line-clamp-3">
+                        A preliminary study on gradient-based NAS methods applied to small-scale datasets like CIFAR-10.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+<div class="flex gap-2">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#" title="Download PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</a>
+<a class="text-gray-400 hover:text-black dark:hover:text-white transition-colors" href="#" title="View Code">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</a>
+</div>
+<button class="flex items-center gap-1 text-xs font-bold text-primary uppercase tracking-wide hover:underline">
+                        Abstract
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<div class="flex justify-center mt-6">
+<button class="flex items-center gap-2 rounded-lg px-6 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2230] text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-[#111318] dark:text-white">
+                Load More Publications
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</main>
+<footer class="mt-auto border-t border-[#f0f2f4] dark:border-gray-800 bg-white dark:bg-[#101622] py-12">
+<div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 sm:flex-row sm:px-6 lg:px-8">
+<div class="flex items-center gap-2 text-sm text-[#616f89] dark:text-gray-400">
+<span class="material-symbols-outlined text-[18px]">copyright</span>
+<span>2024 Jane Doe. All rights reserved.</span>
+</div>
+<div class="flex gap-8">
+<a class="text-sm font-medium text-[#616f89] hover:text-[#111318] dark:text-gray-400 dark:hover:text-white transition-colors" href="#">Google Scholar</a>
+<a class="text-sm font-medium text-[#616f89] hover:text-[#111318] dark:text-gray-400 dark:hover:text-white transition-colors" href="#">ResearchGate</a>
+<a class="text-sm font-medium text-[#616f89] hover:text-[#111318] dark:text-gray-400 dark:hover:text-white transition-colors" href="#">LinkedIn</a>
+<a class="text-sm font-medium text-[#616f89] hover:text-[#111318] dark:text-gray-400 dark:hover:text-white transition-colors" href="#">Twitter/X</a>
+</div>
+</div>
+</footer>
+</body></html>

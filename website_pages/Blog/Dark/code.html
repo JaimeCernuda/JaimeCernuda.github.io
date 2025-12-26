@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Blog - Prof. John Doe</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // Original primary blue accent
+                        "primary": "#135bec",
+                        // Light mode specific backgrounds
+                        "background-light": "#f6f6f8",
+                        // Dark mode specific backgrounds
+                        "background-dark": "#1a202c", // Deep academic-appropriate dark gray/charcoal for main background
+                        "card-dark": "#2d3748", // Slightly lighter dark shade for cards
+                        "border-dark": "#4a5568", // Complementary dark shade for borders
+                        "text-light-mode-dark": "#111318", // Original light mode dark text
+                        "text-dark-mode-light": "#e2e8f0", // Light text for dark mode
+                        "text-muted-dark-mode": "#a0aec0", // Muted text for dark mode
+                        "text-secondary-dark-mode": "#cbd5e0", // Secondary text for dark mode
+                        "bg-input-dark": "#222a36", // Darker background for input fields in dark mode
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light-mode-dark dark:text-text-dark-mode-light font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex justify-center w-full bg-white dark:bg-card-dark border-b border-[#f0f2f4] dark:border-border-dark sticky top-0 z-50">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1 w-full">
+<header class="flex items-center justify-between whitespace-nowrap px-4 md:px-10 py-3 relative">
+<div class="flex items-center gap-4 text-text-light-mode-dark dark:text-text-dark-mode-light">
+<div class="size-8 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">school</span>
+</div>
+<h2 class="text-text-light-mode-dark dark:text-text-dark-mode-light text-lg font-bold leading-tight tracking-[-0.015em]">Prof. John Doe</h2>
+</div>
+<div class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+<nav class="flex items-center gap-6">
+<a class="text-text-light-mode-dark dark:text-text-muted-dark-mode text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-text-light-mode-dark dark:text-text-muted-dark-mode text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Publications</a>
+<a class="text-text-light-mode-dark dark:text-text-muted-dark-mode text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Projects</a>
+<a class="text-text-light-mode-dark dark:text-text-muted-dark-mode text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">CV</a>
+<a class="text-primary text-sm font-bold leading-normal" href="#">Blog</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="Toggle theme" class="flex items-center justify-center text-text-light-mode-dark dark:text-text-dark-mode-light hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">dark_mode</span>
+</button>
+<div class="md:hidden text-text-light-mode-dark dark:text-text-dark-mode-light cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</div>
+</div>
+</header>
+</div>
+</div>
+<div class="flex flex-1 justify-center py-5 w-full">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1 w-full px-4 md:px-10">
+<div class="@container mb-10">
+<div class="flex min-h-[320px] md:min-h-[400px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-start justify-end px-6 pb-10 md:px-10 shadow-lg relative overflow-hidden group" data-alt="Abstract geometric blue and purple digital pattern representing technology" style='background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBO4siOPqOX3FTs8uaIJNOaXWmbdcvp7HQ41DEVxg3M-CCoYOdSiHKv8uZKgj00hzXU3IneQT3FHD_jGLod6t0LpEtrddPxsFdzwhqUZ7nVoUklnBUTNqXAcMi37GlH3UBtV_56O-5Qil_a3sbaPIKT7RX5xKhkEbcqTSmOhcxP9fbFTvMp9gQNsM8iNgYT7Iv2CMDZVwDgofEZpWy0cf8glzGsTRDNltN4b2nt6AS3cxZE23_0g6FFpMRp6EWUHIqShdgyLS2czSI");'>
+<div class="flex flex-col gap-2 text-left z-10 max-w-2xl">
+<h1 class="text-white text-3xl md:text-5xl font-black leading-tight tracking-[-0.033em]">
+                                    Research Notes &amp; Thoughts
+                                </h1>
+<h2 class="text-gray-200 text-sm md:text-base font-normal leading-normal max-w-lg">
+                                    Exploring the intersection of computer science theory, AI ethics, and the reality of the academic journey.
+                                </h2>
+</div>
+<label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] mt-4 z-10">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full shadow-lg">
+<div class="text-[#616f89] flex border border-r-0 border-white/20 bg-white dark:bg-bg-input-dark dark:border-border-dark items-center justify-center pl-[15px] rounded-l-lg">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-none text-[#111318] dark:text-text-dark-mode-light focus:outline-0 focus:ring-0 border-y border-white/20 dark:border-border-dark bg-white dark:bg-bg-input-dark h-full placeholder:text-[#616f89] dark:placeholder:text-text-muted-dark-mode px-2 text-sm" placeholder="Subscribe for research updates..." value=""/>
+<div class="flex items-center justify-center rounded-r-lg border border-l-0 border-white/20 dark:border-border-dark bg-white dark:bg-bg-input-dark pr-[7px]">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:bg-blue-700 transition-colors">
+<span class="truncate">Subscribe</span>
+</button>
+</div>
+</div>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pb-10">
+<div class="md:col-span-8 flex flex-col gap-6">
+<article class="flex flex-col gap-3 p-0 md:p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
+<div class="flex items-center gap-3 text-xs md:text-sm text-gray-500 dark:text-text-muted-dark-mode">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span>Oct 12, 2023</span>
+</div>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-border-dark"></span>
+<div class="flex items-center gap-1 text-primary font-medium">
+<span class="material-symbols-outlined text-[16px]">label</span>
+<span>Career</span>
+</div>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-border-dark"></span>
+<span>5 min read</span>
+</div>
+<h3 class="text-xl md:text-2xl font-bold text-text-light-mode-dark dark:text-text-dark-mode-light group-hover:text-primary transition-colors">
+                                    Reflections on defending my thesis in the age of LLMs
+                                </h3>
+<p class="text-base text-gray-600 dark:text-text-secondary-dark-mode leading-relaxed line-clamp-3">
+                                    The landscape of academic research is shifting rapidly. As I stood before the committee, I couldn't help but wonder how generative AI will reshape the very definition of original contribution in computer science doctorates.
+                                </p>
+<a class="inline-flex items-center gap-1 text-primary font-bold text-sm hover:underline mt-1" href="#">
+                                    Read full article <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</article>
+<hr class="border-gray-100 dark:border-border-dark"/>
+<article class="flex flex-col gap-3 p-0 md:p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
+<div class="flex items-center gap-3 text-xs md:text-sm text-gray-500 dark:text-text-muted-dark-mode">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span>Sept 28, 2023</span>
+</div>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-border-dark"></span>
+<div class="flex items-center gap-1 text-primary font-medium">
+<span class="material-symbols-outlined text-[16px]">label</span>
+<span>Research</span>
+</div>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-border-dark"></span>
+<span>12 min read</span>
+</div>
+<h3 class="text-xl md:text-2xl font-bold text-text-light-mode-dark dark:text-text-dark-mode-light group-hover:text-primary transition-colors">
+                                    A deep dive into our latest CVPR paper on zero-shot learning
+                                </h3>
+<p class="text-base text-gray-600 dark:text-text-secondary-dark-mode leading-relaxed line-clamp-3">
+                                    We proposed a novel framework for visual semantic embedding that outperforms current state-of-the-art models on generalized zero-shot learning tasks. Here is a breakdown of the math and the intuition behind the architecture.
+                                </p>
+<a class="inline-flex items-center gap-1 text-primary font-bold text-sm hover:underline mt-1" href="#">
+                                    Read full article <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</article>
+<hr class="border-gray-100 dark:border-border-dark"/>
+<article class="flex flex-col gap-3 p-0 md:p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
+<div class="flex items-center gap-3 text-xs md:text-sm text-gray-500 dark:text-text-muted-dark-mode">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span>Aug 15, 2023</span>
+</div>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-border-dark"></span>
+<div class="flex items-center gap-1 text-primary font-medium">
+<span class="material-symbols-outlined text-[16px]">label</span>
+<span>Advice</span>
+</div>
+<span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-border-dark"></span>
+<span>8 min read</span>
+</div>
+<h3 class="text-xl md:text-2xl font-bold text-text-light-mode-dark dark:text-text-dark-mode-light group-hover:text-primary transition-colors">
+                                    How to manage burn-out as a research assistant
+                                </h3>
+<p class="text-base text-gray-600 dark:text-text-secondary-dark-mode leading-relaxed line-clamp-3">
+                                    The pressure to publish can be overwhelming. During my third year, I hit a wall. Here are the strategies I used to recover my passion for discovery without sacrificing my mental health.
+                                </p>
+<a class="inline-flex items-center gap-1 text-primary font-bold text-sm hover:underline mt-1" href="#">
+                                    Read full article <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</article>
+<div class="flex items-center justify-center mt-8 gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 dark:border-border-dark text-gray-500 dark:text-text-muted-dark-mode hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 dark:border-border-dark text-gray-600 dark:text-text-secondary-dark-mode hover:bg-gray-50 dark:hover:bg-gray-700">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 dark:border-border-dark text-gray-600 dark:text-text-secondary-dark-mode hover:bg-gray-50 dark:hover:bg-gray-700">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 dark:border-border-dark text-gray-500 dark:text-text-muted-dark-mode hover:bg-gray-50 dark:hover:bg-gray-700">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<aside class="md:col-span-4 flex flex-col gap-8">
+<div class="bg-white dark:bg-card-dark p-6 rounded-xl border border-gray-100 dark:border-border-dark shadow-sm">
+<h4 class="text-base font-bold text-text-light-mode-dark dark:text-text-dark-mode-light mb-4">Search</h4>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-text-muted-dark-mode">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-bg-input-dark border border-gray-200 dark:border-border-dark rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-text-light-mode-dark dark:text-text-dark-mode-light" placeholder="Search posts..." type="text"/>
+</div>
+</div>
+<div class="bg-white dark:bg-card-dark p-6 rounded-xl border border-gray-100 dark:border-border-dark shadow-sm flex flex-col items-center text-center">
+<div class="w-24 h-24 rounded-full bg-gray-200 mb-4 overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="Portrait of Professor John Doe smiling professionally" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASvNAuboKTgGXtcyD4W2wx3wcB2ZQQI4c_0UGA-_zMsVwZFopVwxUjLmlL57qznmeAp-OQqKvbcZySHfEB3z24jSdTYx7elAms7StxGDsp0Jnu8NVuCBshQ5Cur71AtpW9xfWWcXaYhvfZ4WOlp6X_Ns-_97Ka3DMEXIKPExsbqsd2myXsuPf-NXCmOlI0igrH4ccPE8OUij5-j-JIVAaECTs3txi2Tx0knVGPoiurlZkGaffIDM9prXQTCgaF2IY9FhFVLmI5EBI"/>
+</div>
+<h4 class="text-lg font-bold text-text-light-mode-dark dark:text-text-dark-mode-light">Prof. John Doe</h4>
+<p class="text-xs text-primary font-medium mb-3">Assistant Professor, CS</p>
+<p class="text-sm text-gray-500 dark:text-text-muted-dark-mode leading-relaxed mb-4">
+                                    I write about my research in AI, the future of computing, and life in academia.
+                                </p>
+<a class="text-sm font-semibold text-text-light-mode-dark dark:text-text-dark-mode-light hover:text-primary transition-colors flex items-center gap-1" href="#">
+                                    More about me <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="bg-white dark:bg-card-dark p-6 rounded-xl border border-gray-100 dark:border-border-dark shadow-sm">
+<h4 class="text-base font-bold text-text-light-mode-dark dark:text-text-dark-mode-light mb-4">Categories</h4>
+<div class="flex flex-wrap gap-2">
+<a class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-700 dark:text-text-secondary-dark-mode hover:bg-primary hover:text-white transition-colors" href="#">Machine Learning (12)</a>
+<a class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-700 dark:text-text-secondary-dark-mode hover:bg-primary hover:text-white transition-colors" href="#">Academic Life (8)</a>
+<a class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-700 dark:text-text-secondary-dark-mode hover:bg-primary hover:text-white transition-colors" href="#">Tutorials (5)</a>
+<a class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-700 dark:text-text-secondary-dark-mode hover:bg-primary hover:text-white transition-colors" href="#">Ethics (3)</a>
+<a class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-700 dark:text-text-secondary-dark-mode hover:bg-primary hover:text-white transition-colors" href="#">Conferences (7)</a>
+</div>
+</div>
+<div class="bg-white dark:bg-card-dark p-6 rounded-xl border border-gray-100 dark:border-border-dark shadow-sm">
+<h4 class="text-base font-bold text-text-light-mode-dark dark:text-text-dark-mode-light mb-4">Popular Reads</h4>
+<div class="flex flex-col gap-4">
+<a class="group" href="#">
+<h5 class="text-sm font-semibold text-gray-800 dark:text-text-secondary-dark-mode group-hover:text-primary transition-colors mb-1">Getting into a Top 10 CS PhD Program</h5>
+<span class="text-xs text-gray-500 dark:text-text-muted-dark-mode">Aug 20, 2022</span>
+</a>
+<a class="group" href="#">
+<h5 class="text-sm font-semibold text-gray-800 dark:text-text-secondary-dark-mode group-hover:text-primary transition-colors mb-1">Understanding Transformers from Scratch</h5>
+<span class="text-xs text-gray-500 dark:text-text-muted-dark-mode">Jan 15, 2023</span>
+</a>
+<a class="group" href="#">
+<h5 class="text-sm font-semibold text-gray-800 dark:text-text-secondary-dark-mode group-hover:text-primary transition-colors mb-1">My setup: Tools for Research</h5>
+<span class="text-xs text-gray-500 dark:text-text-muted-dark-mode">Mar 10, 2023</span>
+</a>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</div>
+<footer class="flex flex-col gap-6 px-5 py-10 text-center bg-white dark:bg-card-dark border-t border-[#f0f2f4] dark:border-border-dark">
+<div class="layout-content-container flex flex-col max-w-[960px] mx-auto w-full">
+<div class="flex flex-wrap items-center justify-center gap-6 md:flex-row md:justify-center mb-6">
+<a class="text-[#616f89] dark:text-text-muted-dark-mode hover:text-primary transition-colors text-base font-normal leading-normal min-w-40" href="#">Privacy Policy</a>
+<a class="text-[#616f89] dark:text-text-muted-dark-mode hover:text-primary transition-colors text-base font-normal leading-normal min-w-40" href="#">Contact</a>
+</div>
+<div class="flex flex-wrap justify-center gap-6 mb-6">
+<a class="text-[#616f89] dark:text-text-muted-dark-mode hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">public</span>
+</a>
+<a class="text-[#616f89] dark:text-text-muted-dark-mode hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">work</span>
+</a>
+<a class="text-[#616f89] dark:text-text-muted-dark-mode hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">chat</span>
+</a>
+</div>
+<p class="text-[#616f89] dark:text-text-muted-dark-mode text-base font-normal leading-normal">© 2023 Prof. John Doe. All rights reserved.</p>
+</div>
+</footer>
+</div>
+</div>
+</body></html>
