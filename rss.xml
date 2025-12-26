@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>Jaime Cernuda's Blog</title>
+  <link>https://jcernuda.com</link>
+  <description>Research on High-Performance Computing, Distributed Systems, and AI</description>
+  <item>
+    <title>Thesis Reflections</title>
+    <link>https://jcernuda.com/#/blog/thesis-reflections</link>
+    <description>Reflections on my PhD journey and the future of HPC.</description>
+  </item>
+</channel>
+</rss>
