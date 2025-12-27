@@ -3,7 +3,7 @@ title: "ChronoLog"
 description: "A high-performance distributed shared tiered log store with time-based data ordering"
 year: 2020
 category: "Distributed Systems"
-featured: true
+featured: false
 status: "On-going"
 tags:
   - Distributed Systems
