@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
-<channel>
-  <title>Jaime Cernuda's Blog</title>
-  <link>https://jcernuda.com</link>
-  <description>Research on High-Performance Computing, Distributed Systems, and AI</description>
-  <item>
-    <title>Thesis Reflections</title>
-    <link>https://jcernuda.com/#/blog/thesis-reflections</link>
-    <description>Reflections on my PhD journey and the future of HPC.</description>
-  </item>
-</channel>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jaime Cernuda</title>
+    <link>https://jcernuda.com</link>
+    <description>Research on High-Performance Computing, Distributed Systems, and AI</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 27 Dec 2025 00:55:49 GMT</lastBuildDate>
+    <atom:link href="https://jcernuda.com/rss.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title><![CDATA[Reflections on defending my thesis in the age of LLMs]]></title>
+      <link>https://jcernuda.com/blog/thesis-reflections</link>
+      <guid>https://jcernuda.com/blog/thesis-reflections</guid>
+      <description><![CDATA[The landscape of academic research is shifting rapidly. As I stood before the committee, I couldn't help but wonder how generative AI will reshape the very definition of original contribution in computer science doctorates.]]></description>
+      <pubDate>Thu, 12 Oct 2023 05:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[A deep dive into our latest CVPR paper on zero-shot learning]]></title>
+      <link>https://jcernuda.com/blog/cvpr-zero-shot</link>
+      <guid>https://jcernuda.com/blog/cvpr-zero-shot</guid>
+      <description><![CDATA[We proposed a novel framework for visual semantic embedding that outperforms current state-of-the-art models on generalized zero-shot learning tasks. Here is a breakdown of the math and the intuition behind the architecture.]]></description>
+      <pubDate>Thu, 28 Sep 2023 05:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[How to manage burn-out as a research assistant]]></title>
+      <link>https://jcernuda.com/blog/burnout</link>
+      <guid>https://jcernuda.com/blog/burnout</guid>
+      <description><![CDATA[The pressure to publish can be overwhelming. During my third year, I hit a wall. Here are the strategies I used to recover my passion for discovery without sacrificing my mental health.]]></description>
+      <pubDate>Tue, 15 Aug 2023 05:00:00 GMT</pubDate>
+    </item>
+  </channel>
 </rss>
