@@ -31,15 +31,17 @@
 
 /* Tighten Prose Spacing */
 .prose p {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.6;
 }
 
 .prose h1,
 .prose h2,
 .prose h3 {
-  margin-top: 1.5em;
+  margin-top: 1em;
   margin-bottom: 0.5em;
+  line-height: 1.2;
 }
 
 .prose figure {
