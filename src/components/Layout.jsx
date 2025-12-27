@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import matter from 'gray-matter';
 import Navbar from './Navbar';
 
-const Layout = () => {
+const Layout = ({ children }) => {
     const location = useLocation();
     const isHome = location.pathname === '/';
     const [footerData, setFooterData] = useState(null);
@@ -28,7 +28,7 @@ const Layout = () => {
         <div className="min-h-screen flex flex-col font-display selection:bg-primary/30 selection:text-white">
             <Navbar />
             <main className="flex-1 flex flex-col w-full">
-                <Outlet />
+                {children || <Outlet />}
             </main>
 
             {isHome ? (

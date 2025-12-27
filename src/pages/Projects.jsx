@@ -51,19 +51,6 @@ const Projects = () => {
     if (loading) return <div className="p-10 text-center">Loading...</div>;
 
     const featuredProject = projects.find(p => p.featured);
-    const archiveProjects = projects.filter(p => !p.featured);
-    // If filtering is active, we might want to show all matching projects in the grid, 
-    // or keep the featured separate. For simplicity, if filtering is active, we show everything in the grid.
-    // But usually featured is special. Let's keep featured separate unless it doesn't match the filter.
-
-    // Actually, simpler logic:
-    // If 'All', show Featured + Archive.
-    // If Filtered, show only matching in the grid (hide featured section if it doesn't match, or just show everything in grid).
-    // Let's stick to the requested layout: Featured -> Filters -> Grid.
-    // The grid should contain everything that matches the filter EXCEPT the featured one (if it's already shown).
-    // OR, simpler: The grid contains everything matching the filter. The featured section is static or just shows the "Featured" one regardless of filter?
-    // User said: "Featured Paper -> Filters -> Grid".
-    // Usually filters apply to the grid.
 
     const displayProjects = selectedCategory === 'All'
         ? filteredProjects.filter(p => p !== featuredProject)
@@ -79,7 +66,7 @@ const Projects = () => {
                 </p>
             </div>
 
-            {/* Featured Project (Only show if All is selected or if it matches filter? Let's show only on 'All' to avoid duplicates or confusion) */}
+            {/* Featured Project */}
             {featuredProject && selectedCategory === 'All' && (
                 <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark">
                     <div className="flex flex-col lg:flex-row">
