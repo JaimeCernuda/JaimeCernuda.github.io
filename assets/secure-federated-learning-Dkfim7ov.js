@@ -1,4 +1,4 @@
----
+const e=`---
 title: "Secure Federated Learning"
 category: "Security"
 status: "Completed"
@@ -21,3 +21,4 @@ Data privacy is a critical concern in healthcare. This project enables hospitals
 
 ## Impact
 This protocol has been deployed in a pilot study involving 5 hospitals, successfully training a model for pneumonia detection with accuracy comparable to centralized training.
+`;export{e as default};

@@ -1,4 +1,4 @@
----
+const e=`---
 title: "Neural-Symbolic Reasoning Engine"
 category: "AI/ML"
 status: "On-going"
@@ -26,3 +26,4 @@ The system is built using PyTorch and integrates a custom Prolog interpreter wri
 
 ## Results
 We observed a 40% improvement in accuracy on multi-hop reasoning tasks compared to baseline transformers. The model also demonstrated better generalization to unseen scenarios.
+`;export{e as default};

@@ -1,4 +1,4 @@
----
+const e=`---
 title: "Distributed Training Framework"
 category: "Systems"
 status: "Completed"
@@ -21,3 +21,4 @@ Training large language models (LLMs) requires massive computational resources. 
 
 ## Architecture
 The framework uses a master-worker architecture. The master node handles scheduling and parameter updates, while worker nodes compute gradients. We use Ring-AllReduce for efficient gradient synchronization.
+`;export{e as default};
