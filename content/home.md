@@ -33,8 +33,8 @@ stats:
   - label: "Years Researching"
     value: "5+"
 featured_projects:
-  - neural-symbolic-reasoning.md
-  - distributed-training-framework.md
+  - iowarp.md
+featured_publication: cernuda-2024-hstream-3043
 selected_publications:
   - hades.md
   - hflow.md
