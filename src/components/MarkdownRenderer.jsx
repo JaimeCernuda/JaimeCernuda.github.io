@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
+import rehypeRaw from 'rehype-raw';
 
 const MarkdownRenderer = ({ fileName, content }) => {
     const [fetchedContent, setFetchedContent] = useState('');
@@ -24,7 +25,7 @@ const MarkdownRenderer = ({ fileName, content }) => {
     return (
         <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeSlug]}
+            rehypePlugins={[rehypeSlug, rehypeRaw]}
             components={{
                 h1: ({ node, children, ...props }) => <h1 {...props} className="text-3xl font-bold mt-10 mb-4 text-gray-900 dark:text-white scroll-mt-24">{children}</h1>,
                 h2: ({ node, children, ...props }) => <h2 {...props} className="text-2xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 scroll-mt-24">{children}</h2>,

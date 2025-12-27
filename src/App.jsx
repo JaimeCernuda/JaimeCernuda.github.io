@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Publications from './pages/Publications';
+import PublicationDetail from './pages/PublicationDetail';
 import Projects from './pages/Projects';
 import ProjectPost from './pages/ProjectPost';
 import CV from './pages/CV';
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/publications" element={<Layout><Publications /></Layout>} />
+        <Route path="/publications/:slug" element={<Layout><PublicationDetail /></Layout>} />
         <Route path="/projects" element={<Layout><Projects /></Layout>} />
         <Route path="/projects/:slug" element={<Layout><ProjectPost /></Layout>} />
         <Route path="/cv" element={<Layout><CV /></Layout>} />

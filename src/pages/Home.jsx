@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import matter from 'gray-matter';
 import { Link } from 'react-router-dom';
-import MarkdownRenderer from '../components/MarkdownRenderer';
+import ReactMarkdown from 'react-markdown';
 
 const Home = () => {
   const [heroData, setHeroData] = useState(null);
@@ -9,7 +9,12 @@ const Home = () => {
   const [newsData, setNewsData] = useState([]);
   const [featuredProjects, setFeaturedProjects] = useState([]);
   const [selectedPublications, setSelectedPublications] = useState([]);
+  const [featuredPublication, setFeaturedPublication] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Pre-glob all content folders
+  const allPubModules = import.meta.glob('/public/content/publications/*.md', { query: '?raw', import: 'default' });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,21 +47,52 @@ const Home = () => {
         const projects = (await Promise.all(projectPromises)).filter(p => p !== null);
         setFeaturedProjects(projects);
 
-        // 4. Fetch Selected Publications (from home.md references)
-        const pubPromises = (homeData.selected_publications || []).map(async (filename) => {
+        // 3.5 Fetch Featured Publication
+        if (homeData.featured_publication) {
+          const slug = homeData.featured_publication;
+          // Find the path for this slug
+          const pubPath = Object.keys(allPubModules).find(path => path.includes(slug));
+          if (pubPath) {
+            try {
+              const rawContent = await allPubModules[pubPath]();
+              const { data } = matter(rawContent);
+              setFeaturedPublication({ ...data, slug });
+            } catch (e) {
+              console.error("Error loading featured publication", e);
+            }
+          }
+        }
+
+        // 4. Fetch All Publications for "Selected Publications" section (dynamic)
+        const pubPaths = Object.keys(allPubModules).filter(path => !path.endsWith('publications.md'));
+
+        const pubPromises = pubPaths.map(async (path) => {
           try {
-            const res = await fetch(`/content/publications/${filename}`);
-            if (!res.ok) return null;
-            const text = await res.text();
-            const { data } = matter(text);
+            const rawContent = await allPubModules[path]();
+            const { data } = matter(rawContent);
+            const filename = path.split('/').pop();
             return { ...data, slug: filename.replace('.md', '') };
           } catch (e) {
-            console.error(`Error loading publication ${filename}`, e);
+            console.error(`Error loading publication ${path}`, e);
             return null;
           }
         });
-        const pubs = (await Promise.all(pubPromises)).filter(p => p !== null);
-        setSelectedPublications(pubs);
+
+        const allPubs = (await Promise.all(pubPromises)).filter(p => p !== null);
+
+        // Filter for specific publications: Jarvis, HStream, HFlow, Hades
+        const selectedSlugs = ['cernuda-2024-jarvis-3b52', 'cernuda-2024-hstream-3043', 'cernuda-2021-hflow-2f5b', 'cernuda-2024-hades-e18c'];
+        // Also support short slugs if they are used
+        const selectedShortSlugs = ['jarvis', 'hstream', 'hflow', 'hades'];
+
+        const filteredPubs = allPubs.filter(pub =>
+          selectedSlugs.includes(pub.slug) || selectedShortSlugs.includes(pub.slug)
+        );
+
+        // Sort by year descending
+        filteredPubs.sort((a, b) => b.year - a.year);
+
+        setSelectedPublications(filteredPubs);
 
         setLoading(false);
       } catch (error) {
@@ -70,6 +106,21 @@ const Home = () => {
 
   if (loading) return <div className="p-20 text-center text-gray-500">Loading content...</div>;
   if (!heroData) return <div className="p-20 text-center text-gray-500">Error loading content.</div>;
+
+  const formatAuthors = (authors) => {
+    if (!authors) return null;
+    const authorList = authors.split(',').map(a => a.trim());
+    return authorList.map((author, index) => (
+      <span key={index}>
+        {author.includes('Jaime Cernuda') ? (
+          <strong className="text-gray-900 dark:text-white font-bold">Jaime Cernuda</strong>
+        ) : (
+          <span className="text-gray-600 dark:text-gray-400">{author}</span>
+        )}
+        {index < authorList.length - 1 && ", "}
+      </span>
+    ));
+  };
 
   return (
     <div className="flex flex-col w-full">
@@ -85,7 +136,7 @@ const Home = () => {
               {heroData.title}
             </h1>
             <div className="text-lg sm:text-xl text-gray-600 leading-relaxed dark:text-gray-400 prose dark:prose-invert max-w-none">
-              <MarkdownRenderer content={heroData.subtitle} />
+              <ReactMarkdown>{heroData.subtitle}</ReactMarkdown>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-6 mt-6 text-gray-500 dark:text-gray-400">
@@ -171,10 +222,53 @@ const Home = () => {
               </div>
             </div>
 
+            {/* Featured Publication */}
+            {featuredPublication && (
+              <div className="mb-16">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Featured Research</h2>
+                </div>
+                <div className="group relative bg-surface-light dark:bg-surface-dark rounded-2xl overflow-hidden border border-gray-200 dark:border-border-dark shadow-lg hover:shadow-xl transition-all">
+                  <div className="grid grid-cols-1 md:grid-cols-2">
+                    <div className="h-64 md:h-auto bg-white dark:bg-gray-800 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-200 dark:border-border-dark">
+                      <img
+                        src="/images/publications/hstream/figure3.png"
+                        alt="HStream Architecture"
+                        className="max-w-full max-h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-8 flex flex-col justify-center">
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">{featuredPublication.venue}</span>
+                        <span className="text-xs font-mono text-gray-500">{featuredPublication.year}</span>
+                      </div>
+                      <Link to={`/publications/${featuredPublication.slug}`} state={{ from: 'home' }}>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 leading-tight group-hover:text-primary transition-colors">
+                          {featuredPublication.title}
+                        </h3>
+                      </Link>
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-3">
+                        {formatAuthors(featuredPublication.authors)}
+                      </div>
+                      <div className="flex gap-4">
+                        <Link
+                          to={`/publications/${featuredPublication.slug}`}
+                          state={{ from: 'home' }}
+                          className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-blue-600 transition-colors"
+                        >
+                          Read Paper <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Selected Publications */}
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Selected Publications</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Publications</h2>
                 <Link to="/publications" className="hidden sm:flex items-center text-sm font-bold text-primary hover:underline">
                   View All <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
                 </Link>
@@ -187,20 +281,40 @@ const Home = () => {
                         <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">{pub.venue}</span>
                         <span className="text-xs font-mono text-gray-500">{pub.year}</span>
                       </div>
-                      <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors leading-snug mb-1">
-                        {pub.title}
-                      </h4>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
-                        {pub.authors}
-                      </p>
+                      <Link
+                        to={`/publications/${pub.slug}`}
+                        state={{ from: 'home' }}
+                        className="block"
+                      >
+                        <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors leading-snug mb-1">
+                          {pub.title}
+                        </h4>
+                      </Link>
+                      <div className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
+                        {formatAuthors(pub.authors)}
+                      </div>
                     </div>
                     <div className="flex gap-3 shrink-0">
-                      <a href="#" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">description</span> PDF
-                      </a>
-                      <a href="#" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">code</span> Code
-                      </a>
+                      <Link
+                        to={`/publications/${pub.slug}`}
+                        state={{ from: 'home' }}
+                        className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-sm">article</span> Read Paper
+                      </Link>
+                      {pub.links?.pdf && (
+                        <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
+                          <span className="material-symbols-outlined text-sm">description</span> PDF
+                        </a>
+                      )}
+                      {pub.links?.code && (
+                        <a href={pub.links.code} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
+                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                          </svg>
+                          Code
+                        </a>
+                      )}
                     </div>
                   </div>
                 ))}
