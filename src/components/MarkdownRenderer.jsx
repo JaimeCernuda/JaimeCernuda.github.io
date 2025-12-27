@@ -26,7 +26,11 @@ const MarkdownRenderer = ({ fileName, content }) => {
             components={{
                 img: ({ node, ...props }) => {
                     const alt = props.alt || '';
-                    const [caption, size] = alt.split('|').map(s => s.trim());
+                    const [caption, size, align] = alt.split('|').map(s => s.trim());
+
+                    let alignClass = "mx-auto"; // Default center
+                    if (align === 'left') alignClass = "mr-auto";
+                    if (align === 'right') alignClass = "ml-auto";
 
                     return (
                         <figure className="my-8">
@@ -34,10 +38,10 @@ const MarkdownRenderer = ({ fileName, content }) => {
                                 {...props}
                                 alt={caption}
                                 style={size ? { maxWidth: size, width: '100%' } : undefined}
-                                className="rounded-xl shadow-lg mx-auto"
+                                className={`rounded-xl shadow-lg ${alignClass}`}
                             />
                             {caption && (
-                                <figcaption className="text-center text-gray-500 dark:text-gray-400 text-sm mt-3 italic">
+                                <figcaption className={`text-gray-500 dark:text-gray-400 text-sm mt-3 italic ${align === 'left' ? 'text-left' : align === 'right' ? 'text-right' : 'text-center'}`}>
                                     {caption}
                                 </figcaption>
                             )}

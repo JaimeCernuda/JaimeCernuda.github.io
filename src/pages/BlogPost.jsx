@@ -32,22 +32,22 @@ const BlogPost = () => {
     if (!content) return <div className="p-20 text-center text-gray-500">Post not found.</div>;
 
     return (
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <Link to="/blog" className="inline-flex items-center gap-2 text-primary font-bold hover:underline mb-8">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <Link to="/blog" className="inline-flex items-center gap-2 text-primary font-bold hover:underline mb-6">
                 <span className="material-symbols-outlined text-sm">arrow_back</span>
                 Back to Blog
             </Link>
 
-            <article className="prose prose-lg dark:prose-invert max-w-none">
-                <div className="mb-8 not-prose">
-                    <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-4">
+            <article className="prose prose-lg dark:prose-invert max-w-3xl mx-auto">
+                <div className="mb-6 not-prose">
+                    <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-3">
                         <span className="bg-primary/10 text-primary px-2 py-1 rounded font-bold text-xs uppercase tracking-wide">{metadata.category}</span>
                         <span>•</span>
                         <span>{metadata.date}</span>
                         <span>•</span>
                         <span>{metadata.readTime}</span>
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-4">
+                    <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-3">
                         {metadata.title}
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -55,7 +55,7 @@ const BlogPost = () => {
                     </p>
                 </div>
 
-                <div className="w-full h-px bg-gray-200 dark:bg-gray-800 my-8"></div>
+                <div className="w-full h-px bg-gray-200 dark:bg-gray-800 my-6"></div>
 
                 <MarkdownRenderer content={content} />
             </article>

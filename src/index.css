@@ -28,3 +28,21 @@
     color: #f3f4f6;
   }
 }
+
+/* Tighten Prose Spacing */
+.prose p {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose figure {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
