@@ -43,15 +43,8 @@ const Blog = () => {
                 const fetchedPosts = await Promise.all(postPromises);
 
                 // SIMULATION: Duplicate posts to demonstrate pagination
-                const duplicatedPosts = [
-                    ...fetchedPosts,
-                    ...fetchedPosts.map(p => ({ ...p, title: p.title + " (Archive 1)", slug: p.slug, date: "Jan 10, 2023" })),
-                    ...fetchedPosts.map(p => ({ ...p, title: p.title + " (Archive 2)", slug: p.slug, date: "Dec 05, 2022" })),
-                    ...fetchedPosts.map(p => ({ ...p, title: p.title + " (Archive 3)", slug: p.slug, date: "Nov 20, 2022" })),
-                ];
-
-                setPosts(duplicatedPosts);
-                setFilteredPosts(duplicatedPosts);
+                setPosts(fetchedPosts);
+                setFilteredPosts(fetchedPosts);
                 setLoading(false);
             } catch (error) {
                 console.error("Error loading blog content:", error);
