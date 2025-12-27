@@ -6,4 +6,6 @@ projects:
   - neural-symbolic-reasoning.md
   - distributed-training-framework.md
   - secure-federated-learning.md
+  - dummy-1.md
+  - dummy-2.md
 ---

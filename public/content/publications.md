@@ -6,4 +6,6 @@ publications:
   - hades.md
   - hflow.md
   - chronolog.md
+  - dummy-1.md
+  - dummy-2.md
 ---

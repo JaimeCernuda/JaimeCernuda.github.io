@@ -27,35 +27,37 @@ const Home = () => {
         const { data: newsContent } = matter(newsText);
         setNewsData(newsContent.news || []);
 
-        // 3. Fetch Projects (Dynamically)
-        const projectsRes = await fetch('/content/projects.md');
-        const projectsText = await projectsRes.text();
-        const { data: projectsList } = matter(projectsText);
-
-        const projectPromises = projectsList.projects.map(async (filename) => {
-          const res = await fetch(`/content/projects/${filename}`);
-          const text = await res.text();
-          const { data } = matter(text);
-          return { ...data, slug: filename.replace('.md', '') };
+        // 3. Fetch Featured Projects (from home.md references)
+        const projectPromises = (homeData.featured_projects || []).map(async (filename) => {
+          try {
+            const res = await fetch(`/content/projects/${filename}`);
+            if (!res.ok) return null;
+            const text = await res.text();
+            const { data } = matter(text);
+            return { ...data, slug: filename.replace('.md', '') };
+          } catch (e) {
+            console.error(`Error loading project ${filename}`, e);
+            return null;
+          }
         });
-        const allProjects = await Promise.all(projectPromises);
-        // Filter for featured or take top 4
-        const featured = allProjects.filter(p => p.featured).slice(0, 4);
-        setFeaturedProjects(featured.length > 0 ? featured : allProjects.slice(0, 4));
+        const projects = (await Promise.all(projectPromises)).filter(p => p !== null);
+        setFeaturedProjects(projects);
 
-        // 4. Fetch Publications (Dynamically)
-        const pubsRes = await fetch('/content/publications.md');
-        const pubsText = await pubsRes.text();
-        const { data: pubsList } = matter(pubsText);
-
-        const pubPromises = pubsList.publications.map(async (filename) => {
-          const res = await fetch(`/content/publications/${filename}`);
-          const text = await res.text();
-          const { data } = matter(text);
-          return { ...data, slug: filename.replace('.md', '') };
+        // 4. Fetch Selected Publications (from home.md references)
+        const pubPromises = (homeData.selected_publications || []).map(async (filename) => {
+          try {
+            const res = await fetch(`/content/publications/${filename}`);
+            if (!res.ok) return null;
+            const text = await res.text();
+            const { data } = matter(text);
+            return { ...data, slug: filename.replace('.md', '') };
+          } catch (e) {
+            console.error(`Error loading publication ${filename}`, e);
+            return null;
+          }
         });
-        const allPubs = await Promise.all(pubPromises);
-        setSelectedPublications(allPubs.slice(0, 3)); // Take top 3
+        const pubs = (await Promise.all(pubPromises)).filter(p => p !== null);
+        setSelectedPublications(pubs);
 
         setLoading(false);
       } catch (error) {
@@ -240,7 +242,7 @@ const Home = () => {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
-                  <a href="#" className="text-xs font-bold text-primary hover:underline">View Archive</a>
+                  <Link to="/news" className="text-xs font-bold text-primary hover:underline">View Archive</Link>
                 </div>
               </div>
             </div>
