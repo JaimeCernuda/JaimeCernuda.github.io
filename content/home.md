@@ -32,30 +32,5 @@ stats:
     value: "2"
   - label: "Years Researching"
     value: "5+"
-featured_projects:
-  - title: "Jarvis: I/O Infrastructure"
-    description: "Towards a Shared, User-Friendly, and Reproducible I/O Infrastructure for distributed systems."
-    tags: ["HPC", "Distributed Systems", "I/O"]
-    image: "https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=2668&auto=format&fit=crop"
-  - title: "HStream"
-    description: "A hierarchical data streaming engine for high-throughput scientific applications."
-    tags: ["Streaming", "HPC", "Data"]
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2670&auto=format&fit=crop"
-  - title: "Hades"
-    description: "A Context-Aware Active Storage Framework for Accelerating Large-Scale Data Analysis."
-    tags: ["Storage", "Data Analysis", "Framework"]
-    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2565&auto=format&fit=crop"
-selected_publications:
-  - title: "Jarvis: Towards a Shared, User-Friendly, and Reproducible, I/O Infrastructure"
-    authors: "Jaime Cernuda, et al."
-    venue: "IEEE Cluster 2024"
-    year: "2024"
-  - title: "HStream: A hierarchical data streaming engine for high-throughput scientific applications"
-    authors: "Jaime Cernuda, et al."
-    venue: "CCGrid 2024"
-    year: "2024"
-  - title: "Hades: A Context-Aware Active Storage Framework for Accelerating Large-Scale Data Analysis"
-    authors: "Jaime Cernuda, et al."
-    venue: "IPDPS 2024"
-    year: "2024"
+
 ---
