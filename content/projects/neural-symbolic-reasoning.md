@@ -7,7 +7,7 @@ tags: ["Python", "PyTorch", "Logic/Prolog"]
 image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2565&auto=format&fit=crop"
 featured: true
 venue: "NeurIPS 2023"
-label: "Featured Research"
+label: "Featured Project"
 ---
 
 # Neural-Symbolic Reasoning Engine
