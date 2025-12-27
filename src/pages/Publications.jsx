@@ -20,21 +20,24 @@ const CitationModal = ({ citation, onClose }) => {
                         <span className="material-symbols-outlined">close</span>
                     </button>
                 </div>
-                <div className="p-6">
-                    <div className="relative">
-                        <pre className="bg-gray-50 dark:bg-surface-dark-lighter p-4 pr-32 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-gray-700">
+                <div className="p-6 flex flex-col gap-4">
+                    <div className="relative group">
+                        <pre className="bg-gray-50 dark:bg-surface-dark-lighter p-4 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-gray-700">
                             {citation}
                         </pre>
-                        <button
-                            onClick={handleCopy}
-                            className="absolute top-2 right-2 p-2 bg-white dark:bg-surface-dark rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group cursor-pointer z-10"
-                            title="Copy to clipboard"
-                        >
-                            <span className={`material-symbols-outlined text-[18px] ${copied ? 'text-green-500' : 'text-gray-500 group-hover:text-primary'}`}>
-                                {copied ? 'check' : 'content_copy'}
-                            </span>
-                        </button>
                     </div>
+                    <button
+                        onClick={handleCopy}
+                        className={`w-full py-2.5 px-4 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${copied
+                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30'
+                            }`}
+                    >
+                        <span className="material-symbols-outlined text-[18px]">
+                            {copied ? 'check' : 'content_copy'}
+                        </span>
+                        {copied ? 'Copied to Clipboard' : 'Copy Citation'}
+                    </button>
                 </div>
             </div>
         </div>

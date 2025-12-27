@@ -257,7 +257,7 @@ const CV = () => {
                                                 {pub.venue} • {pub.year}
                                             </p>
                                         </div>
-                                        <div className="flex gap-3 shrink-0 pointer-events-auto">
+                                        <div className="grid grid-cols-2 gap-3 w-fit shrink-0 pointer-events-auto">
                                             <Link
                                                 to={`/publications/${pub.slug}`}
                                                 className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1"

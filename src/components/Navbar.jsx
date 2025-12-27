@@ -28,7 +28,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center justify-center gap-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full pointer-events-none">
+                    <nav className="hidden md:flex items-center justify-center gap-8 lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 z-10 lg:w-full pointer-events-none">
                         <div className="pointer-events-auto flex gap-8">
                             <Link to="/" className={`text-sm font-medium transition-colors ${location.pathname === '/' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>Home</Link>
                             <Link to="/publications" className={`text-sm font-medium transition-colors ${location.pathname === '/publications' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>Publications</Link>

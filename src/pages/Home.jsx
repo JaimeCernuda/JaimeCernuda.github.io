@@ -211,8 +211,8 @@ const Home = () => {
                           </span>
                         ))}
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{project.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-1">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors relative z-20">{project.title}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-1 relative z-20">
                         {project.description}
                       </p>
 
