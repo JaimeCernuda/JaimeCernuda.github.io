@@ -14,6 +14,9 @@ The landscape of academic research is shifting rapidly. As I stood before the co
 
 ## The New Standard
 
+![Testing Image Feature: 400px width | 400px](/images/blog_light.png)
+
+
 It used to be that writing the code was 80% of the battle. Now, with Copilot and GPT-4, the implementation details are becoming commoditized. The real value is shifting towards:
 
 1. **Problem Formulation**: Asking the right questions.
