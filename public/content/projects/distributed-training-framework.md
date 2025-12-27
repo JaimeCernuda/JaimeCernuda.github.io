@@ -1,6 +1,7 @@
 ---
 title: "Distributed Training Framework"
 category: "Systems"
+status: "Completed"
 year: "2022"
 description: "A lightweight, fault-tolerant framework for distributed training of large language models across heterogeneous hardware clusters."
 tags: ["C++", "CUDA", "Distributed Systems"]

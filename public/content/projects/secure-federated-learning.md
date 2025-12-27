@@ -1,6 +1,7 @@
 ---
 title: "Secure Federated Learning"
 category: "Security"
+status: "Completed"
 year: "2021"
 description: "Privacy-preserving machine learning protocol allowing hospitals to collaboratively train diagnostic models without sharing patient data."
 tags: ["Python", "TensorFlow", "Privacy"]

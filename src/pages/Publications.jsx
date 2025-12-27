@@ -16,26 +16,44 @@ const Publications = () => {
     const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
     const [expandedAbstracts, setExpandedAbstracts] = useState({}); // { slug: boolean }
 
+    // Pre-glob all content folders (Vite requires static paths)
+    const allContentModules = import.meta.glob('/public/content/**/*.md', { query: '?raw', import: 'default' });
+
     useEffect(() => {
         const fetchContent = async () => {
             try {
+                // Fetch header info and folder path
                 const res = await fetch('/content/publications.md');
                 const text = await res.text();
                 const { data } = matter(text);
                 setHeaderInfo(data.header);
 
-                const pubPromises = data.publications.map(async (filename) => {
-                    const pubRes = await fetch(`/content/publications/${filename}`);
-                    const pubText = await pubRes.text();
-                    const { data: pubData, content: pubContent } = matter(pubText);
-                    return {
-                        ...pubData,
-                        slug: filename.replace('.md', ''),
-                        abstract: pubContent // Store abstract content
-                    };
+                // Get folder name from markdown (e.g., "publications")
+                const folderName = data.folder || 'publications';
+                const folderPath = `/public/content/${folderName}/`;
+
+                // Filter modules to only those in the specified folder
+                const pubPaths = Object.keys(allContentModules).filter(path =>
+                    path.startsWith(folderPath) && path !== `/public/content/${folderName}.md`
+                );
+
+                const pubPromises = pubPaths.map(async (path) => {
+                    try {
+                        const rawContent = await allContentModules[path]();
+                        const { data: pubData, content: pubContent } = matter(rawContent);
+                        const filename = path.split('/').pop();
+                        return {
+                            ...pubData,
+                            slug: filename.replace('.md', ''),
+                            abstract: pubContent // Store abstract content
+                        };
+                    } catch (e) {
+                        console.error(`Error loading publication from ${path}`, e);
+                        return null;
+                    }
                 });
 
-                const fetchedPubs = await Promise.all(pubPromises);
+                const fetchedPubs = (await Promise.all(pubPromises)).filter(p => p !== null);
                 setPublications(fetchedPubs);
                 setFilteredPublications(fetchedPubs);
                 setLoading(false);
@@ -54,11 +72,13 @@ const Publications = () => {
 
         if (searchQuery) {
             const lowerQuery = searchQuery.toLowerCase();
-            result = result.filter(pub =>
-                pub.title.toLowerCase().includes(lowerQuery) ||
-                pub.authors.toLowerCase().includes(lowerQuery) ||
-                pub.venue.toLowerCase().includes(lowerQuery)
-            );
+            result = result.filter(pub => {
+                if (!pub) return false;
+                const titleMatch = (pub.title || '').toLowerCase().includes(lowerQuery);
+                const authorsMatch = (pub.authors || '').toLowerCase().includes(lowerQuery);
+                const venueMatch = (pub.venue || '').toLowerCase().includes(lowerQuery);
+                return titleMatch || authorsMatch || venueMatch;
+            });
         }
 
         if (selectedYear !== 'All Years') {
@@ -125,7 +145,9 @@ const Publications = () => {
                                 )}
                                 {featuredPub.links?.code && (
                                     <a href={featuredPub.links.code} className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold transition-colors">
-                                        <span className="material-symbols-outlined text-[18px]">code</span>
+                                        <svg className="w-[18px] h-[18px] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                                        </svg>
                                         <span>View Code</span>
                                     </a>
                                 )}
@@ -209,7 +231,9 @@ const Publications = () => {
                                     )}
                                     {pub.links?.code && (
                                         <a href={pub.links.code} className="flex items-center gap-1 text-xs font-bold text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
-                                            <span className="material-symbols-outlined text-[16px]">code</span> Code
+                                            <svg className="w-[16px] h-[16px] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                                            </svg> Code
                                         </a>
                                     )}
                                     {pub.links?.slides && (
@@ -267,7 +291,9 @@ const Publications = () => {
                                             )}
                                             {pub.links?.code && (
                                                 <a href={pub.links.code} className="text-gray-400 hover:text-primary transition-colors" title="Code">
-                                                    <span className="material-symbols-outlined">code</span>
+                                                    <svg className="w-[20px] h-[20px] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                                                    </svg>
                                                 </a>
                                             )}
                                             {pub.links?.slides && (

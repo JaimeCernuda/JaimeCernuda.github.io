@@ -69,14 +69,22 @@ const TableOfContents = ({ content }) => {
                     <li key={id}>
                         <a
                             href={`#${id}`}
-                            className={`block pl-4 py-1 border-l-2 -ml-[2px] transition-colors ${activeId === id
+                            className={`block py-1 border-l-2 -ml-[2px] transition-colors ${activeId === id
                                 ? 'border-primary text-primary font-medium'
                                 : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
                                 }`}
-                            style={{ paddingLeft: `${(level - 1) * 1}rem` }}
+                            style={{ paddingLeft: `${1 + (level - 1) * 0.75}rem` }}
                             onClick={(e) => {
                                 e.preventDefault();
-                                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                                const element = document.getElementById(id);
+                                if (element) {
+                                    const navbarHeight = 80; // Account for sticky navbar
+                                    const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+                                    window.scrollTo({
+                                        top: elementPosition - navbarHeight,
+                                        behavior: 'smooth'
+                                    });
+                                }
                                 setActiveId(id);
                             }}
                         >

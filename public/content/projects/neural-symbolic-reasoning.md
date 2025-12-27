@@ -1,6 +1,7 @@
 ---
 title: "Neural-Symbolic Reasoning Engine"
 category: "AI/ML"
+status: "On-going"
 year: "2023"
 description: "A framework integrating deep learning perception with symbolic logic for enhanced interpretability in autonomous systems. This engine achieves 40% higher accuracy on multi-hop reasoning tasks compared to standard transformers."
 tags: ["Python", "PyTorch", "Logic/Prolog"]

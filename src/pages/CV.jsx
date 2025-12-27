@@ -3,6 +3,7 @@ import matter from 'gray-matter';
 
 const CV = () => {
     const [content, setContent] = useState(null);
+    const [activeSection, setActiveSection] = useState('');
 
     useEffect(() => {
         fetch('/content/cv.md')
@@ -13,13 +14,33 @@ const CV = () => {
             });
     }, []);
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            { rootMargin: '-100px 0px -66% 0px' }
+        );
+
+        ['summary', 'education', 'experience', 'publications', 'skills'].forEach((id) => {
+            const element = document.getElementById(id);
+            if (element) observer.observe(element);
+        });
+
+        return () => observer.disconnect();
+    }, [content]);
+
     if (!content) return <div className="p-10 text-center">Loading...</div>;
 
     return (
         <div className="flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
                 {/* Sidebar */}
-                <aside className="sidebar lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit space-y-6">
+                <aside className="sidebar lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-8rem)] overflow-y-auto space-y-6 scrollbar-hide">
                     <div className="bg-surface-light dark:bg-surface-dark rounded-xl p-6 shadow-sm border border-gray-200 dark:border-border-dark transition-colors">
                         <div className="flex flex-col items-center text-center">
                             <div className="relative w-32 h-32 mb-4 group">
@@ -54,17 +75,24 @@ const CV = () => {
                         </div>
                     </div>
 
-                    <div className="bg-surface-light dark:bg-surface-dark rounded-xl p-6 shadow-sm border border-gray-200 dark:border-border-dark hidden lg:block transition-colors">
-                        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">On this page</h3>
-                        <nav className="space-y-1">
+                    <div className="bg-surface-light dark:bg-surface-dark rounded-xl p-6 shadow-sm border border-gray-200 dark:border-border-dark hidden lg:block transition-colors sticky top-24">
+                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">On this page</h3>
+                        <nav className="space-y-2 text-sm border-l border-gray-200 dark:border-gray-800">
                             {['summary', 'education', 'experience', 'publications', 'skills'].map((section) => (
-                                <button
+                                <a
                                     key={section}
-                                    onClick={() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' })}
-                                    className="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors capitalize"
+                                    href={`#${section}`}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                    className={`block pl-4 py-1 border-l-2 -ml-[2px] transition-colors capitalize ${activeSection === section
+                                        ? 'border-primary text-primary font-medium'
+                                        : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+                                        }`}
                                 >
                                     {section}
-                                </button>
+                                </a>
                             ))}
                         </nav>
                     </div>
@@ -78,7 +106,7 @@ const CV = () => {
                     </div>
 
                     {/* Summary */}
-                    <section id="summary" className="bg-surface-light dark:bg-surface-dark rounded-xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-border-dark transition-colors">
+                    <section id="summary" className="scroll-mt-[96px] bg-surface-light dark:bg-surface-dark rounded-xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-border-dark transition-colors">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="p-2 rounded-lg bg-primary/10 text-primary">
                                 <span className="material-symbols-outlined">person</span>
@@ -91,7 +119,7 @@ const CV = () => {
                     </section>
 
                     {/* Education */}
-                    <section id="education">
+                    <section id="education" className="scroll-mt-[96px]">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-2 rounded-lg bg-primary/10 text-primary">
                                 <span className="material-symbols-outlined">school</span>
@@ -122,7 +150,7 @@ const CV = () => {
                     </section>
 
                     {/* Experience */}
-                    <section id="experience">
+                    <section id="experience" className="scroll-mt-[96px]">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-2 rounded-lg bg-primary/10 text-primary">
                                 <span className="material-symbols-outlined">work</span>
@@ -155,7 +183,7 @@ const CV = () => {
                     </section>
 
                     {/* Publications */}
-                    <section id="publications">
+                    <section id="publications" className="scroll-mt-[96px]">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -190,7 +218,7 @@ const CV = () => {
 
                     {/* Skills & Awards Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <section id="skills">
+                        <section id="skills" className="scroll-mt-[96px]">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 rounded-lg bg-primary/10 text-primary">
                                     <span className="material-symbols-outlined">code</span>

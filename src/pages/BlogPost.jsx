@@ -46,7 +46,7 @@ const BlogPost = () => {
                 <TableOfContents content={content} />
 
                 <article className={`prose prose-lg dark:prose-invert max-w-3xl mx-auto w-full ${hasHeadings ? 'xl:mx-0' : ''}`}>
-                    <div className="mb-6 not-prose">
+                    <div className="mb-6 pb-10 not-prose">
                         <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-3">
                             <span className="bg-primary/10 text-primary px-2 py-1 rounded font-bold text-xs uppercase tracking-wide">{metadata.category}</span>
                             <span>•</span>
@@ -57,12 +57,12 @@ const BlogPost = () => {
                         <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-3">
                             {metadata.title}
                         </h1>
-                        <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-16">
                             {metadata.summary}
                         </p>
                     </div>
 
-                    <div className="w-full h-px bg-gray-200 dark:bg-gray-800 my-6"></div>
+                    <div className="w-full h-px bg-gray-200 dark:bg-gray-800 my-12"></div>
 
                     <MarkdownRenderer content={content} />
                 </article>

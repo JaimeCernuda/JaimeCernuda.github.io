@@ -10,39 +10,6 @@ const Home = () => {
   const [featuredProjects, setFeaturedProjects] = useState([]);
   const [selectedPublications, setSelectedPublications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newsLimit, setNewsLimit] = useState(10); // Default limit
-
-  const leftColumnRef = React.useRef(null);
-  const newsItemRef = React.useRef(null);
-
-  useEffect(() => {
-    const calculateNewsLimit = () => {
-      if (leftColumnRef.current && newsItemRef.current) {
-        const leftHeight = leftColumnRef.current.offsetHeight;
-        // Estimate news container header/footer height (approx 100px) + item height
-        // This is a rough estimation. A better way is to measure available height.
-        // Let's try to fit as many items as possible within leftHeight.
-
-        // Assuming average item height from the first item if available, or a fixed estimate (e.g., 80px)
-        const itemHeight = newsItemRef.current.offsetHeight || 80;
-        const containerPadding = 100; // Title + Archive link + padding
-        const availableHeight = leftHeight - containerPadding;
-
-        const calculatedLimit = Math.max(3, Math.floor(availableHeight / itemHeight));
-        setNewsLimit(calculatedLimit);
-      }
-    };
-
-    // Run calculation after data load and on resize
-    if (!loading && featuredProjects.length > 0 && selectedPublications.length > 0) {
-      // Small timeout to allow rendering
-      setTimeout(calculateNewsLimit, 100);
-    }
-
-    window.addEventListener('resize', calculateNewsLimit);
-    return () => window.removeEventListener('resize', calculateNewsLimit);
-  }, [loading, featuredProjects, selectedPublications]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -162,7 +129,7 @@ const Home = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
           {/* LEFT COLUMN: Projects & Publications */}
-          <div className="lg:col-span-8 flex flex-col gap-16" ref={leftColumnRef}>
+          <div className="lg:col-span-8 flex flex-col gap-16">
 
             {/* Featured Projects */}
             <div>
@@ -178,7 +145,7 @@ const Home = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {featuredProjects.map((project, index) => (
                   <div key={index} className="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5 relative">
-                    <Link to={`/projects/${project.slug}`} className="absolute inset-0 z-10" aria-label={`View case study for ${project.title}`}></Link>
+                    <Link to={`/projects/${project.slug}`} state={{ from: 'home' }} className="absolute inset-0 z-10" aria-label={`View case study for ${project.title}`}></Link>
                     <div
                       className="h-48 w-full bg-cover bg-center relative"
                       style={{ backgroundImage: `url("${project.image}")` }}
@@ -197,9 +164,7 @@ const Home = () => {
                       <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-1">
                         {project.description}
                       </p>
-                      <span className="inline-flex items-center text-xs font-bold text-primary hover:text-gray-900 dark:hover:text-white transition-colors mt-auto">
-                        Read Case Study
-                      </span>
+
                     </div>
                   </div>
                 ))}
@@ -257,26 +222,48 @@ const Home = () => {
                   {/* Vertical Line */}
                   <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gray-200 dark:bg-gray-800"></div>
 
-                  {newsData.slice(0, newsLimit).map((item, index) => (
-                    <div key={index} className="relative pl-6" ref={index === 0 ? newsItemRef : null}>
-                      <div className="absolute left-0 top-1.5 w-3.5 h-3.5 bg-white dark:bg-surface-dark border-2 border-primary rounded-full z-10"></div>
-                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wider">{item.date}</span>
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1 leading-tight">
-                        {item.link && item.link !== '#' ? (
-                          <a href={item.link} className="hover:text-primary transition-colors">{item.title}</a>
-                        ) : (
-                          item.title
-                        )}
-                      </h4>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
-                  ))}
+                  {(() => {
+                    const displayedNews = newsData.slice(0, 8);
+                    let lastYear = null;
+
+                    return displayedNews.map((item, index) => {
+                      // Extract year from date (assuming format like "Oct 2025" or "2025-10-10")
+                      // Adjust regex based on actual date format. Assuming "Month Year" or similar where Year is 4 digits.
+                      const yearMatch = item.date ? item.date.match(/\d{4}/) : null;
+                      const currentYear = yearMatch ? yearMatch[0] : null;
+                      const showYearSeparator = currentYear && currentYear !== lastYear;
+                      if (currentYear) lastYear = currentYear;
+
+                      return (
+                        <React.Fragment key={index}>
+                          {showYearSeparator && (
+                            <div className="relative pl-6 flex items-center gap-3 mb-2 mt-2 first:mt-0">
+                              <span className="text-xs font-bold text-gray-400 dark:text-gray-500">{currentYear}</span>
+                              <div className="h-px bg-gray-200 dark:bg-gray-800 flex-1"></div>
+                            </div>
+                          )}
+                          <div className="relative pl-6">
+                            <div className="absolute left-0 top-1.5 w-3.5 h-3.5 bg-white dark:bg-surface-dark border-2 border-primary rounded-full z-10"></div>
+                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wider">{item.date}</span>
+                            <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1 leading-tight">
+                              {item.link && item.link !== '#' ? (
+                                <a href={item.link} className="hover:text-primary transition-colors">{item.title}</a>
+                              ) : (
+                                item.title
+                              )}
+                            </h4>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                              {item.description}
+                            </p>
+                          </div>
+                        </React.Fragment>
+                      );
+                    });
+                  })()}
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
-                  <Link to="/news" className="text-xs font-bold text-primary hover:underline">View Archive</Link>
+                  <Link to="/news" state={{ from: 'home' }} className="text-xs font-bold text-primary hover:underline">View Archive</Link>
                 </div>
               </div>
             </div>
