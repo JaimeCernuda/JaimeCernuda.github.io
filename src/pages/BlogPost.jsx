@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import matter from 'gray-matter';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 
+import TableOfContents from '../components/TableOfContents';
+
 const BlogPost = () => {
     const { slug } = useParams();
     const [content, setContent] = useState(null);
@@ -38,27 +40,31 @@ const BlogPost = () => {
                 Back to Blog
             </Link>
 
-            <article className="prose prose-lg dark:prose-invert max-w-3xl mx-auto">
-                <div className="mb-6 not-prose">
-                    <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-3">
-                        <span className="bg-primary/10 text-primary px-2 py-1 rounded font-bold text-xs uppercase tracking-wide">{metadata.category}</span>
-                        <span>•</span>
-                        <span>{metadata.date}</span>
-                        <span>•</span>
-                        <span>{metadata.readTime}</span>
+            <div className="flex flex-col xl:flex-row gap-12 items-start">
+                <TableOfContents content={content} />
+
+                <article className="prose prose-lg dark:prose-invert max-w-3xl mx-auto xl:mx-0 w-full">
+                    <div className="mb-6 not-prose">
+                        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-3">
+                            <span className="bg-primary/10 text-primary px-2 py-1 rounded font-bold text-xs uppercase tracking-wide">{metadata.category}</span>
+                            <span>•</span>
+                            <span>{metadata.date}</span>
+                            <span>•</span>
+                            <span>{metadata.readTime}</span>
+                        </div>
+                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-3">
+                            {metadata.title}
+                        </h1>
+                        <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+                            {metadata.summary}
+                        </p>
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-3">
-                        {metadata.title}
-                    </h1>
-                    <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                        {metadata.summary}
-                    </p>
-                </div>
 
-                <div className="w-full h-px bg-gray-200 dark:bg-gray-800 my-6"></div>
+                    <div className="w-full h-px bg-gray-200 dark:bg-gray-800 my-6"></div>
 
-                <MarkdownRenderer content={content} />
-            </article>
+                    <MarkdownRenderer content={content} />
+                </article>
+            </div>
         </div>
     );
 };

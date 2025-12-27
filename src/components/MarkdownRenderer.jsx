@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
 
 const MarkdownRenderer = ({ fileName, content }) => {
     const [fetchedContent, setFetchedContent] = useState('');
@@ -23,6 +24,7 @@ const MarkdownRenderer = ({ fileName, content }) => {
     return (
         <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeSlug]}
             components={{
                 img: ({ node, ...props }) => {
                     const alt = props.alt || '';
