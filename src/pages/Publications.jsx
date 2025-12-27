@@ -16,13 +16,13 @@ const CitationModal = ({ citation, onClose }) => {
             <div className="bg-white dark:bg-surface-dark rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden border border-gray-200 dark:border-gray-700" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">Cite this paper</h3>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors cursor-pointer">
                         <span className="material-symbols-outlined">close</span>
                     </button>
                 </div>
                 <div className="p-6">
                     <div className="relative">
-                        <pre className="bg-gray-50 dark:bg-surface-dark-lighter p-4 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-gray-700">
+                        <pre className="bg-gray-50 dark:bg-surface-dark-lighter p-4 pr-32 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-gray-700">
                             {citation}
                         </pre>
                         <button
@@ -172,8 +172,9 @@ const Publications = () => {
 
             {/* Featured Publication */}
             {featuredPub && (
-                <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark">
-                    <div className="flex flex-col lg:flex-row">
+                <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark relative group">
+                    <Link to={`/publications/${featuredPub.slug}`} className="absolute inset-0 z-10" aria-label={`Read ${featuredPub.title}`}></Link>
+                    <div className="flex flex-col lg:flex-row relative z-20 pointer-events-none">
                         <div className="w-full lg:w-2/5 h-64 lg:h-auto bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center p-8 relative">
                             <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
                                 Featured Paper
@@ -194,7 +195,7 @@ const Publications = () => {
                             <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed line-clamp-3">
                                 {featuredPub.abstract.split('## Full Paper')[0].replace('# Abstract', '').trim()}
                             </p>
-                            <div className="flex flex-wrap gap-3 mt-2">
+                            <div className="flex flex-wrap gap-3 mt-2 pointer-events-auto">
                                 <Link to={`/publications/${featuredPub.slug}`} className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-sm shadow-primary/30">
                                     <span>Read Paper</span>
                                 </Link>
@@ -205,7 +206,7 @@ const Publications = () => {
                                     </a>
                                 )}
                                 {featuredPub.citation && (
-                                    <button onClick={() => setActiveCitation(featuredPub.citation)} className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold transition-colors">
+                                    <button onClick={() => setActiveCitation(featuredPub.citation)} className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold transition-colors cursor-pointer">
                                         <span className="material-symbols-outlined text-[18px]">format_quote</span>
                                         <span>Cite</span>
                                     </button>
@@ -327,7 +328,7 @@ const Publications = () => {
                                     )}
                                 </div>
                                 <Link to={`/publications/${pub.slug}`} className="text-xs font-bold text-primary hover:underline">
-                                    View Details
+                                    Read Paper
                                 </Link>
                             </div>
                         </div>

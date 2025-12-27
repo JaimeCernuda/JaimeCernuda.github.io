@@ -2,10 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import matter from 'gray-matter';
 
+import CitationModal from '../components/CitationModal';
+
 const CV = () => {
     const [content, setContent] = useState(null);
     const [activeSection, setActiveSection] = useState('');
     const [publications, setPublications] = useState([]);
+    const [citationModalOpen, setCitationModalOpen] = useState(false);
+    const [selectedCitation, setSelectedCitation] = useState('');
+
+    const handleCite = (pub) => {
+        // Construct BibTeX citation
+        const bibtex = `@inproceedings{${pub.slug},
+  title={${pub.title}},
+  author={${pub.authors}},
+  booktitle={${pub.venue}},
+  year={${pub.year}}
+}`;
+        setSelectedCitation(bibtex);
+        setCitationModalOpen(true);
+    };
 
     // Pre-glob all content folders
     const allPubModules = import.meta.glob('/public/content/publications/*.md', { query: '?raw', import: 'default' });
@@ -237,7 +253,7 @@ const CV = () => {
                                                 {pub.authors}
                                             </p>
                                             <p className="text-sm text-gray-500 dark:text-gray-400 italic mt-0.5">
-                                                {pub.type && <span className="font-semibold not-italic">{pub.type} </span>}
+                                                {pub.type && <span className="font-semibold not-italic">{pub.type} • </span>}
                                                 {pub.venue} • {pub.year}
                                             </p>
                                         </div>
@@ -261,6 +277,16 @@ const CV = () => {
                                                     Code
                                                 </a>
                                             )}
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleCite(pub);
+                                                }}
+                                                className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1 cursor-pointer"
+                                            >
+                                                <span className="material-symbols-outlined text-sm">format_quote</span> Cite
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -318,6 +344,15 @@ const CV = () => {
                 </main>
             </div>
         </div>
+            {
+        citationModalOpen && (
+            <CitationModal
+                citation={selectedCitation}
+                onClose={() => setCitationModalOpen(false)}
+            />
+        )
+    }
+        </div >
     );
 };
 

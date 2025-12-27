@@ -22,7 +22,7 @@ const CitationModal = ({ citation, onClose }) => {
                     </h3>
                     <button
                         onClick={onClose}
-                        className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors"
+                        className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors cursor-pointer"
                     >
                         <span className="material-symbols-outlined">close</span>
                     </button>
@@ -30,7 +30,7 @@ const CitationModal = ({ citation, onClose }) => {
 
                 <div className="p-6">
                     <div className="relative group">
-                        <pre className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-gray-800">
+                        <pre className="bg-gray-50 dark:bg-gray-900 p-4 pr-32 rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-gray-800">
                             {citation}
                         </pre>
                         <button
