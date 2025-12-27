@@ -177,7 +177,9 @@ const Home = () => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Selected Publications</h2>
-                <Link to="/publications" className="text-sm font-medium text-primary hover:text-gray-900 dark:hover:text-white transition-colors">View All -&gt;</Link>
+                <Link to="/publications" className="hidden sm:flex items-center text-sm font-bold text-primary hover:underline">
+                  View All <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
+                </Link>
               </div>
               <div className="flex flex-col gap-4">
                 {selectedPublications.map((pub, index) => (
