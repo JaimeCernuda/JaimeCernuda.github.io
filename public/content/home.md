@@ -35,7 +35,6 @@ stats:
 featured_projects:
   - neural-symbolic-reasoning.md
   - distributed-training-framework.md
-  - secure-federated-learning.md
 selected_publications:
   - hades.md
   - hflow.md

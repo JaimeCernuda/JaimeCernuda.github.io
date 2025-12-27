@@ -25,7 +25,7 @@ const Home = () => {
         const newsRes = await fetch('/content/news.md');
         const newsText = await newsRes.text();
         const { data: newsContent } = matter(newsText);
-        setNewsData(newsContent.news || []);
+        setNewsData((newsContent.news || []).slice(0, 10));
 
         // 3. Fetch Featured Projects (from home.md references)
         const projectPromises = (homeData.featured_projects || []).map(async (filename) => {
@@ -137,7 +137,6 @@ const Home = () => {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Scalable neural systems and secure data architecture.</p>
                 </div>
                 <Link to="/projects" className="hidden sm:flex items-center text-sm font-bold text-primary hover:underline">
                   View All <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>

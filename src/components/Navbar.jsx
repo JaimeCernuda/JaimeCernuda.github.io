@@ -32,6 +32,7 @@ const Navbar = () => {
                         <Link to="/" className={`text-sm font-medium transition-colors ${location.pathname === '/' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>Home</Link>
                         <Link to="/publications" className={`text-sm font-medium transition-colors ${location.pathname === '/publications' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>Publications</Link>
                         <Link to="/projects" className={`text-sm font-medium transition-colors ${location.pathname === '/projects' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>Projects</Link>
+                        <Link to="/news" className={`text-sm font-medium transition-colors ${location.pathname === '/news' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>News</Link>
                         <Link to="/cv" className={`text-sm font-medium transition-colors ${location.pathname === '/cv' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>CV</Link>
                         <Link to="/blog" className={`text-sm font-medium transition-colors ${location.pathname === '/blog' ? 'text-primary' : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary'}`}>Blog</Link>
                     </nav>
@@ -57,6 +58,7 @@ const Navbar = () => {
                     <Link to="/" className={`text-sm font-medium ${location.pathname === '/' ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}`} onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
                     <Link to="/publications" className={`text-sm font-medium ${location.pathname === '/publications' ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}`} onClick={() => setIsMobileMenuOpen(false)}>Publications</Link>
                     <Link to="/projects" className={`text-sm font-medium ${location.pathname === '/projects' ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}`} onClick={() => setIsMobileMenuOpen(false)}>Projects</Link>
+                    <Link to="/news" className={`text-sm font-medium ${location.pathname === '/news' ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}`} onClick={() => setIsMobileMenuOpen(false)}>News</Link>
                     <Link to="/cv" className={`text-sm font-medium ${location.pathname === '/cv' ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}`} onClick={() => setIsMobileMenuOpen(false)}>CV</Link>
                     <Link to="/blog" className={`text-sm font-medium ${location.pathname === '/blog' ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}`} onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
                 </div>

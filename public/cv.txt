@@ -1,2 +1,0 @@
-This is a placeholder for the CV PDF.
-In a real deployment, replace this file with the actual PDF file.
