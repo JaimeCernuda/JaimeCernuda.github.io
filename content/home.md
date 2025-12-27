@@ -32,5 +32,13 @@ stats:
     value: "2"
   - label: "Years Researching"
     value: "5+"
+featured_projects:
+  - neural-symbolic-reasoning.md
+  - distributed-training-framework.md
+  - secure-federated-learning.md
+selected_publications:
+  - hades.md
+  - hflow.md
+  - chronolog.md
 
 ---
