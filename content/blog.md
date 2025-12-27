@@ -8,6 +8,7 @@ posts:
   - thesis-reflections.md
   - cvpr-zero-shot.md
   - burnout.md
+  - rss-test.md
 sidebar:
   profile:
     name: "Jaime Cernuda"
