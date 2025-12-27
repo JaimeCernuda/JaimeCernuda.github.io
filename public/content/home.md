@@ -34,6 +34,7 @@ stats:
     value: "5+"
 featured_projects:
   - iowarp.md
+  - chronolog.md
 featured_publication: cernuda-2024-hstream-3043
 selected_publications:
   - hades.md

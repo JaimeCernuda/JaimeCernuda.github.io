@@ -221,8 +221,9 @@ const Projects = () => {
             {viewMode === 'grid' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {displayProjects.map((project, index) => (
-                        <div key={index} className="group flex flex-col bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
-                            <div className="h-48 overflow-hidden relative">
+                        <div key={index} className="group relative flex flex-col bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+                            <Link to={`/projects/${project.slug}`} state={{ from: 'projects' }} className="absolute inset-0 z-10" aria-label={`View case study for ${project.title}`}></Link>
+                            <div className="h-48 overflow-hidden relative pointer-events-none">
                                 {project.image ? (
                                     <>
                                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
@@ -238,11 +239,11 @@ const Projects = () => {
                                     </div>
                                 )}
                             </div>
-                            <div className="flex flex-col flex-1 p-5 gap-4">
+                            <div className="flex flex-col flex-1 p-5 gap-4 pointer-events-none">
                                 <div className="flex items-start justify-between gap-4">
                                     {/* Title/Category/Year block */}
                                     <div className="flex-1">
-                                        <h3 className="text-gray-900 dark:text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors">
+                                        <h3 className="text-gray-900 dark:text-white text-xl font-bold mb-1 group-hover:text-primary transition-colors pointer-events-auto">
                                             <Link to={`/projects/${project.slug}`} state={{ from: 'projects' }} className="hover:underline">
                                                 {project.title}
                                             </Link>
@@ -250,7 +251,7 @@ const Projects = () => {
                                         <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">{project.category} · {project.year}</p>
                                     </div>
                                     {/* GitHub Icon - Right side */}
-                                    <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors flex-shrink-0" aria-label="View on GitHub">
+                                    <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors flex-shrink-0 pointer-events-auto relative z-20" aria-label="View on GitHub">
                                         <svg className="w-10 h-10" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
                                         </svg>
@@ -266,7 +267,7 @@ const Projects = () => {
                                         </span>
                                     )}
                                     {(project.tags || []).map((tag, i) => (
-                                        <span key={i} className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 rounded">{tag}</span>
+                                        <span key={i} className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 rounded border border-gray-200 dark:border-border-dark">{tag}</span>
                                     ))}
                                 </div>
                             </div>

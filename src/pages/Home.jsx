@@ -275,8 +275,9 @@ const Home = () => {
               </div>
               <div className="flex flex-col gap-4">
                 {selectedPublications.map((pub, index) => (
-                  <div key={index} className="group p-5 rounded-lg border border-gray-200 dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary/40 transition-all flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
-                    <div>
+                  <div key={index} className="group relative p-5 rounded-lg border border-gray-200 dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary/40 transition-all flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
+                    <Link to={`/publications/${pub.slug}`} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
+                    <div className="relative z-20 pointer-events-none">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">{pub.venue}</span>
                         <span className="text-xs font-mono text-gray-500">{pub.year}</span>
@@ -284,7 +285,7 @@ const Home = () => {
                       <Link
                         to={`/publications/${pub.slug}`}
                         state={{ from: 'home' }}
-                        className="block"
+                        className="block pointer-events-auto"
                       >
                         <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors leading-snug mb-1">
                           {pub.title}
@@ -294,7 +295,7 @@ const Home = () => {
                         {formatAuthors(pub.authors)}
                       </div>
                     </div>
-                    <div className="flex gap-3 shrink-0">
+                    <div className="flex gap-3 shrink-0 relative z-20 pointer-events-auto">
                       <Link
                         to={`/publications/${pub.slug}`}
                         state={{ from: 'home' }}

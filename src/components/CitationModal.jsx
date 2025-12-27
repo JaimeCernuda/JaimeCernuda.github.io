@@ -35,7 +35,7 @@ const CitationModal = ({ citation, onClose }) => {
                         </pre>
                         <button
                             onClick={handleCopy}
-                            className="absolute top-2 right-2 p-2 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-2 text-xs font-bold text-gray-600 dark:text-gray-300"
+                            className="absolute top-2 right-2 p-2 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-2 text-xs font-bold text-gray-600 dark:text-gray-300 cursor-pointer z-10"
                         >
                             <span className="material-symbols-outlined text-[16px]">
                                 {copied ? 'check' : 'content_copy'}

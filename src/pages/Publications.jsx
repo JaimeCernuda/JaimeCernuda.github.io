@@ -27,7 +27,7 @@ const CitationModal = ({ citation, onClose }) => {
                         </pre>
                         <button
                             onClick={handleCopy}
-                            className="absolute top-2 right-2 p-2 bg-white dark:bg-surface-dark rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
+                            className="absolute top-2 right-2 p-2 bg-white dark:bg-surface-dark rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group cursor-pointer z-10"
                             title="Copy to clipboard"
                         >
                             <span className={`material-symbols-outlined text-[18px] ${copied ? 'text-green-500' : 'text-gray-500 group-hover:text-primary'}`}>
@@ -271,8 +271,9 @@ const Publications = () => {
             {viewMode === 'grid' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredPublications.map((pub, index) => (
-                        <div key={index} className="flex flex-col bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors p-6 gap-4 group">
-                            <div className="flex justify-between items-start">
+                        <div key={index} className="group relative flex flex-col bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors p-6 gap-4">
+                            <Link to={`/publications/${pub.slug}`} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
+                            <div className="flex justify-between items-start relative z-20 pointer-events-none">
                                 <div className="flex flex-col">
                                     <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{pub.venue}</span>
                                     {pub.type && <span className="text-xs text-gray-500">{pub.type}</span>}
@@ -280,18 +281,18 @@ const Publications = () => {
                                 <span className="text-xs font-mono text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">{pub.year}</span>
                             </div>
 
-                            <Link to={`/publications/${pub.slug}`} className="block">
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors">
-                                    {pub.title}
+                            <div className="block relative z-20 pointer-events-none">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors pointer-events-auto">
+                                    <Link to={`/publications/${pub.slug}`}>{pub.title}</Link>
                                 </h3>
-                            </Link>
+                            </div>
 
-                            <div className="text-sm leading-relaxed">
+                            <div className="text-sm leading-relaxed relative z-20 pointer-events-none">
                                 {formatAuthors(pub.authors)}
                             </div>
 
                             {pub.tags && (
-                                <div className="flex flex-wrap gap-1.5 mt-1">
+                                <div className="flex flex-wrap gap-1.5 mt-1 relative z-20 pointer-events-none">
                                     {pub.tags.slice(0, 3).map(tag => (
                                         <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
                                             {tag}
@@ -305,7 +306,7 @@ const Publications = () => {
                                 </div>
                             )}
 
-                            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between relative z-20 pointer-events-auto">
                                 <div className="flex gap-3">
                                     {pub.links?.pdf && (
                                         <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" title="PDF">
@@ -320,7 +321,7 @@ const Publications = () => {
                                         </a>
                                     )}
                                     {pub.citation && (
-                                        <button onClick={() => setActiveCitation(pub.citation)} className="text-gray-400 hover:text-primary transition-colors" title="Cite">
+                                        <button onClick={() => setActiveCitation(pub.citation)} className="text-gray-400 hover:text-primary transition-colors cursor-pointer" title="Cite">
                                             <span className="material-symbols-outlined text-[20px]">format_quote</span>
                                         </button>
                                     )}

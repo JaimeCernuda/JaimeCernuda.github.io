@@ -221,35 +221,44 @@ const CV = () => {
                                 <div className="p-2 rounded-lg bg-primary/10 text-primary">
                                     <span className="material-symbols-outlined">article</span>
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Selected Publications</h2>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Publications</h2>
                             </div>
                         </div>
                         <div className="space-y-4">
                             {publications.map((pub, index) => (
-                                <div key={index} className="group bg-surface-light dark:bg-surface-dark p-5 rounded-lg border border-gray-200 dark:border-border-dark shadow-sm hover:border-primary/30 transition-all">
-                                    <div className="flex justify-between items-start gap-4">
+                                <div key={index} className="group relative bg-surface-light dark:bg-surface-dark p-5 rounded-lg border border-gray-200 dark:border-border-dark shadow-sm hover:border-primary/30 transition-all">
+                                    <Link to={`/publications/${pub.slug}`} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
+                                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 relative z-20 pointer-events-none">
                                         <div>
-                                            <Link to={`/publications/${pub.slug}`} className="block group-hover:text-primary transition-colors">
-                                                <h3 className="font-bold text-base text-gray-900 dark:text-white">
-                                                    {pub.title}
-                                                </h3>
-                                            </Link>
+                                            <h3 className="font-bold text-base text-gray-900 dark:text-white group-hover:text-primary transition-colors pointer-events-auto">
+                                                <Link to={`/publications/${pub.slug}`}>{pub.title}</Link>
+                                            </h3>
                                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                                 {pub.authors}
                                             </p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 italic mt-0.5">{pub.venue} • {pub.year}</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 italic mt-0.5">
+                                                {pub.type && <span className="font-semibold not-italic">{pub.type} </span>}
+                                                {pub.venue} • {pub.year}
+                                            </p>
                                         </div>
-                                        <div className="flex gap-2 shrink-0">
+                                        <div className="flex gap-3 shrink-0 pointer-events-auto">
+                                            <Link
+                                                to={`/publications/${pub.slug}`}
+                                                className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
+                                            >
+                                                <span className="material-symbols-outlined text-sm">article</span> Read Paper
+                                            </Link>
                                             {pub.links?.pdf && (
-                                                <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer" className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="PDF">
-                                                    <span className="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+                                                <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
+                                                    <span className="material-symbols-outlined text-sm">description</span> PDF
                                                 </a>
                                             )}
                                             {pub.links?.code && (
-                                                <a href={pub.links.code} target="_blank" rel="noopener noreferrer" className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="Code">
-                                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <a href={pub.links.code} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
+                                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
                                                     </svg>
+                                                    Code
                                                 </a>
                                             )}
                                         </div>
