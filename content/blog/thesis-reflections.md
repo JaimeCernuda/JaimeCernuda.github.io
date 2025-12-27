@@ -9,6 +9,7 @@ tags: ["PhD", "AI", "Career"]
 ---
 
 
+# Reflections on defending my thesis in the age of LLMs
 
 The landscape of academic research is shifting rapidly. As I stood before the committee, I couldn't help but wonder how generative AI will reshape the very definition of original contribution in computer science doctorates.
 
