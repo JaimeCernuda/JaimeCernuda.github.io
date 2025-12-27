@@ -1,0 +1,20 @@
+---
+title: "Latest News"
+news:
+  - date: "Dec 2025"
+    title: "New Paper Accepted at IPDPS 2025"
+    description: "Our work on 'Hades: Context-Aware Active Storage' has been accepted for publication."
+    link: "/publications/hades"
+  - date: "Nov 2025"
+    title: "Keynote at Supercomputing 2025"
+    description: "Delivered a talk on 'The Future of AI-Driven HPC Systems' at the SC25 workshop."
+    link: "#"
+  - date: "Oct 2025"
+    title: "Grant Awarded"
+    description: "Received NSF grant for 'Scalable Neural-Symbolic Systems' research."
+    link: "#"
+  - date: "Sep 2025"
+    title: "Joined Gnosis Research Center"
+    description: "Officially started as a Research Assistant Professor at GRC."
+    link: "https://grc.iit.edu"
+---
