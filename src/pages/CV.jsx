@@ -343,16 +343,13 @@ const CV = () => {
                     </div>
                 </main>
             </div>
+            {citationModalOpen && (
+                <CitationModal
+                    citation={selectedCitation}
+                    onClose={() => setCitationModalOpen(false)}
+                />
+            )}
         </div>
-            {
-        citationModalOpen && (
-            <CitationModal
-                citation={selectedCitation}
-                onClose={() => setCitationModalOpen(false)}
-            />
-        )
-    }
-        </div >
     );
 };
 
