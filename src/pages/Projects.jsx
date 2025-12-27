@@ -17,17 +17,23 @@ const Projects = () => {
                 const { data } = matter(text);
                 setHeaderInfo(data.header);
 
-                const projectPromises = data.projects.map(async (filename) => {
-                    const projectRes = await fetch(`/content/projects/${filename}`);
-                    const projectText = await projectRes.text();
-                    const { data: projectData } = matter(projectText);
-                    return {
-                        ...projectData,
-                        slug: filename.replace('.md', '')
-                    };
+                const projectPromises = (data.projects || []).map(async (filename) => {
+                    try {
+                        const projectRes = await fetch(`/content/projects/${filename}`);
+                        if (!projectRes.ok) return null;
+                        const projectText = await projectRes.text();
+                        const { data: projectData } = matter(projectText);
+                        return {
+                            ...projectData,
+                            slug: filename.replace('.md', '')
+                        };
+                    } catch (e) {
+                        console.error(`Error loading project ${filename}`, e);
+                        return null;
+                    }
                 });
 
-                const fetchedProjects = await Promise.all(projectPromises);
+                const fetchedProjects = (await Promise.all(projectPromises)).filter(p => p !== null);
                 setProjects(fetchedProjects);
                 setFilteredProjects(fetchedProjects);
                 setLoading(false);
@@ -49,6 +55,7 @@ const Projects = () => {
     }, [selectedCategory, projects]);
 
     if (loading) return <div className="p-10 text-center">Loading...</div>;
+    if (!headerInfo) return <div className="p-10 text-center">Error loading content.</div>;
 
     const featuredProject = projects.find(p => p.featured);
 
@@ -90,7 +97,7 @@ const Projects = () => {
                                 {featuredProject.description}
                             </p>
                             <div className="flex flex-wrap gap-2 mb-2">
-                                {featuredProject.tags.map((tag, i) => (
+                                {(featuredProject.tags || []).map((tag, i) => (
                                     <span key={i} className="text-xs font-medium text-gray-500 dark:text-gray-300 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 rounded border border-gray-200 dark:border-border-dark">{tag}</span>
                                 ))}
                             </div>
@@ -166,7 +173,7 @@ const Projects = () => {
                             </p>
                             <div className="mt-auto flex flex-col gap-4">
                                 <div className="flex flex-wrap gap-2">
-                                    {project.tags.map((tag, i) => (
+                                    {(project.tags || []).map((tag, i) => (
                                         <span key={i} className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 rounded">{tag}</span>
                                     ))}
                                 </div>

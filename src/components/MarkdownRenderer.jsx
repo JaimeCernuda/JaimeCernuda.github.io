@@ -26,6 +26,14 @@ const MarkdownRenderer = ({ fileName, content }) => {
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeSlug]}
             components={{
+                p: ({ node, children }) => {
+                    // Check if any child is an image
+                    const hasImage = node.children.some(child => child.tagName === 'img');
+                    if (hasImage) {
+                        return <>{children}</>;
+                    }
+                    return <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">{children}</p>;
+                },
                 img: ({ node, ...props }) => {
                     const alt = props.alt || '';
                     const [caption, size, align] = alt.split('|').map(s => s.trim());

@@ -81,8 +81,8 @@ const Publications = () => {
 
     if (loading) return <div className="p-10 text-center">Loading...</div>;
 
-    const years = ['All Years', ...new Set(publications.map(p => p.year))].sort().reverse();
-    const tags = ['All Topics', ...new Set(publications.flatMap(p => p.tags || []))];
+    const years = ['All Years', ...new Set(publications.map(p => p.year).filter(y => y))].sort().reverse();
+    const tags = ['All Topics', ...new Set(publications.flatMap(p => p.tags || []).filter(t => t))];
 
     const featuredPub = publications.find(p => p.featured);
 

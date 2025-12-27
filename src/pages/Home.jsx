@@ -10,6 +10,38 @@ const Home = () => {
   const [featuredProjects, setFeaturedProjects] = useState([]);
   const [selectedPublications, setSelectedPublications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [newsLimit, setNewsLimit] = useState(10); // Default limit
+
+  const leftColumnRef = React.useRef(null);
+  const newsItemRef = React.useRef(null);
+
+  useEffect(() => {
+    const calculateNewsLimit = () => {
+      if (leftColumnRef.current && newsItemRef.current) {
+        const leftHeight = leftColumnRef.current.offsetHeight;
+        // Estimate news container header/footer height (approx 100px) + item height
+        // This is a rough estimation. A better way is to measure available height.
+        // Let's try to fit as many items as possible within leftHeight.
+
+        // Assuming average item height from the first item if available, or a fixed estimate (e.g., 80px)
+        const itemHeight = newsItemRef.current.offsetHeight || 80;
+        const containerPadding = 100; // Title + Archive link + padding
+        const availableHeight = leftHeight - containerPadding;
+
+        const calculatedLimit = Math.max(3, Math.floor(availableHeight / itemHeight));
+        setNewsLimit(calculatedLimit);
+      }
+    };
+
+    // Run calculation after data load and on resize
+    if (!loading && featuredProjects.length > 0 && selectedPublications.length > 0) {
+      // Small timeout to allow rendering
+      setTimeout(calculateNewsLimit, 100);
+    }
+
+    window.addEventListener('resize', calculateNewsLimit);
+    return () => window.removeEventListener('resize', calculateNewsLimit);
+  }, [loading, featuredProjects, selectedPublications]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +57,7 @@ const Home = () => {
         const newsRes = await fetch('/content/news.md');
         const newsText = await newsRes.text();
         const { data: newsContent } = matter(newsText);
-        setNewsData((newsContent.news || []).slice(0, 10));
+        setNewsData(newsContent.news || []);
 
         // 3. Fetch Featured Projects (from home.md references)
         const projectPromises = (homeData.featured_projects || []).map(async (filename) => {
@@ -130,7 +162,7 @@ const Home = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
           {/* LEFT COLUMN: Projects & Publications */}
-          <div className="lg:col-span-8 flex flex-col gap-16">
+          <div className="lg:col-span-8 flex flex-col gap-16" ref={leftColumnRef}>
 
             {/* Featured Projects */}
             <div>
@@ -145,7 +177,8 @@ const Home = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {featuredProjects.map((project, index) => (
-                  <div key={index} className="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5">
+                  <div key={index} className="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5 relative">
+                    <Link to={`/projects/${project.slug}`} className="absolute inset-0 z-10" aria-label={`View case study for ${project.title}`}></Link>
                     <div
                       className="h-48 w-full bg-cover bg-center relative"
                       style={{ backgroundImage: `url("${project.image}")` }}
@@ -153,7 +186,7 @@ const Home = () => {
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
                     </div>
                     <div className="flex flex-col flex-1 p-5">
-                      <div className="flex flex-wrap gap-2 mb-2">
+                      <div className="flex flex-wrap gap-2 mb-2 relative z-20 pointer-events-none">
                         {project.tags && project.tags.slice(0, 3).map((tag, i) => (
                           <span key={i} className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded ${i === 0 ? 'bg-primary/10 text-primary' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'}`}>
                             {tag}
@@ -164,9 +197,9 @@ const Home = () => {
                       <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-1">
                         {project.description}
                       </p>
-                      <Link to={`/projects/${project.slug}`} className="inline-flex items-center text-xs font-bold text-primary hover:text-gray-900 dark:hover:text-white transition-colors mt-auto">
+                      <span className="inline-flex items-center text-xs font-bold text-primary hover:text-gray-900 dark:hover:text-white transition-colors mt-auto">
                         Read Case Study
-                      </Link>
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -224,8 +257,8 @@ const Home = () => {
                   {/* Vertical Line */}
                   <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gray-200 dark:bg-gray-800"></div>
 
-                  {newsData.map((item, index) => (
-                    <div key={index} className="relative pl-6">
+                  {newsData.slice(0, newsLimit).map((item, index) => (
+                    <div key={index} className="relative pl-6" ref={index === 0 ? newsItemRef : null}>
                       <div className="absolute left-0 top-1.5 w-3.5 h-3.5 bg-white dark:bg-surface-dark border-2 border-primary rounded-full z-10"></div>
                       <span className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wider">{item.date}</span>
                       <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1 leading-tight">

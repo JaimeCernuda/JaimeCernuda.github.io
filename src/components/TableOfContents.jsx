@@ -15,13 +15,14 @@ const TableOfContents = ({ content }) => {
         let inCodeBlock = false;
 
         lines.forEach(line => {
-            if (line.trim().startsWith('```')) {
+            const trimmedLine = line.trim();
+            if (trimmedLine.startsWith('```')) {
                 inCodeBlock = !inCodeBlock;
                 return;
             }
             if (inCodeBlock) return;
 
-            const match = line.match(/^(#{1,3})\s+(.+)$/);
+            const match = trimmedLine.match(/^(#{1,3})\s+(.+)$/);
             if (match) {
                 const level = match[1].length;
                 const text = match[2].trim();
@@ -69,8 +70,8 @@ const TableOfContents = ({ content }) => {
                         <a
                             href={`#${id}`}
                             className={`block pl-4 py-1 border-l-2 -ml-[2px] transition-colors ${activeId === id
-                                    ? 'border-primary text-primary font-medium'
-                                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+                                ? 'border-primary text-primary font-medium'
+                                : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
                                 }`}
                             style={{ paddingLeft: `${(level - 1) * 1}rem` }}
                             onClick={(e) => {

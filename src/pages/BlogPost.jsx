@@ -33,6 +33,8 @@ const BlogPost = () => {
     if (loading) return <div className="p-20 text-center text-gray-500">Loading post...</div>;
     if (!content) return <div className="p-20 text-center text-gray-500">Post not found.</div>;
 
+    const hasHeadings = content && /^#{1,3}\s/m.test(content);
+
     return (
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <Link to="/blog" className="inline-flex items-center gap-2 text-primary font-bold hover:underline mb-6">
@@ -43,7 +45,7 @@ const BlogPost = () => {
             <div className="flex flex-col xl:flex-row gap-12 items-start">
                 <TableOfContents content={content} />
 
-                <article className="prose prose-lg dark:prose-invert max-w-3xl mx-auto xl:mx-0 w-full">
+                <article className={`prose prose-lg dark:prose-invert max-w-3xl mx-auto w-full ${hasHeadings ? 'xl:mx-0' : ''}`}>
                     <div className="mb-6 not-prose">
                         <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-3">
                             <span className="bg-primary/10 text-primary px-2 py-1 rounded font-bold text-xs uppercase tracking-wide">{metadata.category}</span>
