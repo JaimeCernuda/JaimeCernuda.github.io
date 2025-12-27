@@ -33,12 +33,12 @@ const Layout = () => {
 
             {isHome ? (
                 // Home Page Footer - Contact Focused
-                <footer className="mt-auto border-t border-border-dark bg-surface-dark py-8 lg:py-12">
+                <footer className="mt-auto border-t border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-surface-dark py-8 lg:py-12 transition-colors">
                     <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col items-center text-center gap-6">
                             <div>
-                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">{footerData.contact.title}</h3>
-                                <p className="text-gray-400 mb-6 max-w-lg mx-auto text-lg">
+                                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">{footerData.contact.title}</h3>
+                                <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-lg mx-auto text-lg">
                                     {footerData.contact.text}
                                 </p>
                                 <a href={`mailto:${footerData.contact.email}`} className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary-hover text-white text-lg font-bold transition-all shadow-lg shadow-primary/25">
@@ -47,15 +47,15 @@ const Layout = () => {
                                 </a>
                             </div>
 
-                            <div className="w-full h-px bg-gray-800/50 my-4"></div>
+                            <div className="w-full h-px bg-gray-200 dark:bg-gray-800/50 my-4"></div>
 
                             <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-gray-500 dark:text-gray-600 text-sm">
                                     {footerData.copyright}
                                 </p>
                                 <div className="flex gap-4">
                                     {footerData.social_links.map((link, index) => (
-                                        <a key={index} href={link.url} className="text-gray-400 hover:text-primary transition-colors" title={link.name}>
+                                        <a key={index} href={link.url} className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title={link.name}>
                                             <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
                                         </a>
                                     ))}
