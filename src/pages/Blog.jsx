@@ -103,6 +103,11 @@ const Blog = () => {
     // Dynamic Image Logic
     const headerImage = (theme === 'dark' && headerInfo.image_dark) ? headerInfo.image_dark : headerInfo.image;
 
+    // Dynamic Gradient Logic
+    const gradient = theme === 'dark'
+        ? `linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%)`
+        : `linear-gradient(rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%)`;
+
     return (
         <div className="flex flex-1 justify-center py-8 w-full">
             <div className="flex flex-col max-w-[1600px] flex-1 w-full px-4 sm:px-6 lg:px-8">
@@ -110,13 +115,13 @@ const Blog = () => {
                 <div className="mb-12">
                     <div
                         className="flex min-h-[320px] md:min-h-[400px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-2xl items-start justify-end px-6 pb-10 md:px-12 shadow-2xl relative overflow-hidden group"
-                        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%), url("${headerImage}")` }}
+                        style={{ backgroundImage: `${gradient}, url("${headerImage}")` }}
                     >
                         <div className="flex flex-col gap-3 text-left z-10 max-w-3xl">
-                            <h1 className="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
+                            <h1 className="text-gray-900 dark:text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
                                 {headerInfo.title}
                             </h1>
-                            <h2 className="text-gray-200 text-lg md:text-xl font-normal leading-relaxed max-w-2xl">
+                            <h2 className="text-gray-700 dark:text-gray-200 text-lg md:text-xl font-normal leading-relaxed max-w-2xl">
                                 {headerInfo.subtitle}
                             </h2>
                         </div>
