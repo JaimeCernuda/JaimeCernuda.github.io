@@ -1,7 +1,6 @@
 const e=`\uFEFF---
 title: "Jarvis: Towards a Shared, User-Friendly, and Reproducible, I/O Infrastructure"
 authors: "Jaime Cernuda, Luke Logan, Nicholas Lewis, Suren Byna, Xian-He Sun, Anthony Kougkas"
-type: Conference
 venue: "PDSW'24"
 year: 2024
 type: "Workshop"

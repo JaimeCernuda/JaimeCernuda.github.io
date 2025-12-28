@@ -9,7 +9,9 @@ tags:
   - Distributed Systems
   - Log Storage
   - HPC
-github: "https://github.com/grc-iit/ChronoLog"
+links:
+  website: "https://chronolog.dev"
+  code: "https://github.com/grc-iit/ChronoLog"
 image: "/images/projects/chronolog.png"
 ---
 

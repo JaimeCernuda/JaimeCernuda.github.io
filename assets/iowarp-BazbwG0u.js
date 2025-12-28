@@ -9,7 +9,9 @@ tags:
   - AI/ML
   - Data Management
   - HPC
-github: "https://github.com/iowarp"
+links:
+  website: "https://iowarp.ai"
+  code: "https://github.com/iowarp"
 image: "/images/projects/iowarp.png"
 ---
 
