@@ -53,13 +53,13 @@ const Publications = () => {
     const [loading, setLoading] = useState(true);
 
     // Filter States
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedYear, setSelectedYear] = useState('All Years');
-    const [selectedTag, setSelectedTag] = useState('All Topics');
-    const [selectedType, setSelectedType] = useState('All Types');
+    const [searchQuery, setSearchQuery] = useState(cache.publications?.uiState?.searchQuery || '');
+    const [selectedYear, setSelectedYear] = useState(cache.publications?.uiState?.selectedYear || 'All Years');
+    const [selectedTag, setSelectedTag] = useState(cache.publications?.uiState?.selectedTag || 'All Topics');
+    const [selectedType, setSelectedType] = useState(cache.publications?.uiState?.selectedType || 'All Types');
 
     // View State
-    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
+    const [viewMode, setViewMode] = useState(cache.publications?.uiState?.viewMode || 'grid'); // 'grid' or 'table'
     const [activeCitation, setActiveCitation] = useState(null);
 
     // Pre-glob all content folders (Vite requires static paths)
@@ -113,7 +113,14 @@ const Publications = () => {
 
                 const publicationsData = {
                     headerInfo: data.header,
-                    publications: fetchedPubs
+                    publications: fetchedPubs,
+                    uiState: {
+                        searchQuery: '',
+                        selectedYear: 'All Years',
+                        selectedTag: 'All Topics',
+                        selectedType: 'All Types',
+                        viewMode: 'grid'
+                    }
                 };
 
                 setHeaderInfo(publicationsData.headerInfo);
@@ -129,6 +136,28 @@ const Publications = () => {
 
         fetchContent();
     }, [cache.publications, updateCache]);
+
+    // Sync UI State to Cache
+    useEffect(() => {
+        if (cache.publications) {
+            const newUiState = {
+                searchQuery,
+                selectedYear,
+                selectedTag,
+                selectedType,
+                viewMode
+            };
+
+            // Only update if state has changed to avoid infinite loops/unnecessary updates
+            // Simple JSON stringify comparison is sufficient here
+            if (JSON.stringify(cache.publications.uiState) !== JSON.stringify(newUiState)) {
+                updateCache('publications', {
+                    ...cache.publications,
+                    uiState: newUiState
+                });
+            }
+        }
+    }, [searchQuery, selectedYear, selectedTag, selectedType, viewMode, cache.publications, updateCache]);
 
     // Filter Logic
     useEffect(() => {

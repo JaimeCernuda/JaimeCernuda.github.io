@@ -11,12 +11,12 @@ const Blog = () => {
     const [sidebarInfo, setSidebarInfo] = useState(null);
     const [posts, setPosts] = useState([]);
     const [filteredPosts, setFilteredPosts] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [searchQuery, setSearchQuery] = useState(cache.blog?.uiState?.searchQuery || '');
+    const [selectedCategory, setSelectedCategory] = useState(cache.blog?.uiState?.selectedCategory || 'All');
     const [loading, setLoading] = useState(true);
 
     // Pagination State
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(cache.blog?.uiState?.currentPage || 1);
     const postsPerPage = 6;
 
     useEffect(() => {
@@ -53,7 +53,12 @@ const Blog = () => {
                 const blogData = {
                     headerInfo: data.header,
                     sidebarInfo: data.sidebar,
-                    posts: fetchedPosts
+                    posts: fetchedPosts,
+                    uiState: {
+                        searchQuery: '',
+                        selectedCategory: 'All',
+                        currentPage: 1
+                    }
                 };
 
                 setHeaderInfo(blogData.headerInfo);
@@ -70,6 +75,24 @@ const Blog = () => {
 
         fetchContent();
     }, [cache.blog, updateCache]);
+
+    // Sync UI State to Cache
+    useEffect(() => {
+        if (cache.blog) {
+            const newUiState = {
+                searchQuery,
+                selectedCategory,
+                currentPage
+            };
+
+            if (JSON.stringify(cache.blog.uiState) !== JSON.stringify(newUiState)) {
+                updateCache('blog', {
+                    ...cache.blog,
+                    uiState: newUiState
+                });
+            }
+        }
+    }, [searchQuery, selectedCategory, currentPage, cache.blog, updateCache]);
 
     // Filter Logic
     useEffect(() => {
@@ -92,7 +115,36 @@ const Blog = () => {
         }
 
         setFilteredPosts(result);
-        setCurrentPage(1); // Reset to page 1 on filter change
+        // Only reset page if the filter change wasn't caused by restoring state
+        // Actually, we should probably let the user handle page reset or handle it smarter.
+        // For now, if we are restoring state, we don't want to reset page.
+        // But here, if searchQuery changes, we usually want to reset page.
+        // The issue is that on mount, if we restore searchQuery, this effect runs.
+        // If we restore currentPage as well, we don't want to overwrite it with 1.
+
+        // However, this effect runs on mount.
+        // If we restored state, searchQuery and selectedCategory are set.
+        // This effect runs, filters posts.
+        // Then it sets CurrentPage to 1?
+        // We need to avoid resetting page on initial mount if we have a cached page.
+
+        // A simple check: if the current page in state matches the cached page, don't reset?
+        // No, if I change filter, I WANT to reset page.
+        // But on mount, I don't want to reset page if I just restored it.
+
+        // Let's remove the automatic page reset here and handle it in the change handlers?
+        // Or check if the change is "fresh".
+
+        // For now, I will comment out the automatic page reset and rely on the user manually resetting or
+        // better, move the page reset to the event handlers for search/category change.
+        // But I can't easily access event handlers here as they are state setters.
+
+        // Actually, if I restore `currentPage` from cache, `useState` sets it.
+        // Then this effect runs.
+        // If I keep `setCurrentPage(1)` here, it will overwrite the restored page.
+
+        // Solution: Only reset page if we are NOT in the initialization phase?
+        // Or, remove `setCurrentPage(1)` from here and add it to the `onChange` handlers for inputs.
     }, [searchQuery, selectedCategory, posts]);
 
     // Pagination Logic
@@ -234,7 +286,10 @@ const Blog = () => {
                                     placeholder="Search posts..."
                                     type="text"
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={(e) => {
+                                        setSearchQuery(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
                                 />
                             </div>
                         </div>
@@ -261,7 +316,10 @@ const Blog = () => {
                                 {categories.map((cat, index) => (
                                     <button
                                         key={index}
-                                        onClick={() => setSelectedCategory(cat)}
+                                        onClick={() => {
+                                            setSelectedCategory(cat);
+                                            setCurrentPage(1);
+                                        }}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedCategory === cat
                                             ? 'bg-primary text-white'
                                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'

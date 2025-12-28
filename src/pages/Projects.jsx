@@ -8,11 +8,11 @@ const Projects = () => {
     const [headerInfo, setHeaderInfo] = useState(null);
     const [projects, setProjects] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
-    const [selectedTopic, setSelectedTopic] = useState('All Topics');
-    const [selectedYear, setSelectedYear] = useState('All Years');
-    const [selectedStatus, setSelectedStatus] = useState('All Statuses');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
+    const [selectedTopic, setSelectedTopic] = useState(cache.projects?.uiState?.selectedTopic || 'All Topics');
+    const [selectedYear, setSelectedYear] = useState(cache.projects?.uiState?.selectedYear || 'All Years');
+    const [selectedStatus, setSelectedStatus] = useState(cache.projects?.uiState?.selectedStatus || 'All Statuses');
+    const [searchQuery, setSearchQuery] = useState(cache.projects?.uiState?.searchQuery || '');
+    const [viewMode, setViewMode] = useState(cache.projects?.uiState?.viewMode || 'grid'); // 'grid' or 'table'
     const [loading, setLoading] = useState(true);
 
     // Pre-glob all content folders (Vite requires static paths)
@@ -62,7 +62,14 @@ const Projects = () => {
 
                 const projectsData = {
                     headerInfo: data.header,
-                    projects: fetchedProjects
+                    projects: fetchedProjects,
+                    uiState: {
+                        selectedTopic: 'All Topics',
+                        selectedYear: 'All Years',
+                        selectedStatus: 'All Statuses',
+                        searchQuery: '',
+                        viewMode: 'grid'
+                    }
                 };
 
                 setHeaderInfo(projectsData.headerInfo);
@@ -78,6 +85,26 @@ const Projects = () => {
 
         fetchContent();
     }, [cache.projects, updateCache]);
+
+    // Sync UI State to Cache
+    useEffect(() => {
+        if (cache.projects) {
+            const newUiState = {
+                selectedTopic,
+                selectedYear,
+                selectedStatus,
+                searchQuery,
+                viewMode
+            };
+
+            if (JSON.stringify(cache.projects.uiState) !== JSON.stringify(newUiState)) {
+                updateCache('projects', {
+                    ...cache.projects,
+                    uiState: newUiState
+                });
+            }
+        }
+    }, [selectedTopic, selectedYear, selectedStatus, searchQuery, viewMode, cache.projects, updateCache]);
 
     useEffect(() => {
         let result = projects;
@@ -326,11 +353,10 @@ const Projects = () => {
                             {displayProjects.map((project, index) => (
                                 <tr key={index} className="hover:bg-gray-50 dark:hover:bg-surface-dark-lighter transition-colors">
                                     <td className="px-6 py-4 font-mono text-gray-500 text-center">{project.year}</td>
-                                    <td className="px-6 py-4">
-                                        <div className="font-bold text-gray-900 dark:text-white mb-1">
-                                            <Link to={`/projects/${project.slug}`} state={{ from: 'projects' }} className="hover:underline">
-                                                {project.title}
-                                            </Link>
+                                    <td className="px-6 py-4 relative group">
+                                        <Link to={`/projects/${project.slug}`} state={{ from: 'projects' }} className="absolute inset-0 z-10" aria-label={`View ${project.title}`}></Link>
+                                        <div className="font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary group-hover:underline transition-colors">
+                                            {project.title}
                                         </div>
                                         <div className="text-gray-500 dark:text-gray-400 text-xs line-clamp-1">{project.description}</div>
                                     </td>
