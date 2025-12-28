@@ -1,6 +1,7 @@
 ﻿---
 title: "Apollo: An ML-Assisted Real-Time Storage Resource Observer"
 authors: "Neeraj Rajesh, Hariharan Devarajan, Jaime Cernuda Garcia, Keith Bateman, Luke Logan, Jie Ye, Anthony Kougkas, Xian-He Sun"
+type: Conference
 venue: "HPDC'21"
 year: 2021
 featured: false

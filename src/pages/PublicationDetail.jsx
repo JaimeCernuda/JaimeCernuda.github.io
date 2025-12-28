@@ -17,6 +17,16 @@ const PublicationDetail = () => {
     const backLink = location.state?.from === 'home' ? '/' : '/publications';
     const backLabel = location.state?.from === 'home' ? 'Back to Home' : 'Back to Publications';
 
+    // Helper for consistent slug generation
+    const generateSlug = (text) => {
+        return text
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    };
+
     useEffect(() => {
         const fetchPublication = async () => {
             try {
@@ -31,7 +41,7 @@ const PublicationDetail = () => {
                 if (headings) {
                     const tocItems = headings.map(h => {
                         const title = h.replace(/^##\s+/, '');
-                        const id = title.toLowerCase().replace(/[^\w]+/g, '-');
+                        const id = generateSlug(title);
                         return { title, id };
                     });
                     setToc(tocItems);
@@ -57,6 +67,30 @@ const PublicationDetail = () => {
             }
         }
     }, [loading, location.hash]);
+
+    // Scroll Spy for TOC
+    const [activeSection, setActiveSection] = useState('');
+    useEffect(() => {
+        if (loading || toc.length === 0) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            { rootMargin: '-100px 0px -66% 0px' }
+        );
+
+        toc.forEach((item) => {
+            const element = document.getElementById(item.id);
+            if (element) observer.observe(element);
+        });
+
+        return () => observer.disconnect();
+    }, [loading, toc]);
 
     if (loading) return <div className="p-10 text-center">Loading...</div>;
     if (!metadata) return <div className="p-10 text-center">Publication not found</div>;
@@ -100,7 +134,10 @@ const PublicationDetail = () => {
                                                 e.preventDefault();
                                                 document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' });
                                             }}
-                                            className="block pl-4 py-1 border-l-2 -ml-[2px] border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 hover:border-gray-300 transition-colors"
+                                            className={`block pl-4 py-1 border-l-2 -ml-[2px] transition-colors ${activeSection === item.id
+                                                    ? 'border-primary text-primary font-medium'
+                                                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 hover:border-gray-300'
+                                                }`}
                                         >
                                             {item.title}
                                         </a>

@@ -1,6 +1,7 @@
 ﻿---
 title: "DTIO: Data Stack for AI-driven Workflows"
 authors: "Keith Bateman, Neeraj Rajesh, Jaime Cernuda, Luke Logan, Bogdan Nicolae, Franck Cappello, Xian-He Sun, Anthony Kougkas"
+type: Conference
 venue: "SSDBM'25"
 year: 2025
 featured: false

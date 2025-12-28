@@ -22,13 +22,32 @@ const MarkdownRenderer = ({ fileName, content }) => {
             .catch((err) => console.error('Error fetching markdown:', err));
     }, [fileName, content]);
 
+    // Helper for consistent slug generation (must match PublicationDetail.jsx)
+    const generateSlug = (text) => {
+        if (!text) return '';
+        // Handle React children if they are strings, otherwise ignore
+        const stringText = typeof text === 'string' ? text :
+            Array.isArray(text) ? text.map(t => typeof t === 'string' ? t : '').join('') : '';
+
+        return stringText
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    };
+
     return (
         <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeSlug, rehypeRaw]}
+            rehypePlugins={[rehypeRaw]} // Removed rehypeSlug to use custom ID generation
             components={{
                 h1: ({ node, children, ...props }) => <h1 {...props} className="text-3xl font-bold mt-10 mb-4 text-gray-900 dark:text-white scroll-mt-24">{children}</h1>,
-                h2: ({ node, children, ...props }) => <h2 {...props} className="text-2xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 scroll-mt-24">{children}</h2>,
+                h2: ({ node, children, ...props }) => {
+                    // Generate ID from children text
+                    const id = generateSlug(children);
+                    return <h2 id={id} {...props} className="text-2xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 scroll-mt-24">{children}</h2>
+                },
                 h3: ({ node, children, ...props }) => <h3 {...props} className="text-xl font-bold mt-6 mb-2 text-gray-900 dark:text-white scroll-mt-24">{children}</h3>,
                 p: ({ node, children }) => {
                     // Check if any child is an image

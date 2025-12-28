@@ -196,23 +196,30 @@ const Home = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {featuredProjects.map((project, index) => (
                   <div key={index} className="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5 relative">
-                    <Link to={`/projects/${project.slug}`} state={{ from: 'home' }} className="absolute inset-0 z-10" aria-label={`View case study for ${project.title}`}></Link>
+                    {/* Main Card Link - z-0 to sit behind content but capture clicks on empty spaces */}
+                    <Link to={`/projects/${project.slug}`} state={{ from: 'home' }} className="absolute inset-0 z-0" aria-label={`View case study for ${project.title}`}></Link>
+
                     <div
-                      className="h-48 w-full bg-cover bg-center relative"
+                      className="h-48 w-full bg-cover bg-center relative z-10 pointer-events-none"
                       style={{ backgroundImage: `url("${project.image}")` }}
                     >
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
                     </div>
-                    <div className="flex flex-col flex-1 p-5">
-                      <div className="flex flex-wrap gap-2 mb-2 relative z-20 pointer-events-none">
+                    <div className="flex flex-col flex-1 p-5 relative z-10 pointer-events-none">
+                      <div className="flex flex-wrap gap-2 mb-2">
                         {project.tags && project.tags.slice(0, 3).map((tag, i) => (
                           <span key={i} className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded ${i === 0 ? 'bg-primary/10 text-primary' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'}`}>
                             {tag}
                           </span>
                         ))}
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors relative z-20">{project.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-1 relative z-20">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">
+                        {/* Title is visually part of the card, clicks pass through to the main link due to pointer-events-none on parent, 
+                             but we can also make it explicit if needed. Since parent is pointer-events-none, we don't need a nested link unless we want specific behavior. 
+                             Actually, keeping it simple: clicks pass through to the absolute link. */}
+                        {project.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-1">
                         {project.description}
                       </p>
 
