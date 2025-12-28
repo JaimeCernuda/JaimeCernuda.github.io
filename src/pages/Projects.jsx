@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import matter from 'gray-matter';
 import { Link } from 'react-router-dom';
+import { useData } from '../context/DataContext';
 
 const Projects = () => {
+    const { cache, updateCache } = useData();
     const [headerInfo, setHeaderInfo] = useState(null);
     const [projects, setProjects] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('All Topics');
+    const [selectedTopic, setSelectedTopic] = useState('All Topics');
     const [selectedYear, setSelectedYear] = useState('All Years');
     const [selectedStatus, setSelectedStatus] = useState('All Statuses');
     const [searchQuery, setSearchQuery] = useState('');
@@ -18,12 +20,19 @@ const Projects = () => {
 
     useEffect(() => {
         const fetchContent = async () => {
+            if (cache.projects) {
+                setHeaderInfo(cache.projects.headerInfo);
+                setProjects(cache.projects.projects);
+                setFilteredProjects(cache.projects.projects);
+                setLoading(false);
+                return;
+            }
+
             try {
                 // Fetch header info and folder path
                 const res = await fetch('/content/projects.md');
                 const text = await res.text();
                 const { data } = matter(text);
-                setHeaderInfo(data.header);
 
                 // Get folder name from markdown (e.g., "projects")
                 const folderName = data.folder || 'projects';
@@ -50,8 +59,16 @@ const Projects = () => {
                 });
 
                 const fetchedProjects = (await Promise.all(projectPromises)).filter(p => p !== null);
-                setProjects(fetchedProjects);
-                setFilteredProjects(fetchedProjects);
+
+                const projectsData = {
+                    headerInfo: data.header,
+                    projects: fetchedProjects
+                };
+
+                setHeaderInfo(projectsData.headerInfo);
+                setProjects(projectsData.projects);
+                setFilteredProjects(projectsData.projects);
+                updateCache('projects', projectsData);
                 setLoading(false);
             } catch (error) {
                 console.error("Error loading projects:", error);
@@ -60,13 +77,16 @@ const Projects = () => {
         };
 
         fetchContent();
-    }, []);
+    }, [cache.projects, updateCache]);
 
     useEffect(() => {
         let result = projects;
 
-        if (selectedCategory !== 'All Topics') {
-            result = result.filter(p => p.category === selectedCategory);
+        if (selectedTopic !== 'All Topics') {
+            result = result.filter(p =>
+                p.category === selectedTopic ||
+                (p.tags && p.tags.includes(selectedTopic))
+            );
         }
 
         if (selectedYear !== 'All Years') {
@@ -89,7 +109,7 @@ const Projects = () => {
         }
 
         setFilteredProjects(result);
-    }, [selectedCategory, selectedYear, selectedStatus, searchQuery, projects]);
+    }, [selectedTopic, selectedYear, selectedStatus, searchQuery, projects]);
 
     if (loading) return <div className="p-10 text-center">Loading...</div>;
     if (!headerInfo) return <div className="p-10 text-center">Error loading content.</div>;
@@ -99,8 +119,15 @@ const Projects = () => {
     const displayProjects = filteredProjects.filter(p => p !== featuredProject);
 
     const years = ['All Years', ...new Set(projects.map(p => p.year).filter(y => y))].sort().reverse();
-    const categories = ['All Topics', ...new Set(projects.map(p => p.category).filter(c => c))];
     const statuses = ['All Statuses', 'On-going', 'Completed'];
+
+    // Collect all unique topics (categories + tags)
+    const uniqueTopics = [...new Set([
+        ...projects.map(p => p.category).filter(c => c),
+        ...projects.flatMap(p => p.tags || [])
+    ])].sort();
+
+    const allTopics = ['All Topics', ...uniqueTopics];
 
     return (
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-10">
@@ -113,8 +140,8 @@ const Projects = () => {
             </div>
 
             {/* Featured Project */}
-            {featuredProject && selectedCategory === 'All Topics' && selectedYear === 'All Years' && selectedStatus === 'All Statuses' && (
-                <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark relative group">
+            {featuredProject && selectedTopic === 'All Topics' && selectedYear === 'All Years' && selectedStatus === 'All Statuses' && (
+                <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark relative group hover:border-primary/50 transition-colors">
                     <Link to={`/projects/${featuredProject.slug}`} state={{ from: 'projects' }} className="absolute inset-0 z-10" aria-label={`View ${featuredProject.title}`}></Link>
                     <div className="flex flex-col lg:flex-row relative z-20 pointer-events-none">
                         <div
@@ -130,11 +157,18 @@ const Projects = () => {
                             <div className="flex items-center gap-2">
                                 <span className="text-gray-500 dark:text-gray-400 text-xs font-medium">{featuredProject.venue}</span>
                             </div>
-                            <h2 className="text-2xl md:text-3xl font-bold leading-tight text-gray-900 dark:text-white">
-                                <Link to={`/projects/${featuredProject.slug}`} state={{ from: 'projects' }} className="hover:text-primary transition-colors">
-                                    {featuredProject.title}
-                                </Link>
-                            </h2>
+                            <div className="flex items-center justify-between gap-4">
+                                <h2 className="text-2xl md:text-3xl font-bold leading-tight text-gray-900 dark:text-white">
+                                    <Link to={`/projects/${featuredProject.slug}`} state={{ from: 'projects' }} className="group-hover:text-primary transition-colors pointer-events-auto">
+                                        {featuredProject.title}
+                                    </Link>
+                                </h2>
+                                <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors flex-shrink-0" aria-label="View on GitHub">
+                                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                                    </svg>
+                                </a>
+                            </div>
                             <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
                                 {featuredProject.description}
                             </p>
@@ -149,11 +183,12 @@ const Projects = () => {
                                 ))}
                             </div>
                             <div className="flex flex-wrap gap-3 mt-2 pointer-events-auto">
-                                <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors" aria-label="View on GitHub">
-                                    <svg className="w-10 h-10 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
-                                    </svg>
-                                </a>
+                                {featuredProject.links?.website && (
+                                    <a href={featuredProject.links.website} target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors flex items-center gap-1" aria-label="Project Website">
+                                        <span className="material-symbols-outlined text-[20px]">language</span>
+                                        <span className="text-sm font-bold">Project Website</span>
+                                    </a>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -172,11 +207,11 @@ const Projects = () => {
                             {years.map(year => <option key={year} value={year}>{year}</option>)}
                         </select>
                         <select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            value={selectedTopic}
+                            onChange={(e) => setSelectedTopic(e.target.value)}
                             className="h-10 px-3 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
                         >
-                            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                            {allTopics.map(topic => <option key={topic} value={topic}>{topic}</option>)}
                         </select>
                         <select
                             value={selectedStatus}
@@ -280,17 +315,17 @@ const Projects = () => {
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 dark:bg-surface-dark-lighter text-gray-900 dark:text-white font-bold uppercase tracking-wider text-xs">
                             <tr>
-                                <th className="px-6 py-4">Year</th>
+                                <th className="px-6 py-4 text-center">Year</th>
                                 <th className="px-6 py-4">Project</th>
-                                <th className="px-6 py-4">Status</th>
-                                <th className="px-6 py-4">Category</th>
-                                <th className="px-6 py-4">Links</th>
+                                <th className="px-6 py-4 text-center">Status</th>
+                                <th className="px-6 py-4">Tags</th>
+                                <th className="px-6 py-4 text-center">Links</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 dark:divide-gray-800 bg-white dark:bg-surface-dark">
                             {displayProjects.map((project, index) => (
                                 <tr key={index} className="hover:bg-gray-50 dark:hover:bg-surface-dark-lighter transition-colors">
-                                    <td className="px-6 py-4 font-mono text-gray-500">{project.year}</td>
+                                    <td className="px-6 py-4 font-mono text-gray-500 text-center">{project.year}</td>
                                     <td className="px-6 py-4">
                                         <div className="font-bold text-gray-900 dark:text-white mb-1">
                                             <Link to={`/projects/${project.slug}`} state={{ from: 'projects' }} className="hover:underline">
@@ -299,7 +334,7 @@ const Projects = () => {
                                         </div>
                                         <div className="text-gray-500 dark:text-gray-400 text-xs line-clamp-1">{project.description}</div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         {project.status && (
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${project.status === 'On-going' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'}`}>
                                                 {project.status}
@@ -307,13 +342,17 @@ const Projects = () => {
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-surface-dark-lighter text-gray-800 dark:text-gray-300">
-                                            {project.category}
-                                        </span>
+                                        <div className="flex flex-wrap gap-1">
+                                            {[...new Set([project.category, ...(project.tags || [])].filter(Boolean))].map((topic, i) => (
+                                                <span key={i} className="text-[10px] font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-surface-dark-lighter px-1.5 py-0.5 rounded border border-gray-200 dark:border-border-dark">
+                                                    {topic}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" title="View on GitHub">
-                                            <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <td className="px-6 py-4 text-center">
+                                        <a href="https://github.com/JaimeCernuda" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors inline-block" title="View on GitHub">
+                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
                                             </svg>
                                         </a>

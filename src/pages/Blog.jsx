@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import matter from 'gray-matter';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
+import { useData } from '../context/DataContext';
 
 const Blog = () => {
     const { theme } = useTheme();
+    const { cache, updateCache } = useData();
     const [headerInfo, setHeaderInfo] = useState(null);
     const [sidebarInfo, setSidebarInfo] = useState(null);
     const [posts, setPosts] = useState([]);
@@ -19,14 +21,20 @@ const Blog = () => {
 
     useEffect(() => {
         const fetchContent = async () => {
+            if (cache.blog) {
+                setHeaderInfo(cache.blog.headerInfo);
+                setSidebarInfo(cache.blog.sidebarInfo);
+                setPosts(cache.blog.posts);
+                setFilteredPosts(cache.blog.posts);
+                setLoading(false);
+                return;
+            }
+
             try {
                 // 1. Fetch Manifest
                 const res = await fetch('/content/blog.md');
                 const text = await res.text();
                 const { data } = matter(text);
-
-                setHeaderInfo(data.header);
-                setSidebarInfo(data.sidebar);
 
                 // 2. Fetch all posts
                 const postPromises = data.posts.map(async (filename) => {
@@ -42,9 +50,17 @@ const Blog = () => {
 
                 const fetchedPosts = await Promise.all(postPromises);
 
-                // SIMULATION: Duplicate posts to demonstrate pagination
-                setPosts(fetchedPosts);
-                setFilteredPosts(fetchedPosts);
+                const blogData = {
+                    headerInfo: data.header,
+                    sidebarInfo: data.sidebar,
+                    posts: fetchedPosts
+                };
+
+                setHeaderInfo(blogData.headerInfo);
+                setSidebarInfo(blogData.sidebarInfo);
+                setPosts(blogData.posts);
+                setFilteredPosts(blogData.posts);
+                updateCache('blog', blogData);
                 setLoading(false);
             } catch (error) {
                 console.error("Error loading blog content:", error);
@@ -53,7 +69,7 @@ const Blog = () => {
         };
 
         fetchContent();
-    }, []);
+    }, [cache.blog, updateCache]);
 
     // Filter Logic
     useEffect(() => {
@@ -134,8 +150,9 @@ const Blog = () => {
                             <>
                                 {currentPosts.map((post, index) => (
                                     <React.Fragment key={index}>
-                                        <article className="flex flex-col gap-4 p-6 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-lg transition-all group">
-                                            <div className="flex items-center gap-3 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                                        <article className="relative flex flex-col gap-4 p-6 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-lg transition-all group">
+                                            <Link to={`/blog/${post.slug}`} state={{ from: 'blog' }} className="absolute inset-0 z-10" aria-label={`Read ${post.title}`}></Link>
+                                            <div className="flex items-center gap-3 text-xs md:text-sm text-gray-500 dark:text-gray-400 relative z-20 pointer-events-none">
                                                 <div className="flex items-center gap-1">
                                                     <span className="material-symbols-outlined text-[16px]">calendar_today</span>
                                                     <span>{post.date}</span>
@@ -147,15 +164,15 @@ const Blog = () => {
                                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                                                 <span>{post.readTime}</span>
                                             </div>
-                                            <Link to={`/blog/${post.slug}`} className="group-hover:text-primary transition-colors">
+                                            <Link to={`/blog/${post.slug}`} state={{ from: 'blog' }} className="group-hover:text-primary transition-colors relative z-20">
                                                 <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
                                                     {post.title}
                                                 </h3>
                                             </Link>
-                                            <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
+                                            <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3 relative z-20 pointer-events-none">
                                                 {post.summary}
                                             </p>
-                                            <Link to={`/blog/${post.slug}`} className="inline-flex items-center gap-1 text-primary font-bold text-sm hover:underline mt-2">
+                                            <Link to={`/blog/${post.slug}`} state={{ from: 'blog' }} className="inline-flex items-center gap-1 text-primary font-bold text-sm hover:underline mt-2 relative z-20">
                                                 Read full article <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                                             </Link>
                                         </article>
@@ -262,7 +279,7 @@ const Blog = () => {
                                 <h4 className="text-base font-bold text-gray-900 dark:text-white mb-4">Popular Reads</h4>
                                 <div className="flex flex-col gap-4">
                                     {popularPosts.map((post, index) => (
-                                        <Link key={index} to={`/blog/${post.slug}`} className="group">
+                                        <Link key={index} to={`/blog/${post.slug}`} state={{ from: 'blog' }} className="group">
                                             <h5 className="text-sm font-semibold text-gray-800 dark:text-gray-300 group-hover:text-primary transition-colors mb-1">{post.title}</h5>
                                             <span className="text-xs text-gray-500 dark:text-gray-400">{post.date}</span>
                                         </Link>

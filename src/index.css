@@ -27,6 +27,37 @@
     background-color: #101622;
     color: #f3f4f6;
   }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    /* gray-300 */
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+    /* gray-400 */
+  }
+
+  html.dark ::-webkit-scrollbar-thumb {
+    background-color: #333d4f;
+    /* border-dark */
+  }
+
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background-color: #4b5563;
+    /* gray-600 */
+  }
 }
 
 /* Tighten Prose Spacing */

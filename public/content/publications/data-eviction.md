@@ -1,7 +1,6 @@
 ---
 title: "Efficient Data Eviction across Multiple Tiers of Storage"
 authors: "Jaime Cernuda, H. Trivino, Hariharan Devarajan, Anthony Kougkas, Xian-He Sun"
-type: Conference
 venue: "SC'19"
 year: 2019
 type: "Poster"

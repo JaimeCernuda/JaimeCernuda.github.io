@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useData } from '../context/DataContext';
 import matter from 'gray-matter';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import CopyToClipboard from '../components/CopyToClipboard';
+import CitationModal from '../components/CitationModal';
 
 const Home = () => {
+  const { cache, updateCache } = useData();
   const [heroData, setHeroData] = useState(null);
   const [statsData, setStatsData] = useState(null);
   const [newsData, setNewsData] = useState([]);
@@ -11,12 +15,24 @@ const Home = () => {
   const [selectedPublications, setSelectedPublications] = useState([]);
   const [featuredPublication, setFeaturedPublication] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [citationPub, setCitationPub] = useState(null);
 
   // Pre-glob all content folders
   const allPubModules = import.meta.glob('/public/content/publications/*.md', { query: '?raw', import: 'default' });
 
   useEffect(() => {
     const fetchData = async () => {
+      if (cache.home) {
+        setHeroData(cache.home.heroData);
+        setStatsData(cache.home.statsData);
+        setNewsData(cache.home.newsData);
+        setFeaturedProjects(cache.home.featuredProjects);
+        setFeaturedPublication(cache.home.featuredPublication);
+        setSelectedPublications(cache.home.selectedPublications);
+        setLoading(false);
+        return;
+      }
+
       try {
         // 1. Fetch Home Data (Hero & Stats)
         const homeRes = await fetch('/content/home.md');
@@ -48,6 +64,7 @@ const Home = () => {
         setFeaturedProjects(projects);
 
         // 3.5 Fetch Featured Publication
+        let featPub = null;
         if (homeData.featured_publication) {
           const slug = homeData.featured_publication;
           // Find the path for this slug
@@ -56,7 +73,8 @@ const Home = () => {
             try {
               const rawContent = await allPubModules[pubPath]();
               const { data } = matter(rawContent);
-              setFeaturedPublication({ ...data, slug });
+              featPub = { ...data, slug };
+              setFeaturedPublication(featPub);
             } catch (e) {
               console.error("Error loading featured publication", e);
             }
@@ -94,6 +112,15 @@ const Home = () => {
 
         setSelectedPublications(filteredPubs);
 
+        updateCache('home', {
+          heroData: homeData.hero,
+          statsData: homeData.stats,
+          newsData: newsContent.news || [],
+          featuredProjects: projects,
+          featuredPublication: featPub,
+          selectedPublications: filteredPubs
+        });
+
         setLoading(false);
       } catch (error) {
         console.error("Error loading home content:", error);
@@ -102,7 +129,20 @@ const Home = () => {
     };
 
     fetchData();
-  }, []);
+  }, [cache.home, updateCache]);
+
+  const handleScrollToCollaborate = (e) => {
+    e.preventDefault();
+    const collaborateSection = document.getElementById('collaborate');
+    if (collaborateSection) {
+      collaborateSection.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const footer = document.querySelector('footer');
+      if (footer) {
+        footer.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   if (loading) return <div className="p-20 text-center text-gray-500">Loading content...</div>;
   if (!heroData) return <div className="p-20 text-center text-gray-500">Error loading content.</div>;
@@ -128,10 +168,10 @@ const Home = () => {
       <section className="relative pt-10 pb-12 lg:pt-20 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
         <div className="flex flex-col-reverse lg:grid lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-8 flex flex-col gap-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-light border border-gray-300 w-fit dark:bg-surface-dark dark:border-gray-800">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span className="text-xs font-medium text-gray-600 tracking-wide uppercase dark:text-gray-300">{heroData.status}</span>
-            </div>
+            <a href="#collaborate" onClick={handleScrollToCollaborate} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-light border border-gray-300 w-fit dark:bg-surface-dark dark:border-gray-800 hover:border-primary/50 hover:shadow-sm transition-all cursor-pointer group">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse group-hover:scale-125 transition-transform"></span>
+              <span className="text-xs font-medium text-gray-600 tracking-wide uppercase dark:text-gray-300 group-hover:text-primary transition-colors">{heroData.status}</span>
+            </a>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">
               {heroData.title}
             </h1>
@@ -140,12 +180,31 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-6 mt-6 text-gray-500 dark:text-gray-400">
-              {heroData.social_links && heroData.social_links.map((link, index) => (
-                <a key={index} href={link.url} target={link.url.startsWith('http') ? "_blank" : undefined} rel={link.url.startsWith('http') ? "noopener noreferrer" : undefined} className="flex items-center gap-2 hover:text-primary transition-colors">
-                  <span className="material-symbols-outlined text-xl">{link.icon}</span>
-                  <span className="text-sm font-medium">{link.name}</span>
-                </a>
-              ))}
+              {heroData.social_links && heroData.social_links.map((link, index) => {
+                if (link.url.startsWith('mailto:')) {
+                  const email = link.url.replace('mailto:', '');
+                  return (
+                    <CopyToClipboard key={index} text={email} className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer">
+                      <span className="material-symbols-outlined text-xl">{link.icon}</span>
+                      <span className="text-sm font-medium">{link.name}</span>
+                    </CopyToClipboard>
+                  );
+                }
+                if (link.name === "Open for collaborations") {
+                  return (
+                    <a key={index} href="#collaborate" onClick={handleScrollToCollaborate} className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer">
+                      <span className="material-symbols-outlined text-xl">{link.icon}</span>
+                      <span className="text-sm font-medium">{link.name}</span>
+                    </a>
+                  )
+                }
+                return (
+                  <a key={index} href={link.url} target={link.url.startsWith('http') ? "_blank" : undefined} rel={link.url.startsWith('http') ? "noopener noreferrer" : undefined} className="flex items-center gap-2 hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-xl">{link.icon}</span>
+                    <span className="text-sm font-medium">{link.name}</span>
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -235,8 +294,11 @@ const Home = () => {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Featured Research</h2>
                 </div>
-                <div className="group relative bg-surface-light dark:bg-surface-dark rounded-2xl overflow-hidden border border-gray-200 dark:border-border-dark shadow-lg hover:shadow-xl transition-all">
-                  <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="group relative bg-surface-light dark:bg-surface-dark rounded-2xl overflow-hidden border border-gray-200 dark:border-border-dark shadow-lg hover:shadow-xl hover:border-primary/50 transition-all">
+                  {/* Main Link for the entire card */}
+                  <Link to={`/publications/${featuredPublication.slug}`} state={{ from: 'home' }} className="absolute inset-0 z-0" aria-label={`View details for ${featuredPublication.title}`}></Link>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 relative z-10 pointer-events-none">
                     <div className="h-64 md:h-auto bg-white dark:bg-gray-800 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-200 dark:border-border-dark">
                       <img
                         src="/images/publications/hstream/figure3.png"
@@ -249,15 +311,13 @@ const Home = () => {
                         <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">{featuredPublication.venue}</span>
                         <span className="text-xs font-mono text-gray-500">{featuredPublication.year}</span>
                       </div>
-                      <Link to={`/publications/${featuredPublication.slug}`} state={{ from: 'home' }}>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 leading-tight group-hover:text-primary transition-colors">
-                          {featuredPublication.title}
-                        </h3>
-                      </Link>
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 leading-tight group-hover:text-primary transition-colors">
+                        {featuredPublication.title}
+                      </h3>
                       <div className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-3">
                         {formatAuthors(featuredPublication.authors)}
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex gap-4 pointer-events-auto">
                         <Link
                           to={`/publications/${featuredPublication.slug}`}
                           state={{ from: 'home' }}
@@ -275,7 +335,7 @@ const Home = () => {
             {/* Selected Publications */}
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Publications</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Selected Publications</h2>
                 <Link to="/publications" className="hidden sm:flex items-center text-sm font-bold text-primary hover:underline">
                   View All <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
                 </Link>
@@ -283,46 +343,54 @@ const Home = () => {
               <div className="flex flex-col gap-4">
                 {selectedPublications.map((pub, index) => (
                   <div key={index} className="group relative p-5 rounded-lg border border-gray-200 dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary/40 transition-all flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
-                    <Link to={`/publications/${pub.slug}`} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
+                    <Link to={`/publications/${pub.slug}`} state={{ from: 'home' }} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
                     <div className="relative z-20 pointer-events-none">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">{pub.venue}</span>
                         <span className="text-xs font-mono text-gray-500">{pub.year}</span>
                       </div>
-                      <Link
-                        to={`/publications/${pub.slug}`}
-                        state={{ from: 'home' }}
-                        className="block pointer-events-auto"
-                      >
-                        <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors leading-snug mb-1">
-                          {pub.title}
-                        </h4>
-                      </Link>
+                      <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors leading-snug mb-1">
+                        {pub.title}
+                      </h4>
                       <div className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
                         {formatAuthors(pub.authors)}
                       </div>
                     </div>
-                    <div className="flex gap-3 shrink-0 relative z-20 pointer-events-auto">
+
+                    {/* 2x2 Grid for Buttons */}
+                    <div className="grid grid-cols-2 gap-2 shrink-0 relative z-20 pointer-events-auto w-full sm:w-auto">
                       <Link
                         to={`/publications/${pub.slug}`}
                         state={{ from: 'home' }}
                         className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
                       >
-                        <span className="material-symbols-outlined text-sm">article</span> Read Paper
+                        <span className="w-5 inline-flex justify-center items-center"><span className="material-symbols-outlined text-[18px]">article</span></span> Read Paper
                       </Link>
                       {pub.links?.pdf && (
                         <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
-                          <span className="material-symbols-outlined text-sm">description</span> PDF
+                          <span className="w-5 inline-flex justify-center items-center"><span className="material-symbols-outlined text-[18px]">description</span></span> PDF
                         </a>
                       )}
                       {pub.links?.code && (
                         <a href={pub.links.code} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
-                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
-                          </svg>
+                          <span className="w-5 inline-flex justify-center items-center">
+                            <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                            </svg>
+                          </span>
                           Code
                         </a>
                       )}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setCitationPub(pub);
+                        }}
+                        className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1 cursor-pointer"
+                      >
+                        <span className="w-5 inline-flex justify-center items-center"><span className="material-symbols-outlined text-[18px]">format_quote</span></span> Cite
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -393,6 +461,14 @@ const Home = () => {
 
         </div>
       </section>
+
+      {/* Citation Modal */}
+      {citationPub && (
+        <CitationModal
+          publication={citationPub}
+          onClose={() => setCitationPub(null)}
+        />
+      )}
     </div>
   );
 };

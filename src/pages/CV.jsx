@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useData } from '../context/DataContext';
 import { Link } from 'react-router-dom';
 import matter from 'gray-matter';
 
 import CitationModal from '../components/CitationModal';
+import CopyToClipboard from '../components/CopyToClipboard';
 
 const CV = () => {
+    const { cache, updateCache } = useData();
     const [content, setContent] = useState(null);
     const [activeSection, setActiveSection] = useState('');
     const [publications, setPublications] = useState([]);
@@ -28,6 +31,12 @@ const CV = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            if (cache.cv) {
+                setContent(cache.cv.content);
+                setPublications(cache.cv.publications);
+                return;
+            }
+
             try {
                 // 1. Fetch CV Content
                 const res = await fetch('/content/cv.md');
@@ -54,13 +63,18 @@ const CV = () => {
                 allPubs.sort((a, b) => b.year - a.year);
                 setPublications(allPubs);
 
+                updateCache('cv', {
+                    content: data,
+                    publications: allPubs
+                });
+
             } catch (error) {
                 console.error("Error loading CV content:", error);
             }
         };
 
         fetchData();
-    }, []);
+    }, [cache.cv, updateCache]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -88,7 +102,7 @@ const CV = () => {
         <div className="flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
                 {/* Sidebar */}
-                <aside className="sidebar lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-8rem)] overflow-y-auto space-y-6 scrollbar-hide">
+                <aside className="sidebar lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-8rem)] overflow-y-auto space-y-6">
                     <div className="bg-surface-light dark:bg-surface-dark rounded-xl p-6 shadow-sm border border-gray-200 dark:border-border-dark transition-colors">
                         <div className="flex flex-col items-center text-center">
                             <div className="relative w-32 h-32 mb-4 group">
@@ -103,15 +117,15 @@ const CV = () => {
                             <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{content.profile.name}</h1>
                             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 whitespace-pre-line">{content.profile.title}</p>
                             <div className="w-full space-y-3 mb-6">
-                                <a href={`mailto:${content.profile.email}`} className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                                <CopyToClipboard text={content.profile.email} className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors cursor-pointer w-full justify-center">
                                     <span className="material-symbols-outlined text-[20px]">mail</span>
                                     {content.profile.email}
-                                </a>
-                                <a href="#" className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                                </CopyToClipboard>
+                                <a href="#" className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors justify-center">
                                     <span className="material-symbols-outlined text-[20px]">language</span>
                                     {content.profile.website}
                                 </a>
-                                <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+                                <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 justify-center">
                                     <span className="material-symbols-outlined text-[20px]">location_on</span>
                                     {content.profile.location}
                                 </div>
@@ -243,11 +257,11 @@ const CV = () => {
                         <div className="space-y-4">
                             {publications.map((pub, index) => (
                                 <div key={index} className="group relative bg-surface-light dark:bg-surface-dark p-5 rounded-lg border border-gray-200 dark:border-border-dark shadow-sm hover:border-primary/30 transition-all">
-                                    <Link to={`/publications/${pub.slug}`} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
+                                    <Link to={`/publications/${pub.slug}`} state={{ from: 'cv' }} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
                                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4 relative z-20 pointer-events-none">
                                         <div>
                                             <h3 className="font-bold text-base text-gray-900 dark:text-white group-hover:text-primary transition-colors pointer-events-auto">
-                                                <Link to={`/publications/${pub.slug}`}>{pub.title}</Link>
+                                                <Link to={`/publications/${pub.slug}`} state={{ from: 'cv' }}>{pub.title}</Link>
                                             </h3>
                                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                                 {pub.authors}
@@ -260,20 +274,23 @@ const CV = () => {
                                         <div className="grid grid-cols-2 gap-3 w-fit shrink-0 pointer-events-auto">
                                             <Link
                                                 to={`/publications/${pub.slug}`}
+                                                state={{ from: 'cv' }}
                                                 className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
                                             >
-                                                <span className="material-symbols-outlined text-[18px]">article</span> Read Paper
+                                                <span className="w-5 inline-flex justify-center items-center"><span className="material-symbols-outlined text-[18px]">article</span></span> Read Paper
                                             </Link>
                                             {pub.links?.pdf && (
                                                 <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
-                                                    <span className="material-symbols-outlined text-[18px]">description</span> PDF
+                                                    <span className="w-5 inline-flex justify-center items-center"><span className="material-symbols-outlined text-[18px]">description</span></span> PDF
                                                 </a>
                                             )}
                                             {pub.links?.code && (
                                                 <a href={pub.links.code} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
-                                                    <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
-                                                    </svg>
+                                                    <span className="w-5 inline-flex justify-center items-center">
+                                                        <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                                                        </svg>
+                                                    </span>
                                                     Code
                                                 </a>
                                             )}
@@ -285,7 +302,7 @@ const CV = () => {
                                                 }}
                                                 className="text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1 cursor-pointer"
                                             >
-                                                <span className="material-symbols-outlined text-[18px]">format_quote</span> Cite
+                                                <span className="w-5 inline-flex justify-center items-center"><span className="material-symbols-outlined text-[18px]">format_quote</span></span> Cite
                                             </button>
                                         </div>
                                     </div>

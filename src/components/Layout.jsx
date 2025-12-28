@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import matter from 'gray-matter';
 import Navbar from './Navbar';
+import CopyToClipboard from './CopyToClipboard';
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -35,7 +36,7 @@ const Layout = ({ children }) => {
                 // Home Page Footer - Contact Focused
                 <>
                     {/* Let's Collaborate Section - Stats Section Color */}
-                    <section className="mt-auto border-t border-gray-200 dark:border-border-dark bg-surface-light-lighter dark:bg-surface-dark/30 py-8 lg:py-12 transition-colors">
+                    <section id="collaborate" className="mt-auto border-t border-gray-200 dark:border-border-dark bg-surface-light-lighter dark:bg-surface-dark/30 py-8 lg:py-12 transition-colors">
                         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="flex flex-col items-center text-center gap-6">
                                 <div>
@@ -43,10 +44,13 @@ const Layout = ({ children }) => {
                                     <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-lg mx-auto text-lg">
                                         {footerData.contact.text}
                                     </p>
-                                    <a href={`mailto:${footerData.contact.email}`} className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary-hover text-white text-lg font-bold transition-all shadow-lg shadow-primary/25">
+                                    <CopyToClipboard
+                                        text={footerData.contact.email}
+                                        className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary-hover text-white text-lg font-bold transition-all shadow-lg shadow-primary/25 cursor-pointer"
+                                    >
                                         <span className="material-symbols-outlined mr-2">mail</span>
                                         {footerData.contact.button_text}
-                                    </a>
+                                    </CopyToClipboard>
                                 </div>
                             </div>
                         </div>
@@ -58,11 +62,21 @@ const Layout = ({ children }) => {
                                 {footerData.copyright}
                             </p>
                             <div className="flex gap-4">
-                                {footerData.social_links.map((link, index) => (
-                                    <a key={index} href={link.url} className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title={link.name}>
-                                        <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
-                                    </a>
-                                ))}
+                                {footerData.social_links.map((link, index) => {
+                                    if (link.url.startsWith('mailto:')) {
+                                        const email = link.url.replace('mailto:', '');
+                                        return (
+                                            <CopyToClipboard key={index} text={email} className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors cursor-pointer" title={link.name}>
+                                                <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+                                            </CopyToClipboard>
+                                        );
+                                    }
+                                    return (
+                                        <a key={index} href={link.url} className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title={link.name}>
+                                            <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+                                        </a>
+                                    );
+                                })}
                             </div>
                         </div>
                     </footer>
@@ -75,11 +89,21 @@ const Layout = ({ children }) => {
                             {footerData.copyright}
                         </p>
                         <div className="flex gap-4 text-gray-500 dark:text-gray-400">
-                            {footerData.social_links.map((link, index) => (
-                                <a key={index} href={link.url} className="hover:text-primary transition-colors" title={link.name}>
-                                    <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
-                                </a>
-                            ))}
+                            {footerData.social_links.map((link, index) => {
+                                if (link.url.startsWith('mailto:')) {
+                                    const email = link.url.replace('mailto:', '');
+                                    return (
+                                        <CopyToClipboard key={index} text={email} className="hover:text-primary transition-colors cursor-pointer" title={link.name}>
+                                            <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+                                        </CopyToClipboard>
+                                    );
+                                }
+                                return (
+                                    <a key={index} href={link.url} className="hover:text-primary transition-colors" title={link.name}>
+                                        <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+                                    </a>
+                                );
+                            })}
                         </div>
                     </div>
                 </footer>

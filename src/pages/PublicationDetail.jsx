@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import matter from 'gray-matter';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import CitationModal from '../components/CitationModal';
+import TableOfContents from '../components/TableOfContents';
 
 const PublicationDetail = () => {
     const { slug } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
     const [content, setContent] = useState('');
     const [metadata, setMetadata] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [toc, setToc] = useState([]);
     const [activeCitation, setActiveCitation] = useState(null);
 
     // Determine back link destination and label
-    const backLink = location.state?.from === 'home' ? '/' : '/publications';
-    const backLabel = location.state?.from === 'home' ? 'Back to Home' : 'Back to Publications';
-
-    // Helper for consistent slug generation
-    const generateSlug = (text) => {
-        return text
-            .toLowerCase()
-            .trim()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/[\s_-]+/g, '-')
-            .replace(/^-+|-+$/g, '');
-    };
+    const from = location.state?.from;
+    const backLink = from ? (from === 'home' ? '/' : `/${from}`) : '/publications';
+    const backLabel = from
+        ? `Back to ${from.charAt(0).toUpperCase() + from.slice(1).replace('-', ' ')}`
+        : 'Back to Publications';
 
     useEffect(() => {
         const fetchPublication = async () => {
@@ -35,18 +29,6 @@ const PublicationDetail = () => {
                 const { data, content } = matter(module.default);
                 setMetadata(data);
                 setContent(content);
-
-                // Extract headings for TOC
-                const headings = content.match(/^##\s+(.+)$/gm);
-                if (headings) {
-                    const tocItems = headings.map(h => {
-                        const title = h.replace(/^##\s+/, '');
-                        const id = generateSlug(title);
-                        return { title, id };
-                    });
-                    setToc(tocItems);
-                }
-
                 setLoading(false);
             } catch (error) {
                 console.error("Error loading publication:", error);
@@ -68,30 +50,6 @@ const PublicationDetail = () => {
         }
     }, [loading, location.hash]);
 
-    // Scroll Spy for TOC
-    const [activeSection, setActiveSection] = useState('');
-    useEffect(() => {
-        if (loading || toc.length === 0) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setActiveSection(entry.target.id);
-                    }
-                });
-            },
-            { rootMargin: '-100px 0px -66% 0px' }
-        );
-
-        toc.forEach((item) => {
-            const element = document.getElementById(item.id);
-            if (element) observer.observe(element);
-        });
-
-        return () => observer.disconnect();
-    }, [loading, toc]);
-
     if (loading) return <div className="p-10 text-center">Loading...</div>;
     if (!metadata) return <div className="p-10 text-center">Publication not found</div>;
 
@@ -111,9 +69,20 @@ const PublicationDetail = () => {
         ));
     };
 
+    const handleBack = (e) => {
+        if (from) {
+            e.preventDefault();
+            navigate(-1);
+        }
+    };
+
     return (
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <Link to={backLink} className="inline-flex items-center gap-2 text-primary hover:text-blue-600 transition-colors mb-8 font-medium">
+        <div id="top" className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <Link
+                to={backLink}
+                onClick={handleBack}
+                className="inline-flex items-center gap-2 text-primary hover:text-blue-600 transition-colors mb-8 font-medium"
+            >
                 <span className="material-symbols-outlined text-[20px]">arrow_back</span>
                 {backLabel}
             </Link>
@@ -121,31 +90,7 @@ const PublicationDetail = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 {/* Sidebar TOC */}
                 <aside className="lg:col-span-3 order-2 lg:order-1">
-                    <div className="sticky top-24 space-y-8">
-                        {toc.length > 0 && (
-                            <div className="bg-surface-light dark:bg-surface-dark rounded-xl p-6 border border-gray-200 dark:border-border-dark">
-                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">On this page</h3>
-                                <nav className="space-y-2 text-sm border-l border-gray-200 dark:border-gray-800">
-                                    {toc.map((item, index) => (
-                                        <a
-                                            key={index}
-                                            href={`#${item.id}`}
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' });
-                                            }}
-                                            className={`block pl-4 py-1 border-l-2 -ml-[2px] transition-colors ${activeSection === item.id
-                                                    ? 'border-primary text-primary font-medium'
-                                                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            {item.title}
-                                        </a>
-                                    ))}
-                                </nav>
-                            </div>
-                        )}
-                    </div>
+                    <TableOfContents content={content} title={metadata.title} />
                 </aside>
 
                 {/* Main Content */}
@@ -172,6 +117,16 @@ const PublicationDetail = () => {
                         <div className="text-lg leading-relaxed mb-8">
                             {formatAuthors(metadata.authors)}
                         </div>
+
+                        {metadata.tags && (
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                {metadata.tags.map((tag, i) => (
+                                    <span key={i} className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
 
                         <div className="flex flex-wrap gap-4">
                             {metadata.links?.pdf && (

@@ -9,7 +9,9 @@ tags:
   - Active Storage
   - Data Analysis
   - Scientific Computing
-github: "https://github.com/grc-iit/coeus"
+links:
+  website: "https://grc.iit.edu/research/projects/coeus"
+  code: "https://github.com/grc-iit/coeus-adapter"
 image: "/images/projects/coeus.png"
 ---
 

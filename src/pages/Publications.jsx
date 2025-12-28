@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import matter from 'gray-matter';
 import { Link } from 'react-router-dom';
+import { useData } from '../context/DataContext';
 
 const CitationModal = ({ citation, onClose }) => {
     const [copied, setCopied] = useState(false);
@@ -45,6 +46,7 @@ const CitationModal = ({ citation, onClose }) => {
 };
 
 const Publications = () => {
+    const { cache, updateCache } = useData();
     const [headerInfo, setHeaderInfo] = useState(null);
     const [publications, setPublications] = useState([]);
     const [filteredPublications, setFilteredPublications] = useState([]);
@@ -54,6 +56,7 @@ const Publications = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedYear, setSelectedYear] = useState('All Years');
     const [selectedTag, setSelectedTag] = useState('All Topics');
+    const [selectedType, setSelectedType] = useState('All Types');
 
     // View State
     const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
@@ -64,12 +67,19 @@ const Publications = () => {
 
     useEffect(() => {
         const fetchContent = async () => {
+            if (cache.publications) {
+                setHeaderInfo(cache.publications.headerInfo);
+                setPublications(cache.publications.publications);
+                setFilteredPublications(cache.publications.publications);
+                setLoading(false);
+                return;
+            }
+
             try {
                 // Fetch header info and folder path
                 const res = await fetch('/content/publications.md');
                 const text = await res.text();
                 const { data } = matter(text);
-                setHeaderInfo(data.header);
 
                 // Get folder name from markdown (e.g., "publications")
                 const folderName = data.folder || 'publications';
@@ -101,8 +111,15 @@ const Publications = () => {
                 // Sort by year descending
                 fetchedPubs.sort((a, b) => b.year - a.year);
 
-                setPublications(fetchedPubs);
-                setFilteredPublications(fetchedPubs);
+                const publicationsData = {
+                    headerInfo: data.header,
+                    publications: fetchedPubs
+                };
+
+                setHeaderInfo(publicationsData.headerInfo);
+                setPublications(publicationsData.publications);
+                setFilteredPublications(publicationsData.publications);
+                updateCache('publications', publicationsData);
                 setLoading(false);
             } catch (error) {
                 console.error("Error loading publications:", error);
@@ -111,7 +128,7 @@ const Publications = () => {
         };
 
         fetchContent();
-    }, []);
+    }, [cache.publications, updateCache]);
 
     // Filter Logic
     useEffect(() => {
@@ -137,8 +154,12 @@ const Publications = () => {
             result = result.filter(pub => pub.tags && pub.tags.includes(selectedTag));
         }
 
+        if (selectedType !== 'All Types') {
+            result = result.filter(pub => (pub.type || 'Conference') === selectedType);
+        }
+
         setFilteredPublications(result);
-    }, [searchQuery, selectedYear, selectedTag, publications]);
+    }, [searchQuery, selectedYear, selectedTag, selectedType, publications]);
 
     const formatAuthors = (authors) => {
         if (!authors) return null;
@@ -159,7 +180,9 @@ const Publications = () => {
     if (loading) return <div className="p-10 text-center">Loading...</div>;
 
     const years = ['All Years', ...new Set(publications.map(p => p.year).filter(y => y))].sort().reverse();
-    const tags = ['All Topics', ...new Set(publications.flatMap(p => p.tags || []).filter(t => t))];
+    const uniqueTags = [...new Set(publications.flatMap(p => p.tags || []).filter(t => t))].sort();
+    const tags = ['All Topics', ...uniqueTags];
+    const types = ['All Types', ...new Set(publications.map(p => p.type || 'Conference'))].sort();
 
     const featuredPub = publications.find(p => p.featured);
 
@@ -174,9 +197,9 @@ const Publications = () => {
             </div>
 
             {/* Featured Publication */}
-            {featuredPub && (
-                <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark relative group">
-                    <Link to={`/publications/${featuredPub.slug}`} className="absolute inset-0 z-10" aria-label={`Read ${featuredPub.title}`}></Link>
+            {featuredPub && selectedYear === 'All Years' && selectedTag === 'All Topics' && selectedType === 'All Types' && (
+                <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark relative group hover:border-primary/50 transition-colors">
+                    <Link to={`/publications/${featuredPub.slug}`} state={{ from: 'publications' }} className="absolute inset-0 z-10" aria-label={`Read ${featuredPub.title}`}></Link>
                     <div className="flex flex-col lg:flex-row relative z-20 pointer-events-none">
                         <div className="w-full lg:w-2/5 h-64 lg:h-auto bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center p-8 relative">
                             <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
@@ -190,16 +213,16 @@ const Publications = () => {
                                 <span className="text-gray-400 text-sm">•</span>
                                 <span className="text-gray-500 text-sm">{featuredPub.year}</span>
                             </div>
-                            <Link to={`/publications/${featuredPub.slug}`} className="group">
+                            <Link to={`/publications/${featuredPub.slug}`} state={{ from: 'publications' }} className="pointer-events-auto">
                                 <h2 className="text-2xl md:text-3xl font-bold leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors">
                                     {featuredPub.title}
                                 </h2>
                             </Link>
                             <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed line-clamp-3">
-                                {featuredPub.abstract.split('## Full Paper')[0].replace('# Abstract', '').trim()}
+                                {featuredPub.description || featuredPub.abstract.split('## Full Paper')[0].replace('# Abstract', '').trim()}
                             </p>
                             <div className="flex flex-wrap gap-3 mt-2 pointer-events-auto">
-                                <Link to={`/publications/${featuredPub.slug}`} className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-sm shadow-primary/30">
+                                <Link to={`/publications/${featuredPub.slug}`} state={{ from: 'publications' }} className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-sm shadow-primary/30">
                                     <span>Read Paper</span>
                                 </Link>
                                 {featuredPub.links?.pdf && (
@@ -230,6 +253,13 @@ const Publications = () => {
                             className="h-10 px-3 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             {years.map(year => <option key={year} value={year}>{year}</option>)}
+                        </select>
+                        <select
+                            value={selectedType}
+                            onChange={(e) => setSelectedType(e.target.value)}
+                            className="h-10 px-3 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                            {types.map(type => <option key={type} value={type}>{type}</option>)}
                         </select>
                         <select
                             value={selectedTag}
@@ -276,18 +306,18 @@ const Publications = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredPublications.map((pub, index) => (
                         <div key={index} className="group relative flex flex-col bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors p-6 gap-4">
-                            <Link to={`/publications/${pub.slug}`} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
+                            <Link to={`/publications/${pub.slug}`} state={{ from: 'publications' }} className="absolute inset-0 z-10" aria-label={`View details for ${pub.title}`}></Link>
                             <div className="flex justify-between items-start relative z-20 pointer-events-none">
                                 <div className="flex flex-col">
                                     <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{pub.venue}</span>
-                                    {pub.type && <span className="text-xs text-gray-500">{pub.type}</span>}
+                                    <span className="text-xs text-gray-500">{pub.type || 'Conference'}</span>
                                 </div>
                                 <span className="text-xs font-mono text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">{pub.year}</span>
                             </div>
 
                             <div className="block relative z-20 pointer-events-none">
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors pointer-events-auto">
-                                    <Link to={`/publications/${pub.slug}`}>{pub.title}</Link>
+                                    <Link to={`/publications/${pub.slug}`} state={{ from: 'publications' }}>{pub.title}</Link>
                                 </h3>
                             </div>
 
@@ -298,12 +328,12 @@ const Publications = () => {
                             {pub.tags && (
                                 <div className="flex flex-wrap gap-1.5 mt-1 relative z-20 pointer-events-none">
                                     {pub.tags.slice(0, 3).map(tag => (
-                                        <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                                        <span key={tag} className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400">
                                             {tag}
                                         </span>
                                     ))}
                                     {pub.tags.length > 3 && (
-                                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400">
                                             +{pub.tags.length - 3}
                                         </span>
                                     )}
@@ -330,7 +360,7 @@ const Publications = () => {
                                         </button>
                                     )}
                                 </div>
-                                <Link to={`/publications/${pub.slug}`} className="text-xs font-bold text-primary hover:underline">
+                                <Link to={`/publications/${pub.slug}`} state={{ from: 'publications' }} className="text-xs font-bold text-primary hover:underline">
                                     Read Paper
                                 </Link>
                             </div>
@@ -342,44 +372,52 @@ const Publications = () => {
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 dark:bg-surface-dark-lighter text-gray-900 dark:text-white font-bold uppercase tracking-wider text-xs">
                             <tr>
-                                <th className="px-6 py-4">Year</th>
+                                <th className="px-6 py-4 text-center">Year</th>
                                 <th className="px-6 py-4">Title & Authors</th>
                                 <th className="px-6 py-4">Venue</th>
-                                <th className="px-6 py-4">Links</th>
+                                <th className="px-6 py-4">Tags</th>
+                                <th className="px-6 py-4 text-center">Links</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 dark:divide-gray-800 bg-white dark:bg-surface-dark">
                             {filteredPublications.map((pub, index) => (
                                 <tr key={index} className="hover:bg-gray-50 dark:hover:bg-surface-dark-lighter transition-colors">
-                                    <td className="px-6 py-4 font-mono text-gray-500">{pub.year}</td>
+                                    <td className="px-6 py-4 font-mono text-gray-500 text-center">{pub.year}</td>
                                     <td className="px-6 py-4">
-                                        <Link to={`/publications/${pub.slug}`} className="font-bold text-gray-900 dark:text-white mb-1 hover:text-primary block">
+                                        <Link to={`/publications/${pub.slug}`} state={{ from: 'publications' }} className="font-bold text-gray-900 dark:text-white mb-1 hover:text-primary block">
                                             {pub.title}
                                         </Link>
                                         <div className="text-gray-500 dark:text-gray-400 text-xs">
                                             {formatAuthors(pub.authors)}
                                         </div>
-                                        {pub.tags && (
-                                            <div className="flex flex-wrap gap-1 mt-2">
-                                                {pub.tags.slice(0, 3).map(tag => (
-                                                    <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500">
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        )}
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className="font-medium text-gray-700 dark:text-gray-300">
                                             {pub.venue}
                                         </span>
-                                        {pub.type && <div className="text-xs text-gray-500 mt-1">{pub.type}</div>}
+                                        <div className="text-xs text-gray-500 mt-1">{pub.type || 'Conference'}</div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="flex gap-3">
+                                        {pub.tags && (
+                                            <div className="flex flex-wrap gap-1">
+                                                {pub.tags.slice(0, 3).map(tag => (
+                                                    <span key={tag} className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                                {pub.tags.length > 3 && (
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400">
+                                                        +{pub.tags.length - 3}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="flex gap-3 justify-center">
                                             {pub.links?.pdf && (
                                                 <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary transition-colors" title="PDF">
-                                                    <span className="material-symbols-outlined">description</span>
+                                                    <span className="material-symbols-outlined text-[20px]">description</span>
                                                 </a>
                                             )}
                                             {pub.links?.code && (
@@ -390,8 +428,8 @@ const Publications = () => {
                                                 </a>
                                             )}
                                             {pub.citation && (
-                                                <button onClick={() => setActiveCitation(pub.citation)} className="text-gray-400 hover:text-primary transition-colors" title="Cite">
-                                                    <span className="material-symbols-outlined">format_quote</span>
+                                                <button onClick={() => setActiveCitation(pub.citation)} className="text-gray-400 hover:text-primary transition-colors cursor-pointer" title="Cite">
+                                                    <span className="material-symbols-outlined text-[20px]">format_quote</span>
                                                 </button>
                                             )}
                                         </div>

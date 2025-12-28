@@ -48,7 +48,11 @@ const MarkdownRenderer = ({ fileName, content }) => {
                     const id = generateSlug(children);
                     return <h2 id={id} {...props} className="text-2xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 scroll-mt-24">{children}</h2>
                 },
-                h3: ({ node, children, ...props }) => <h3 {...props} className="text-xl font-bold mt-6 mb-2 text-gray-900 dark:text-white scroll-mt-24">{children}</h3>,
+                h3: ({ node, children, ...props }) => {
+                    // Generate ID from children text for TOC support
+                    const id = generateSlug(children);
+                    return <h3 id={id} {...props} className="text-xl font-bold mt-6 mb-2 text-gray-900 dark:text-white scroll-mt-24">{children}</h3>
+                },
                 p: ({ node, children }) => {
                     // Check if any child is an image
                     const hasImage = node.children.some(child => child.tagName === 'img');
