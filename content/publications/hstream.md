@@ -1,6 +1,7 @@
 ﻿---
 title: "HStream: A hierarchical data streaming engine for high-throughput scientific applications"
 authors: "Jaime Cernuda, Jie Ye, Anthony Kougkas, Xian-He Sun"
+type: Conference
 venue: "ICPP'24"
 year: 2024
 featured: true

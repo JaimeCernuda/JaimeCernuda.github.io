@@ -1,6 +1,7 @@
 const e=`\uFEFF---
 title: "Viper: A High-Performance I/O Framework for Transparently Updating, Storing, and Transferring Deep Neural Network Models"
 authors: "Jie Ye, Jaime Cernuda, Neeraj Rajesh, Keith Bateman, Orcun Yildiz, Tom Peterka, Arnur Nigmetov, Dmitriy Morozov, Xian-He Sun, Anthony Kougkas"
+type: Conference
 venue: "ICPP'24"
 year: 2024
 featured: false

@@ -1,6 +1,7 @@
 const e=`\uFEFF---
 title: "DaYu: Optimizing Distributed Scientific Workflows by Decoding Dataflow Semantics and Dynamics"
 authors: "Meng Tang, Jaime Cernuda, Jie Ye, Luanzheng Guo, Nathan R. Tallent, Anthony Kougkas, Xian-He Sun"
+type: Conference
 venue: "CLUSTER'24"
 year: 2024
 featured: false

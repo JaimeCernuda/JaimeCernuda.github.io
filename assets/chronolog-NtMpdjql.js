@@ -1,6 +1,7 @@
 const e=`\uFEFF---
 title: "ChronoLog: A Distributed Shared Tiered Log Store with Time-based Data Ordering"
 authors: "Anthony Kougkas, Hariharan Devarajan, Keith Bateman, Jaime Cernuda, Neeraj Rajesh, Xian-He Sun"
+type: Conference
 venue: "MSST'20"
 year: 2020
 featured: false

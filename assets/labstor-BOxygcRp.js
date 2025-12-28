@@ -1,6 +1,7 @@
 const e=`\uFEFF---
 title: "LabStor: A Modular and Extensible Platform for Developing High-Performance, Customized I/O Stacks in Userspace"
 authors: "Luke Logan, Jaime Cernuda Garcia, Jay Lofstead, Xian-He Sun, Anthony Kougkas"
+type: Conference
 venue: "SC'22"
 year: 2022
 featured: false

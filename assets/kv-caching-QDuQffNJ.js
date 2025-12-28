@@ -1,6 +1,7 @@
 const e=`\uFEFF---
 title: "Characterizing the Behavior and Impact of KV Caching on Transformer Inferences under Concurrency"
 authors: "Jie Ye, Jaime Cernuda, Avinash Maurya, Xian-He Sun, Anthony Kougkas, Bogdan Nicolae"
+type: Conference
 venue: "IPDPS'25"
 year: 2025
 featured: false

@@ -1,6 +1,7 @@
 const e=`\uFEFF---
 title: "HFlow: A Dynamic and Elastic Multi-Layered Data Forwarder"
 authors: "Jaime Cernuda, Hariharan Devarajan, Luke Logan, Keith Bateman, Neeraj Rajesh, Jie Ye, Anthony Kougkas, Xian-He Sun"
+type: Conference
 venue: "CLUSTER'21"
 year: 2021
 featured: false

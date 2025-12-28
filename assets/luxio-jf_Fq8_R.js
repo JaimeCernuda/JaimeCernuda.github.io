@@ -1,6 +1,7 @@
 const e=`\uFEFF---
 title: "LuxIO: Intelligent Resource Provisioning and Auto-Configuration for Storage Services"
 authors: "Keith Bateman, Neeraj Rajesh, Jaime Cernuda Garcia, Luke Logan, Jie Ye, Stephen Herbein, Anthony Kougkas, Xian-He Sun"
+type: Conference
 venue: "HiPC'22"
 year: 2022
 featured: false

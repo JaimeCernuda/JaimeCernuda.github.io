@@ -1,6 +1,7 @@
 ﻿---
 title: "Hades: A Context-Aware Active Storage Framework for Accelerating Large-Scale Data Analysis"
 authors: "Jaime Cernuda, Luke Logan, Ana Gainaru, Scott Klasky, Jay Lofstead, Anthony Kougkas, Xian-He Sun"
+type: Conference
 venue: "CCGRID'24"
 year: 2024
 featured: false
