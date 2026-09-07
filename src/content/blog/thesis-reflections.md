@@ -1,7 +1,7 @@
 ---
 title: "Reflections on defending my thesis in the age of LLMs"
 summary: "The landscape of academic research is shifting rapidly. As I stood before the committee, I couldn't help but wonder how generative AI will reshape the very definition of original contribution in computer science doctorates."
-date: "Oct 12, 2023"
+date: "2023-10-12"
 category: "Career"
 readTime: "5 min read"
 popular: true

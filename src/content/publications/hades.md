@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Hades: A Context-Aware Active Storage Framework for Accelerating Large-Scale Data Analysis"
 authors: "Jaime Cernuda, Luke Logan, Ana Gainaru, Scott Klasky, Jay Lofstead, Anthony Kougkas, Xian-He Sun"
 type: Conference
@@ -138,12 +138,12 @@ Output:
 
 Blob score B Score
 
-- 1 B Task â† G .OutDegree( B ) / G .MaxOutDegree();
-- 3 B AvgCount â† Avg # of times blobs accessed in T Recent ;
-- 2 B Count â† # of times blob B was accessed;
-- 4 B Access â† Timestamp of the last access to blob B ;
-- 5 B Hot â† B Count /B AvgCount Ã— ( 1 -B Access T Recent ) ;
-- 6 B Score â† max( W Task B Task , W Hot B Hot , W Pre B Pre , W Hades B Hades ) ;
+- 1 B Task ← G .OutDegree( B ) / G .MaxOutDegree();
+- 3 B AvgCount ← Avg # of times blobs accessed in T Recent ;
+- 2 B Count ← # of times blob B was accessed;
+- 4 B Access ← Timestamp of the last access to blob B ;
+- 5 B Hot ← B Count /B AvgCount × ( 1 -B Access T Recent ) ;
+- 6 B Score ← max( W Task B Task , W Hot B Hot , W Pre B Pre , W Hades B Hades ) ;
 - 7 return B Score
 
 Blob Scoring : The blob score B Score of a variable B aims to ensure that blobs accessed frequently or in the near future are prioritized for placement in high-performance tiers. The blob score is the foundation of how Hades decides the organization of data in the storage hierarchy. The algorithm is shown in Equation 1. First, the blob task score B Task is calculated, which represents the relative number of active tasks depending on the blob. The intuition is that the more derived quantity tasks depend on the blob, the more it will be accessed in the near future. It is calculated by dividing the outdegree of the variable B in the task graph G by the maximum outdegree.
@@ -152,7 +152,7 @@ The blob hotness B Hot is calculated as a function of access frequency and acces
 
 relative difference between last access B Access and window size T Recent , where B Access is always smaller than T Recent .
 
-The prefetch score B Pre represents how near in the future the blob will be accessed, and is supplied externally by the prefetcher. A higher score indicates the blob will be accessed soon. Lastly, Hades can assign a custom importance score B Hades to represent additional factors of the specific I/O library interacting with Hades. For example, Hades will assign metadata objects a score of 1 to ensure they are always buffered in high-capacity tiers. The final B Score is calculated as the maximum of the W Task B Task , W Hot B Hot , W Pre B Pre , and W Hades B Hades to ensure that blobs ranked important by at least one of these metrics are positioned in high-performing tiers. Weights are configurable numbers between 0 and 1. By default, all weights except W Task are equal to 1. W Task is . 7 by default, since derived quantities are calculated asynchronously in the background during data production and computation phases. Setting this score lower than 1 reduces storage contention between data produced by the application and data analyzed and produced by derived quantities. Initial Data Placement : When initially placing a blob, the blob score is based solely on B Task and B Hades , as this is the only information known about the blob at this time. B Hades will be set to 1 if the blob is metadata related to Hades or the I/O library, and 0 otherwise. B Task will be set based on the task graph. Data will be placed in the fastest storage tier with available capacity. The blob reorganizer will asynchronously promote and demote blobs based on score after initial placement. Context-Aware Blob Prefetching : The prefetcher aims to anticipate the time at which a blob will be next accessed based on characteristics of the higher-level I/O library. The prefetcher leverages the current step number provided by Adios2 to determine the next blobs to prefetch. Hades measures the average time of the computation phase C Avg by calculating the difference between BEGINSTEP and ENDSTEP functions for each step. Hades will then prefetch the next n steps until C Avg âˆ— n is less than the user-configurable window size T Recent . Dynamic Blob Reorganization : As the application runs, the I/O requirements of the workflow and the available storage capacity will change dynamically. To adapt to these changes, the demotion engine is responsible for correcting the placement of data in the storage hierarchy by asynchronously promoting and demoting blobs based on the score of the blob, the relative score of blobs within a tier, and the remaining capacity of a tier. Periodically, the demotion engine calculates the 0, 25, 50, 75, and 100 percentile of blob scores in each tier. A blob will be targeted for promotion if the blob score is larger than the 25 percentile of the tier. If there is space, the blob will be moved immediately. Otherwise, the blobs in the candidate tier with a lower score will be evicted until there is enough space. If there is still not enough space, the blob will remain in place.
+The prefetch score B Pre represents how near in the future the blob will be accessed, and is supplied externally by the prefetcher. A higher score indicates the blob will be accessed soon. Lastly, Hades can assign a custom importance score B Hades to represent additional factors of the specific I/O library interacting with Hades. For example, Hades will assign metadata objects a score of 1 to ensure they are always buffered in high-capacity tiers. The final B Score is calculated as the maximum of the W Task B Task , W Hot B Hot , W Pre B Pre , and W Hades B Hades to ensure that blobs ranked important by at least one of these metrics are positioned in high-performing tiers. Weights are configurable numbers between 0 and 1. By default, all weights except W Task are equal to 1. W Task is . 7 by default, since derived quantities are calculated asynchronously in the background during data production and computation phases. Setting this score lower than 1 reduces storage contention between data produced by the application and data analyzed and produced by derived quantities. Initial Data Placement : When initially placing a blob, the blob score is based solely on B Task and B Hades , as this is the only information known about the blob at this time. B Hades will be set to 1 if the blob is metadata related to Hades or the I/O library, and 0 otherwise. B Task will be set based on the task graph. Data will be placed in the fastest storage tier with available capacity. The blob reorganizer will asynchronously promote and demote blobs based on score after initial placement. Context-Aware Blob Prefetching : The prefetcher aims to anticipate the time at which a blob will be next accessed based on characteristics of the higher-level I/O library. The prefetcher leverages the current step number provided by Adios2 to determine the next blobs to prefetch. Hades measures the average time of the computation phase C Avg by calculating the difference between BEGINSTEP and ENDSTEP functions for each step. Hades will then prefetch the next n steps until C Avg ∗ n is less than the user-configurable window size T Recent . Dynamic Blob Reorganization : As the application runs, the I/O requirements of the workflow and the available storage capacity will change dynamically. To adapt to these changes, the demotion engine is responsible for correcting the placement of data in the storage hierarchy by asynchronously promoting and demoting blobs based on the score of the blob, the relative score of blobs within a tier, and the remaining capacity of a tier. Periodically, the demotion engine calculates the 0, 25, 50, 75, and 100 percentile of blob scores in each tier. A blob will be targeted for promotion if the blob score is larger than the 25 percentile of the tier. If there is space, the blob will be moved immediately. Otherwise, the blobs in the candidate tier with a lower score will be evicted until there is enough space. If there is still not enough space, the blob will remain in place.
 
 ## IV. EVALUATIONS
 
@@ -265,7 +265,7 @@ This work is supported by the U.S. Department of Energy (DOE) under DE-SC0023263
 
 <a id="ref-11"></a>[11] U. Ayachit, A. Bauer, B. Geveci, P. O'Leary, K. Moreland, N. Fabian, and J. Mauldin, 'Paraview catalyst: Enabling in situ data analysis and visualization,' in Proceedings of the first workshop on in situ infrastructures for enabling extreme-scale analysis and visualization , 2015, pp. 25-29.
 
-<a id="ref-12"></a>[12] H. Childs, E. Brugger, B. Whitlock, J. Meredith, S. Ahern, K. Bonnell, M. Miller, G. Weber, C. Harrison, D. Pugmire, T. Fogal, C. Garth, A. Sanderson, E. W. Bethel, M. Durant, D. Camp, J. Favre, O. RÂ¨ ubel, P. Navratil, and F. Vivodtzev, 'Visit: An end-user tool for visualizing and analyzing very large data,' Proceed SciDAC , pp. 1-16, 01 2011.
+<a id="ref-12"></a>[12] H. Childs, E. Brugger, B. Whitlock, J. Meredith, S. Ahern, K. Bonnell, M. Miller, G. Weber, C. Harrison, D. Pugmire, T. Fogal, C. Garth, A. Sanderson, E. W. Bethel, M. Durant, D. Camp, J. Favre, O. R¨ ubel, P. Navratil, and F. Vivodtzev, 'Visit: An end-user tool for visualizing and analyzing very large data,' Proceed SciDAC , pp. 1-16, 01 2011.
 
 <a id="ref-13"></a>[13] J. Gu, S. Klasky, N. Podhorszki, J. Qiang, and K. Wu, 'Querying large scientific data sets with adaptable io system adios,' in Supercomputing Frontiers: 4th Asian Conference, SCFA 2018, Singapore, March 26-29, 2018, Proceedings 4 . Springer International Publishing, 2018, pp. 51-69.
 
@@ -281,7 +281,7 @@ This work is supported by the U.S. Department of Energy (DOE) under DE-SC0023263
 
 <a id="ref-19"></a>[19] W. C. Skamarock, J. B. Klemp, J. Dudhia, D. O. Gill, Z. Liu, J. Berner, W. Wang, J. G. Powers, M. G. Duda, D. M. Barker, and X.-Y. Huang, 'A description of the advanced research wrf model version 4,' UCAR/NCAR, Tech. Rep., 2019. [Online]. Available: https://opensky.ucar.edu/islandora/object/opensky:2898
 
-<a id="ref-20"></a>[20] A. Meurer, C. P. Smith, M. Paprocki, O. Ë‡ CertÂ´ Ä±k, S. B. Kirpichev, M. Rocklin, A. Kumar, S. Ivanov, J. K. Moore, S. Singh et al. , 'Sympy: symbolic computing in python,' PeerJ Computer Science , vol. 3, p. e103, 2017.
+<a id="ref-20"></a>[20] A. Meurer, C. P. Smith, M. Paprocki, O. ˇ Cert´ ık, S. B. Kirpichev, M. Rocklin, A. Kumar, S. Ivanov, J. K. Moore, S. Singh et al. , 'Sympy: symbolic computing in python,' PeerJ Computer Science , vol. 3, p. e103, 2017.
 
 <a id="ref-21"></a>[21] I. Berg, 'muparser-a fast math parser library,' 2011.
 
@@ -317,7 +317,7 @@ This work is supported by the U.S. Department of Energy (DOE) under DE-SC0023263
 
 <a id="ref-37"></a>[37] H. Tang, S. Byna, B. Dong, J. Liu, and Q. Koziol, 'Someta: Scalable object-centric metadata management for high performance computing,' in 2017 IEEE International Conference on Cluster Computing (CLUSTER) . IEEE, 2017, pp. 359-369.
 
-<a id="ref-38"></a>[38] H. Sim, Y. Kim, S. S. Vazhkudai, G. R. VallÂ´ ee, S.-H. Lim, and A. R. Butt, 'Tagit: an integrated indexing and search service for file systems,' in Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis , 2017, pp. 1-12.
+<a id="ref-38"></a>[38] H. Sim, Y. Kim, S. S. Vazhkudai, G. R. Vall´ ee, S.-H. Lim, and A. R. Butt, 'Tagit: an integrated indexing and search service for file systems,' in Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis , 2017, pp. 1-12.
 
 <a id="ref-39"></a>[39] D. Korenblum, D. Rubin, S. Napel, C. Rodriguez, and C. Beaulieu, 'Managing Biomedical Image Metadata for Search and Retrieval of Similar Images,' Journal of digital imaging , vol. 24, no. 4, pp. 739-748, 2011.
 

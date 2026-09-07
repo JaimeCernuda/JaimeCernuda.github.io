@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HStream: A hierarchical data streaming engine for high-throughput scientific applications"
 authors: "Jaime Cernuda, Jie Ye, Anthony Kougkas, Xian-He Sun"
 type: Conference
@@ -19,7 +19,7 @@ citation: |
     title = {HStream: A hierarchical data streaming engine for high-throughput scientific applications},
     year = {2024},
     booktitle = {Proceedings of the 53rd International Conference on Parallel Processing},
-    pages = {231â€“240},
+    pages = {231–240},
     doi = {10.1145/3673038.3673150}
   }
 ---
@@ -28,7 +28,7 @@ citation: |
 
 ## CCS CONCEPTS
 
-Â· Information systems â†’ Stream management ; Mainmemory engines ; Distributed storage ; Hierarchical storage management ; Â· Computer systems organization â†’ Real-time system architecture .
+· Information systems → Stream management ; Mainmemory engines ; Distributed storage ; Hierarchical storage management ; · Computer systems organization → Real-time system architecture .
 
 ## KEYWORDS
 
@@ -144,7 +144,7 @@ Existing data streaming engines manage state as a holistic resource across the j
 
 HStream presents an algorithm to select which task needs to be moved based on different policies. Note that these movements occur on a per-task basis (not on an operator or job basis) and can move both the task state and its input queue, if necessary. Algorithm 1 showcases how HStream grades tasks to move to storage. The Task Classifier is responsible for executing the algorithm. This score is based on five factors: priority, input event rate, retention, CPU usage, and memory usage. Priority and retention are extracted from job definition and are static during the runtime of the application, the rest are monitor by our observer. These parameters are normalized through a min-max normalization method. As depicted in Figure 3, the classifier is triggered by the Task Monitor when the memory usage of the current node exceeds the user-defined maximum memory threshold. The algorithm will then score each task running on the node, storing their ID and score as a key-value pair into a shared map. The top task is picked to be moved, and the process repeats until the memory usage of the current node is below the maximum memory threshold. Similarly, the algorithm also supports moving tasks from storage to memory by reversing the sorting order. The Task Classifier will notify the State Manager of the need to move tasks, and the information will be gathered from the shared map.
 
-Algorithm 1 used by HStream to grade tasks can be tuned (shown on line 21) for different jobs and depending on the HPC site's applications, by adjusting the weights ( ð‘¤ 1 to ð‘¤ 6) and changing the relative importance of each of the five factors. Through this tuning, HStream allows the implementation of different policies. We propose several policies to cover some common application types, leaving system administrators and users with a flexible system that enables them to enhance HStream with more:
+Algorithm 1 used by HStream to grade tasks can be tuned (shown on line 21) for different jobs and depending on the HPC site's applications, by adjusting the weights ( 𝑤 1 to 𝑤 6) and changing the relative importance of each of the five factors. Through this tuning, HStream allows the implementation of different policies. We propose several policies to cover some common application types, leaving system administrators and users with a flexible system that enables them to enhance HStream with more:
 
 3.4.1 Frequency-based policy. This policy aims to optimize memory utilization by retaining hot tasks in memory and moving cold tasks to storage. The hotness of a task is influenced by the input event rate. In this policy, the input event rate weight ( w4 ) is given the highest value.
 
@@ -207,7 +207,7 @@ This evaluation showcases HStream's improvements in a multitenant environment ru
 
 The evaluation job consists of a collector that pulls data from the applications, a key-by task that transforms the streams into keyed streams, and partitions them into windowing tasks. The windowing tasks collect up to 10 events, sort them, and send them to sink tasks that write them to disk. The key is set as the filename, and we use 4 filenames per application to ensure parallelism and prevent bottlenecks from the computing tasks. Thus, the only adaptable tasks are the data collectors, which remain unchanged for Neon but can be modified during runtime by HStream based on the applications' demands. Both engines are initially deployed across 16 nodes, with a single collector task limit on each node. Each application receives 5 collectors, with VPIC receiving an additional one. The 3 applications are then deployed weakly scaling from 80 to 640 nodes, with the aim of an even split of processes between the applications, forcing the ranks of different applications to coexist on the same node.
 
-In Figure 5, it can be observed that HStream and Neon perform similarly on a low scale, as HStream has limited capabilities to adapt to I/O. In fact, a small performance loss is observed due to the network overhead HStream suffers from the communication between the Job Manager and Stream Monitor. As the scale increases, a greater disparity in the I/O generated by the applications becomes apparent. At maximum scale, VPIC generates 10 GB, while K-Means generates only 0.5 GB. At this same scale, Neon maintains the same 5 collectors per application, while HStream's adaptive task management allows it to shift to an 11:3:1 ratio of collectors for VPIC, HACC, and K-Means, respectively. This shift in collector pull rate towards high I / O intake jobs helps to improve performance by up to 1.5Ã— on VPIC, while showing little performance change on KMeans.
+In Figure 5, it can be observed that HStream and Neon perform similarly on a low scale, as HStream has limited capabilities to adapt to I/O. In fact, a small performance loss is observed due to the network overhead HStream suffers from the communication between the Job Manager and Stream Monitor. As the scale increases, a greater disparity in the I/O generated by the applications becomes apparent. At maximum scale, VPIC generates 10 GB, while K-Means generates only 0.5 GB. At this same scale, Neon maintains the same 5 collectors per application, while HStream's adaptive task management allows it to shift to an 11:3:1 ratio of collectors for VPIC, HACC, and K-Means, respectively. This shift in collector pull rate towards high I / O intake jobs helps to improve performance by up to 1.5× on VPIC, while showing little performance change on KMeans.
 
 ## 5.5 Improved latency through the hierarchy
 
@@ -239,7 +239,7 @@ The evaluation aims to showcase a workload that leverages both the adaptive and 
 
 To set up the experiment, the ResNet-50 model weights are stored in a file accessible to all nodes on the cluster. The C++ TensorFlow library is used for inference by the tasks. As the testing cluster lacks GPUs, version 2.11.0 of the CPU-optimized library for x86\_64 architecture is employed. HStream includes a series of utility classes to handle both models and tensors within C++ for use inside any of the operators. Similar to the previous evaluation, 8 compute nodes are allocated for the streaming engines, and 24 to the clients. Each client node executes 20 processes. Each client reads a subsample of the ImageNet dataset and places the images on the queue. Each client sends 1,000 images of 200 MB per image, a large size for a streaming application. Both Neon and HStream begin with an initial parallelism of 8 on the collectors and 4 on the other operators. We measure the overall execution time and continue to use acquisition time, defined as the time it takes for an event to reach the inference task queue, as measuring overall latency yields incorrect results due to the dominant effects of wait time on the queue.
 
-In terms of results, while acquisition time shows that HStream slightly outperforms Neon at low scales, at 16 processes, we start to see the effects of the queues reaching close to full memory utilization, at which point HStream starts to make use of the hierarchy with an increase in acquisition time compared to Neon. However, as an inflection point in memory capacity is reached, HStream's state management maintains its performance and catches up to the increased latency of Neon's OS-managed memory. In terms of overall execution time, the adaptive parallelism of HStream makes the biggest difference in terms of throughput. HStream's adaptiveness allows it to increase the parallelism of the inference tasks at runtime, showcasing a performance improvement of almost 2Ã— compared to Neon at the highest scale.
+In terms of results, while acquisition time shows that HStream slightly outperforms Neon at low scales, at 16 processes, we start to see the effects of the queues reaching close to full memory utilization, at which point HStream starts to make use of the hierarchy with an increase in acquisition time compared to Neon. However, as an inflection point in memory capacity is reached, HStream's state management maintains its performance and catches up to the increased latency of Neon's OS-managed memory. In terms of overall execution time, the adaptive parallelism of HStream makes the biggest difference in terms of throughput. HStream's adaptiveness allows it to increase the parallelism of the inference tasks at runtime, showcasing a performance improvement of almost 2× compared to Neon at the highest scale.
 
 ## 6 RELATED WORK
 
@@ -255,7 +255,7 @@ A second approach has seen the development of new data streaming engines directl
 
 ## 7 CONCLUSION
 
-This work introduced HStream, a new architecture for data streaming in HPC. HStream aims to solve performance issues present in state-of-the-art streaming when subjected to the high volumes, velocities and burstiness of I/O generated by modern scientific applications. Its core innovation lies in the separation of the data and compute planes allowing finer control of the data through the system. This is achieved through an adaptive parallelism controller, adapting compute parallelism to adapt to the bursty and multi-tenant environments, and a hierarchical data management system, which leverages high speed non-volatile storage systems present in HPC clusters to alleviate memory pressure and avoid thrashing under the high data loads of HPC. By leveraging HStream's adaptiveness, we show up to a 1.5x decrease in the overall cluster-wide execution time when serving under a multi-tenant deployment of applications. Similarly, HStream's hierarchical management of task state provides up to a 75% reduction in latency under high volume of data by alleviating memory thrashing on a per-task basis. Lastly, both mechanisms allow HStream to present up to a 2 Ã— increase in overall throughput when serving as a holistic AI inference service when compared to state-of-the-art HPC data streaming engines.
+This work introduced HStream, a new architecture for data streaming in HPC. HStream aims to solve performance issues present in state-of-the-art streaming when subjected to the high volumes, velocities and burstiness of I/O generated by modern scientific applications. Its core innovation lies in the separation of the data and compute planes allowing finer control of the data through the system. This is achieved through an adaptive parallelism controller, adapting compute parallelism to adapt to the bursty and multi-tenant environments, and a hierarchical data management system, which leverages high speed non-volatile storage systems present in HPC clusters to alleviate memory pressure and avoid thrashing under the high data loads of HPC. By leveraging HStream's adaptiveness, we show up to a 1.5x decrease in the overall cluster-wide execution time when serving under a multi-tenant deployment of applications. Similarly, HStream's hierarchical management of task state provides up to a 75% reduction in latency under high volume of data by alleviating memory thrashing on a per-task basis. Lastly, both mechanisms allow HStream to present up to a 2 × increase in overall throughput when serving as a holistic AI inference service when compared to state-of-the-art HPC data streaming engines.
 
 ## ACKNOWLEDGMENTS
 
@@ -298,13 +298,13 @@ This material is based upon work supported by the National Science Foundation (N
 
 <a id="ref-17"></a>[17] GK Lockwood, D Hazen, Q Koziol, RS Canon, K Antypas, and et al. Balewski, J. 2017. Storage 2020: A Vision for the Future of HPC Storage . Technical Report LBNL-2001072. Lawrence Berkeley National Laboratory. Retrieved from https: //escholarship.org/uc/item/744479dp.
 
-<a id="ref-18"></a>[18] Nuria Losada, Patricia GonzÃ¡lez, MarÃ­a J. MartÃ­n, George Bosilca, AurÃ©lien Bouteiller, and Keita Teranishi. 2020. Fault tolerance of MPI applications in exascale systems: The ULFM solution. Future Generation Computer Systems 106 (2020), 467-481. https://doi.org/10.1016/j.future.2020.01.026
+<a id="ref-18"></a>[18] Nuria Losada, Patricia González, María J. Martín, George Bosilca, Aurélien Bouteiller, and Keita Teranishi. 2020. Fault tolerance of MPI applications in exascale systems: The ULFM solution. Future Generation Computer Systems 106 (2020), 467-481. https://doi.org/10.1016/j.future.2020.01.026
 
 <a id="ref-19"></a>[19] Emilio P. Mancini, Gregory Marsh, and Dhabaleswar K. Panda. 2010. An MPIStream Hybrid Programming Model for Computational Clusters. In 2010 10th IEEE/ACM International Conference on Cluster, Cloud and Grid Computing . 323330. https://doi.org/10.1109/CCGRID.2010.33
 
 <a id="ref-20"></a>[20] Pierre Matri and Robert Ross. 2021. Neon: Low-Latency Streaming Pipelines for HPC. In 2021 IEEE 14th International Conference on Cloud Computing (CLOUD) . 698-707. https://doi.org/10.1109/CLOUD53861.2021.00089
 
-<a id="ref-21"></a>[21] Marta Mattoso, Jonas Dias, Kary A.C.S. OcaÃ±a, Eduardo Ogasawara, Flavio Costa, Felipe Horta, VÃ­tor Silva, and Daniel de Oliveira. 2015. Dynamic steering of HPC scientific workflows: A survey. Future Generation Computer Systems 46 (2015), 100-113. https://doi.org/10.1016/j.future.2014.11.017
+<a id="ref-21"></a>[21] Marta Mattoso, Jonas Dias, Kary A.C.S. Ocaña, Eduardo Ogasawara, Flavio Costa, Felipe Horta, Vítor Silva, and Daniel de Oliveira. 2015. Dynamic steering of HPC scientific workflows: A survey. Future Generation Computer Systems 46 (2015), 100-113. https://doi.org/10.1016/j.future.2014.11.017
 
 <a id="ref-22"></a>[22] Ivy Bo Peng, Stefano Markidis, Erwin Laure, Daniel Holmes, and Mark Bull. 2015. A data streaming model in MPI. In Proceedings of the 3rd Workshop on Exascale MPI . 1-10.
 
@@ -314,8 +314,8 @@ This material is based upon work supported by the National Science Foundation (N
 
 <a id="ref-25"></a>[25] Kenneth J Roche. 2022. Introduction to HPC IO . Technical Report. Pacific Northwest National Laboratory.
 
-<a id="ref-26"></a>[26] Robert B. Ross, George Amvrosiadis, Philip H. Carns, Charles D. Cranor, Matthieu Dorier, Kevin Harms, Gregory R. Ganger, Garth A. Gibson, Samuel Keith Gutierrez, Robert Latham, Robert W. Robey, Dana Robinson, Bradley W. Settlemyer, Galen M. Shipman, Shane Snyder, JÃ©rome Soumagne, and Qing Zheng. 2020. Mochi: Composing Data Services for High-Performance Computing Environments. Journal of Computer Science and Technology 35 (2020), 121-144.
+<a id="ref-26"></a>[26] Robert B. Ross, George Amvrosiadis, Philip H. Carns, Charles D. Cranor, Matthieu Dorier, Kevin Harms, Gregory R. Ganger, Garth A. Gibson, Samuel Keith Gutierrez, Robert Latham, Robert W. Robey, Dana Robinson, Bradley W. Settlemyer, Galen M. Shipman, Shane Snyder, Jérome Soumagne, and Qing Zheng. 2020. Mochi: Composing Data Services for High-Performance Computing Environments. Journal of Computer Science and Technology 35 (2020), 121-144.
 
 <a id="ref-27"></a>[27] Galen M. Shipman, Jered Dominguez-Trujillo, Kevin Sheridan, and Sriram Swaminarayan. 2022. Assessing the Memory Wall in Complex Codes. In 2022 IEEE/ACM Workshop on Memory Centric High Performance Computing (MCHPC) . 30-35. https://doi.org/10.1109/MCHPC56545.2022.00009
 
-<a id="ref-28"></a>[28] Xiaodong Yu, Viktor Nikitin, Daniel J. Ching, Selin Aslan, DoÄŸa GÃ¼rsoy, and Tekin BiÃ§er. 2022. Scalable and accurate multi-GPU-based image reconstruction of large-scale ptychography data. Scientific Reports 12, 1 (29 Mar 2022), 5334. https://doi.org/10.1038/s41598-022-09430-3
+<a id="ref-28"></a>[28] Xiaodong Yu, Viktor Nikitin, Daniel J. Ching, Selin Aslan, Doğa Gürsoy, and Tekin Biçer. 2022. Scalable and accurate multi-GPU-based image reconstruction of large-scale ptychography data. Scientific Reports 12, 1 (29 Mar 2022), 5334. https://doi.org/10.1038/s41598-022-09430-3

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "ChronoLog: A Distributed Shared Tiered Log Store with Time-based Data Ordering"
 authors: "Anthony Kougkas, Hariharan Devarajan, Keith Bateman, Jaime Cernuda, Neeraj Rajesh, Xian-He Sun"
 type: Conference
@@ -337,11 +337,11 @@ Several future steps remain to be designed and executed. We plan to investigate 
 
 <a id="ref-7"></a>[7] F. Nawab, V. Arora, D. Agrawal, and A. El Abbadi, 'Chariots: A scalable shared log for data management in multi-datacenter cloud environments.' in EDBT , 2015, pp. 13-24.
 
-<a id="ref-8"></a>[8] M. Shapiro, N. Preguic Â¸a, C. Baquero, and M. Zawirski, 'A comprehensive study of convergent and commutative replicated data types,' 2011.
+<a id="ref-8"></a>[8] M. Shapiro, N. Preguic ¸a, C. Baquero, and M. Zawirski, 'A comprehensive study of convergent and commutative replicated data types,' 2011.
 
 <a id="ref-9"></a>[9] P. A. Bernstein, C. W. Reid, and S. Das, 'Hyder-a transactional record manager for shared flash.' in CIDR , vol. 11, 2011, pp. 9-20.
 
-<a id="ref-10"></a>[10] A. K. Goel, J. Pound, N. Auch, P. Bumbulis, S. MacLean, F. FÂ¨ arber, F. Gropengiesser, C. Mathis, T. Bodner, and W. Lehner, 'Towards scalable real-time analytics: An architecture for scale-out of olxp workloads,' Proceedings of the VLDB Endowment , vol. 8, no. 12, pp. 17161727, 2015.
+<a id="ref-10"></a>[10] A. K. Goel, J. Pound, N. Auch, P. Bumbulis, S. MacLean, F. F¨ arber, F. Gropengiesser, C. Mathis, T. Bodner, and W. Lehner, 'Towards scalable real-time analytics: An architecture for scale-out of olxp workloads,' Proceedings of the VLDB Endowment , vol. 8, no. 12, pp. 17161727, 2015.
 
 <a id="ref-11"></a>[11] M. Balakrishnan, D. Malkhi, T. Wobber, M. Wu, V. Prabhakaran, M. Wei, J. D. Davis, S. Rao, T. Zou, and A. Zuck, 'Tango: Distributed data structures over a shared log,' in Proceedings of the Twenty-Fourth ACM Symposium on Operating Systems Principles , 2013, pp. 325-340.
 
@@ -371,7 +371,7 @@ Several future steps remain to be designed and executed. We plan to investigate 
 
 <a id="ref-24"></a>[24] A. H. Hormati, Y. Choi, M. Kudlur, R. Rabbah, T. Mudge, and S. Mahlke, 'Flextream: Adaptive compilation of streaming applications for heterogeneous architectures,' in 2009 18th International Conference on Parallel Architectures and Compilation Techniques . IEEE, 2009, pp. 214-223.
 
-<a id="ref-25"></a>[25] O.-C. Marcu, A. Costan, G. Antoniu, M. PÂ´ erez-HernÂ´ andez, B. Nicolae, R. Tudoran, and S. Bortoli, 'Kera: Scalable data ingestion for stream processing,' in 2018 IEEE 38th International Conference on Distributed Computing Systems (ICDCS) . IEEE, 2018, pp. 1480-1485.
+<a id="ref-25"></a>[25] O.-C. Marcu, A. Costan, G. Antoniu, M. P´ erez-Hern´ andez, B. Nicolae, R. Tudoran, and S. Bortoli, 'Kera: Scalable data ingestion for stream processing,' in 2018 IEEE 38th International Conference on Distributed Computing Systems (ICDCS) . IEEE, 2018, pp. 1480-1485.
 
 <a id="ref-26"></a>[26] M. H. Iqbal and T. R. Soomro, 'Big data analysis: Apache storm perspective,' International journal of computer trends and technology , vol. 19, no. 1, pp. 9-14, 2015.
 
@@ -405,7 +405,7 @@ Several future steps remain to be designed and executed. We plan to investigate 
 
 <a id="ref-41"></a>[41] M. Balakrishnan, D. Malkhi, V. Prabhakaran, T. Wobbler, M. Wei, and J. D. Davis, ' { CORFU } : A shared log design for flash clusters,' in Presented as part of the 9th { USENIX } Symposium on Networked Systems Design and Implementation ( { NSDI } 12) , 2012, pp. 1-14.
 
-<a id="ref-42"></a>[42] P. Matri, P. Carns, R. Ross, A. Costan, M. S. PÂ´ erez, and G. Antoniu, 'Slog: Large-scale logging middleware for hpc and big data convergence,' in 2018 IEEE 38th International Conference on Distributed Computing Systems (ICDCS) . IEEE, 2018, pp. 1507-1512.
+<a id="ref-42"></a>[42] P. Matri, P. Carns, R. Ross, A. Costan, M. S. P´ erez, and G. Antoniu, 'Slog: Large-scale logging middleware for hpc and big data convergence,' in 2018 IEEE 38th International Conference on Distributed Computing Systems (ICDCS) . IEEE, 2018, pp. 1507-1512.
 
 <a id="ref-43"></a>[43] N. Watkins, 'ZLog: a distributed shared-log on Ceph,' https://nwat.xyz/blog/2014/10/26/zlog-a-distributed-shared-log-onceph/, 2014, Accessed: 2020-1-28.
 
@@ -470,7 +470,7 @@ Several future steps remain to be designed and executed. We plan to investigate 
 
 <a id="ref-73"></a>[73] H. Abbasi, M. Wolf, G. Eisenhauer, S. Klasky, K. Schwan, and F. Zheng, 'Datastager: scalable data staging services for petascale applications,' Cluster Computing , vol. 13, no. 3, pp. 277-290, 2010.
 
-<a id="ref-74"></a>[74] J. W. Harris and H. StÂ¨ ocker, Handbook of mathematics and computational science . Springer Science &amp; Business Media, 1998.
+<a id="ref-74"></a>[74] J. W. Harris and H. St¨ ocker, Handbook of mathematics and computational science . Springer Science &amp; Business Media, 1998.
 
 <a id="ref-75"></a>[75] 'Hermes Container Library: Distributed Data Structures,' https://github.com/HDFGroup/hcl, Accessed: 2020-2-15.
 

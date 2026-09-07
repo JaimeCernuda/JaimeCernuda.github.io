@@ -1,7 +1,7 @@
 ---
 title: "A deep dive into our latest CVPR paper on zero-shot learning"
 summary: "We proposed a novel framework for visual semantic embedding that outperforms current state-of-the-art models on generalized zero-shot learning tasks. Here is a breakdown of the math and the intuition behind the architecture."
-date: "Sept 28, 2023"
+date: "2023-09-28"
 category: "Research"
 readTime: "12 min read"
 popular: true

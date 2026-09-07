@@ -1,4 +1,4 @@
-﻿---
+---
 title: "DTIO: Data Stack for AI-driven Workflows"
 authors: "Keith Bateman, Neeraj Rajesh, Jaime Cernuda, Luke Logan, Bogdan Nicolae, Franck Cappello, Xian-He Sun, Anthony Kougkas"
 type: Conference
@@ -26,7 +26,7 @@ citation: |
 
 ## CCS Concepts
 
-- Computing methodologies â†’ Cooperation and coordination; Computer systems organization â†’ Distributed architectures.
+- Computing methodologies → Cooperation and coordination; Computer systems organization → Distributed architectures.
 
 ## Keywords
 
@@ -36,7 +36,7 @@ This work is licensed under a Creative Commons Attribution International 4.0 Lic
 
 SSDBM 2025, Columbus, OH, USA
 
-Â©2025 Copyright held by the owner/author(s).
+©2025 Copyright held by the owner/author(s).
 
 ACMISBN979-8-4007-1462-7/25/06
 
@@ -76,7 +76,7 @@ Contributions: To address the aforementioned limitations, we propose DTIO, a sca
 
 ## 2 Motivating Scenario
 
-To illustrate the challenges presented in Â§ 1, we consider the case of PtychoNN, a deep learning ptychography workflow that solves the data inversion problem in order to perform imaging beyond the resolution limits of typical x-ray optics [[7]](#ref-7). PtychoNN combines aspects ofallthreedomains:BigDataAnalytics,HPCandML:itfeaturesaBig DataAnalyticspre-processingstage(Map-Reducepattern)thattakes therawimagesfrominstruments,appliesvariousfiltersandprepares them in a common format (HDF5) to be reused by multiple applications (including PtychoNN). Then, an HPC stage running on an HPC machinereadsthecommonformatandconvertstheHDF5filesto npz and npy format that is popular in the Python ecosystem. Both reads andwrites are sequential. From there, a distributed ML training (data parallel) reads the npz and npy files concurrently (random small I/O access) and feeds it to a PyTorch training pipeline, which ultimately produces checkpoints of the trained model (HDF5). The lack of interoperability between these formats and access patterns results in several challenges: (1) the three stages happen sequentially despite opportunities to streamline them as a pipeline; (2) a parallel file system is used to store intermediate results instead of on-the-fly conversions and direct communication betweenthetasks;(3)I/Ooperations
+To illustrate the challenges presented in § 1, we consider the case of PtychoNN, a deep learning ptychography workflow that solves the data inversion problem in order to perform imaging beyond the resolution limits of typical x-ray optics [[7]](#ref-7). PtychoNN combines aspects ofallthreedomains:BigDataAnalytics,HPCandML:itfeaturesaBig DataAnalyticspre-processingstage(Map-Reducepattern)thattakes therawimagesfrominstruments,appliesvariousfiltersandprepares them in a common format (HDF5) to be reused by multiple applications (including PtychoNN). Then, an HPC stage running on an HPC machinereadsthecommonformatandconvertstheHDF5filesto npz and npy format that is popular in the Python ecosystem. Both reads andwrites are sequential. From there, a distributed ML training (data parallel) reads the npz and npy files concurrently (random small I/O access) and feeds it to a PyTorch training pipeline, which ultimately produces checkpoints of the trained model (HDF5). The lack of interoperability between these formats and access patterns results in several challenges: (1) the three stages happen sequentially despite opportunities to streamline them as a pipeline; (2) a parallel file system is used to store intermediate results instead of on-the-fly conversions and direct communication betweenthetasks;(3)I/Ooperations
 
 are blocking instead of asynchronous, which limits the opportunity to overlap I/O with computations. We aim to solve such challenges.
 
@@ -113,7 +113,7 @@ Write consistency is needed. The type is the operation associated with the DataT
 ## Listing 1: The DataTask Structure
 
 ```
-typedef struct DataTask { i n t 6 4 _ t t a s k _ i d ; content âˆ—C; DataTask âˆ— d e p e n d e n c i e s ; t a s k _ t y p e t _ t y p e ; / / e . g . , read , write , s u p e r d t _ p r o p e r t i e s âˆ— p l i s t ; c o n t e x t âˆ— c t x ; }
+typedef struct DataTask { i n t 6 4 _ t t a s k _ i d ; content ∗C; DataTask ∗ d e p e n d e n c i e s ; t a s k _ t y p e t _ t y p e ; / / e . g . , read , write , s u p e r d t _ p r o p e r t i e s ∗ p l i s t ; c o n t e x t ∗ c t x ; }
 ```
 
 SuperTasks : Oneimportantoperationtypeiscalled super , which can be used to create a SuperTask. A SuperTask is a specialized form of DataTask associated with metadata and used to represent higherlevel structure of data, such as directories, HDF5 files and groups, etc. Whencreating a SuperTask, existing Dependencies will be included as members of the SuperTask, but new members can also be added with an add\_to\_super operation type. The dependencies of a SuperTask are tracked in a DataTask registry, and the updates occur there. SuperTasks allow the system to preserve the user-facing structure of the data, for example, a single HDF5 file can have multiple groups and datasets that need to be accessed as if they were a folder with multiple files.
@@ -142,25 +142,25 @@ to ensure correctness. Beyond serving to implement high-level relationships betw
 
 When DataTasks are created, they get stored temporarily at the client in a circular buffer awaiting scheduling. If, instead of enabling scheduling immediately, the system tracks the dependencies of the DataTask, we can maintain it in local memory until one of the dependent DataTasks gets submitted, or some maximum time or memory size is reached.
 
-A dispatch algorithm (algorithm 1) is used to decide when and what DataTask needs to be scheduled. First, the algorithm selects the stalest DataTask ( ð‘ ) in the pool enabling it for scheduling. Once done, a second pass through the pool looks for any DataTask still in it that ð‘ is dependent on and also marks them for scheduling. The staleness of a DataTask refers to time since its last dependency was added to the pipeline, by waiting until the dependencies of a DataTasks have been established in the pipeline, the system can: resolve them together to improve performance, extend the time to execute composition policies, and minimize I/O movement.
+A dispatch algorithm (algorithm 1) is used to decide when and what DataTask needs to be scheduled. First, the algorithm selects the stalest DataTask ( 𝑝 ) in the pool enabling it for scheduling. Once done, a second pass through the pool looks for any DataTask still in it that 𝑝 is dependent on and also marks them for scheduling. The staleness of a DataTask refers to time since its last dependency was added to the pipeline, by waiting until the dependencies of a DataTasks have been established in the pipeline, the system can: resolve them together to improve performance, extend the time to execute composition policies, and minimize I/O movement.
 
 ## Algorithm 1 Scheduling Dispatch Algorithm
 
 ```
-1: procedure Dispatch(DataTask ð‘‘ð‘¡ð‘  []) 2: Let ð‘ƒ be the pool of tasks to be scheduled 3: Let ð‘‡ be the (empty) pool of tasks to be dispatched 4: Append ð‘‘ð‘¡ð‘  to ð‘‡ 5: while sizeof( ð‘ƒ ) exceeds memory threshold do 6: ð‘ â† stalest task in ð‘ƒ 7: remove ð‘ from ð‘ƒ and append ð‘ to ð‘‡ 8: for ð‘ âˆˆ ð‘ƒ do 9: if stale( ð‘ ) then 10: remove ð‘ from ð‘ƒ and append ð‘ to ð‘‡ 11: continue 12: for ð‘¡ âˆˆ ð‘‡ do 13: if ð‘¡ depends on ð‘ then 14: remove ð‘ from ð‘ƒ and append ð‘ to ð‘‡ 15: break 16: for ð‘¡ âˆˆ ð‘‡ do 17: send ð‘¡ to scheduler
+1: procedure Dispatch(DataTask 𝑑𝑡𝑠 []) 2: Let 𝑃 be the pool of tasks to be scheduled 3: Let 𝑇 be the (empty) pool of tasks to be dispatched 4: Append 𝑑𝑡𝑠 to 𝑇 5: while sizeof( 𝑃 ) exceeds memory threshold do 6: 𝑝 ← stalest task in 𝑃 7: remove 𝑝 from 𝑃 and append 𝑝 to 𝑇 8: for 𝑝 ∈ 𝑃 do 9: if stale( 𝑝 ) then 10: remove 𝑝 from 𝑃 and append 𝑝 to 𝑇 11: continue 12: for 𝑡 ∈ 𝑇 do 13: if 𝑡 depends on 𝑝 then 14: remove 𝑝 from 𝑃 and append 𝑝 to 𝑇 15: break 16: for 𝑡 ∈ 𝑇 do 17: send 𝑡 to scheduler
 ```
 
 Minimizing I/O movement through accelerated I/O resolution : As a result of this lazy scheduling, the system can attempt to accelerate the resolution of DataTasks by obtaining part or all of its I/O from the local ring buffer. Note that this allows serving I/O requests without hitting storage, so long as the data exists in the memory pool systems. The methodology for resolution is shown in algorithm 2.
 
-To summarize, resolution of a DataTask from existing buffers involves querying the DataTask registry for DataTasks associated with the current file ordered by recency (line 2), calculating sections of the current DataTask satisfied by existing buffers (lines 4-9), and performing buffer copies from existing buffers into the result (lines 10-16). After this buffer resolution, it is possible that the DataTask will not be completely satisfied by existing buffers, in which case additional reads from storage may remain necessary. The ð‘Ÿð‘Žð‘›ð‘”ð‘’ \_ ð‘ð‘œð‘¢ð‘›ð‘‘ variable from the resolution algorithm can be utilized to determine which indices within the file remain to be fetched and convert them to DataTasks.
+To summarize, resolution of a DataTask from existing buffers involves querying the DataTask registry for DataTasks associated with the current file ordered by recency (line 2), calculating sections of the current DataTask satisfied by existing buffers (lines 4-9), and performing buffer copies from existing buffers into the result (lines 10-16). After this buffer resolution, it is possible that the DataTask will not be completely satisfied by existing buffers, in which case additional reads from storage may remain necessary. The 𝑟𝑎𝑛𝑔𝑒 \_ 𝑏𝑜𝑢𝑛𝑑 variable from the resolution algorithm can be utilized to determine which indices within the file remain to be fetched and convert them to DataTasks.
 
 DataTasks enable a new paradigm of I/O management, that can leverage enriched knowledge of the data to transparently, and efficiently manage diverse I/O while staying flexible enough to support
 
 ## Algorithm 2 DataTask Buffer Resolution Algorithm
 
-- 1: procedure Resolve-DataTask(DataTask ð‘‘ð‘¡ , buffer ð‘Ÿð‘’ð‘ ð‘¢ð‘™ð‘¡
-- Copy ð‘¡ \_ ð‘ ð‘–ð‘§ð‘’ elements from ð‘Ÿð‘¡ \_ ð‘ð‘¢ð‘“ ð‘“ ð‘’ð‘Ÿ at ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ to ð‘Ÿð‘’ð‘ ð‘¢ð‘™ð‘¡ starting at ð‘‘ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡
-- ) 2: Let ð‘‡ be the pool of DataTasks associated with the file ð‘‘ð‘¡.ð‘“ ð‘–ð‘™ð‘’ð‘›ð‘Žð‘šð‘’ (queried from the task registry, by recency) 3: Let ð‘Ÿð‘’ð‘ ð‘œð‘™ð‘£ð‘’ \_ ð‘‘ð‘¡ð‘  â†{} 4: Let ð‘Ÿð‘Žð‘›ð‘”ð‘’ \_ ð‘ð‘œð‘¢ð‘›ð‘‘ represent an array of the locations requested by ð‘‘ð‘¡ 5: for ð‘¡ âˆˆ ð‘‡ do 6: if ð‘¡ satisfies part of ð‘Ÿð‘Žð‘›ð‘”ð‘’ \_ ð‘ð‘œð‘¢ð‘›ð‘‘ which is not already satisfied then 7: Store the offsets and sizes of ð‘¡ that are required as ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ð‘  (calculated during satisfaction) 8: Append ( ð‘¡ , ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ð‘  , and the starting offset of ð‘¡ in ð‘‘ð‘¡ ) to ð‘Ÿð‘’ð‘ ð‘œð‘™ð‘£ð‘’ \_ ð‘‘ð‘¡ð‘  9: Mark the satisfied range of ð‘Ÿð‘Žð‘›ð‘”ð‘’ \_ ð‘ð‘œð‘¢ð‘›ð‘‘ 10: for ( ð‘Ÿð‘¡,ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ð‘ ,ð‘‘ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ ) âˆˆ ð‘Ÿð‘’ð‘ ð‘œð‘™ð‘£ð‘’ \_ ð‘‘ð‘¡ð‘  do 11: Read ð‘Ÿð‘¡.ð‘‘ð‘Žð‘¡ð‘Ž into ð‘Ÿð‘¡ \_ ð‘ð‘¢ð‘“ ð‘“ ð‘’ð‘Ÿ 12: for ( ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡,ð‘¡ \_ ð‘ ð‘–ð‘§ð‘’,ð‘‘ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ ) âˆˆ ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ð‘  do 13: if ð‘ð‘Ÿð‘’ð‘£ð‘–ð‘œð‘¢ð‘  \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ is not initialized then 14: Let ð‘‘ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ â† ð‘‘ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ + ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ -ð‘ð‘Ÿð‘’ð‘£ð‘–ð‘œð‘¢ð‘  \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ 15: Let ð‘ð‘Ÿð‘’ð‘£ð‘–ð‘œð‘¢ð‘  \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ â† ð‘¡ \_ ð‘œð‘“ ð‘“ ð‘ ð‘’ð‘¡ + ð‘¡ \_ ð‘ ð‘–ð‘§ð‘’ 16:
+- 1: procedure Resolve-DataTask(DataTask 𝑑𝑡 , buffer 𝑟𝑒𝑠𝑢𝑙𝑡
+- Copy 𝑡 \_ 𝑠𝑖𝑧𝑒 elements from 𝑟𝑡 \_ 𝑏𝑢𝑓 𝑓 𝑒𝑟 at 𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 to 𝑟𝑒𝑠𝑢𝑙𝑡 starting at 𝑑𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡
+- ) 2: Let 𝑇 be the pool of DataTasks associated with the file 𝑑𝑡.𝑓 𝑖𝑙𝑒𝑛𝑎𝑚𝑒 (queried from the task registry, by recency) 3: Let 𝑟𝑒𝑠𝑜𝑙𝑣𝑒 \_ 𝑑𝑡𝑠 ←{} 4: Let 𝑟𝑎𝑛𝑔𝑒 \_ 𝑏𝑜𝑢𝑛𝑑 represent an array of the locations requested by 𝑑𝑡 5: for 𝑡 ∈ 𝑇 do 6: if 𝑡 satisfies part of 𝑟𝑎𝑛𝑔𝑒 \_ 𝑏𝑜𝑢𝑛𝑑 which is not already satisfied then 7: Store the offsets and sizes of 𝑡 that are required as 𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡𝑠 (calculated during satisfaction) 8: Append ( 𝑡 , 𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡𝑠 , and the starting offset of 𝑡 in 𝑑𝑡 ) to 𝑟𝑒𝑠𝑜𝑙𝑣𝑒 \_ 𝑑𝑡𝑠 9: Mark the satisfied range of 𝑟𝑎𝑛𝑔𝑒 \_ 𝑏𝑜𝑢𝑛𝑑 10: for ( 𝑟𝑡,𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡𝑠,𝑑𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 ) ∈ 𝑟𝑒𝑠𝑜𝑙𝑣𝑒 \_ 𝑑𝑡𝑠 do 11: Read 𝑟𝑡.𝑑𝑎𝑡𝑎 into 𝑟𝑡 \_ 𝑏𝑢𝑓 𝑓 𝑒𝑟 12: for ( 𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡,𝑡 \_ 𝑠𝑖𝑧𝑒,𝑑𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 ) ∈ 𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡𝑠 do 13: if 𝑝𝑟𝑒𝑣𝑖𝑜𝑢𝑠 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 is not initialized then 14: Let 𝑑𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 ← 𝑑𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 + 𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 -𝑝𝑟𝑒𝑣𝑖𝑜𝑢𝑠 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 15: Let 𝑝𝑟𝑒𝑣𝑖𝑜𝑢𝑠 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 ← 𝑡 \_ 𝑜𝑓 𝑓 𝑠𝑒𝑡 + 𝑡 \_ 𝑠𝑖𝑧𝑒 16:
 
 ![Figure 1](/images/publications/dtio/figure1.png)
 *Fig. 1. DTIO software stack: offers a unified storage interface, support for domain-specific interfaces, the DataTask abstraction, an I/O optimization layer, and the concept of vertical slices representing DTIO's middleware role across application domains.*
@@ -202,7 +202,7 @@ DataTask Introspection API : The intent of this API is to enable analysis of Dat
 
 5.1.2 DataTask Composition Component. The DataTask Composer translates the user I/O into DataTasks transparently to the user application. The DataTask Composer executes in the application userspace and has been designed to be as lightweight as possible by minimizing the amount of metadata management performed to the minimum necessary to ensure correctness to applications.
 
-The DataTask composer consists of several steps, as shown in figure 3. First, is acquisition, where DTIO gains ownership of the application data. Acquisition can be achieved through ð¿ð· \_ ð‘ƒð‘…ð¸ð¿ð‘‚ð´ð·
+The DataTask composer consists of several steps, as shown in figure 3. First, is acquisition, where DTIO gains ownership of the application data. Acquisition can be achieved through 𝐿𝐷 \_ 𝑃𝑅𝐸𝐿𝑂𝐴𝐷
 
 ![Figure 4](/images/publications/dtio/figure4.png)
 *Fig. 4. The DTIO Scheduler uses: (1) System-Aware Executor Selection, leveraging real-time telemetry (load, data locality) to choose the optimal executor; and (2) Pattern-Aware Scheduling, consulting the task registry for dependency management and contextual information. These paths converge to drive the 'Schedule Task' decision, ensuring both performance and correctness. The task registry maintains a persistent record of schedule actions.*
@@ -230,12 +230,12 @@ The executors are also responsible for establishing a configuration for the stor
 ![Figure 5](/images/publications/dtio/figure5.png)
 
 ```
-// Initialization(typically done once) filename ="test_file.txt"; write_buf = "Testing R/W with DTIo. This is msg body."; size = length(write_buf); //Orafixedsizelike50 //Createawritetask. ï¼ˆ0=WRITEï¼Œ1=READ) write_task = createtask(type=WRITE, content={filename, offset=0, sizeï¼Œdata=write_buf}ï¼Œpriority=0ï¼Œdependencies=0ï¼Œflags=0); write_task_id= scheduletasks([write_task]);// Schedule the task wait(write_task_id);//Waitforthewritetasktocomplete // Read Operation---read_buf=requestbuffer(sizeï¼‰//Allocatea buffer for reading read_task = createtask(type=READï¼Œcontent={filenameï¼Œoffset=0, sizeï¼Œdata=read_buf}ï¼Œpriority=0ï¼Œdependencies=0ï¼Œflags=0); read_task_id =scheduletasks([read_task]);//Scheduletheread task wait(read_task_id); //waitforthereadtasktocomplete result = readbuffer(read_bufï¼Œoffset=0,size);// Retrieve the data
+// Initialization(typically done once) filename ="test_file.txt"; write_buf = "Testing R/W with DTIo. This is msg body."; size = length(write_buf); //Orafixedsizelike50 //Createawritetask. （0=WRITE，1=READ) write_task = createtask(type=WRITE, content={filename, offset=0, size，data=write_buf}，priority=0，dependencies=0，flags=0); write_task_id= scheduletasks([write_task]);// Schedule the task wait(write_task_id);//Waitforthewritetasktocomplete // Read Operation---read_buf=requestbuffer(size）//Allocatea buffer for reading read_task = createtask(type=READ，content={filename，offset=0, size，data=read_buf}，priority=0，dependencies=0，flags=0); read_task_id =scheduletasks([read_task]);//Scheduletheread task wait(read_task_id); //waitforthereadtasktocomplete result = readbuffer(read_buf，offset=0,size);// Retrieve the data
 ```
 
 *Fig. 5. By representing I/O requests as schedulable DataTasks, DTIO enables fine-grained control over data movement, facilitating optimizations such as deferred I/O, request coalescing, and computational storage.*
 
-Figure 5 demonstrates a simple file write and read operation using the DTIO API. During initialization, a filename and a write buffer containing the data to be written are defined. A createtask() call is then used to create a DataTask representing the write operation. Crucially, the type parameter is set to ð‘Šð‘…ð¼ð‘‡ð¸ (a defined constant for clarity), and the content parameter encapsulates the filename, offset, size, and a pointer to the data buffer. This write task is then scheduled using scheduletasks() , and the wait function is used to block until the write operation completes. For the read operation, a buffer is allocated using requestbuffer() . A read DataTask is created similarly to the write task, but with the type set to ð‘…ð¸ð´ð· and the buffer field of the content parameter pointing to the allocated read buffer. This read task is scheduled and waited upon. Finally, readbuffer() retrieves the data from the buffer.
+Figure 5 demonstrates a simple file write and read operation using the DTIO API. During initialization, a filename and a write buffer containing the data to be written are defined. A createtask() call is then used to create a DataTask representing the write operation. Crucially, the type parameter is set to 𝑊𝑅𝐼𝑇𝐸 (a defined constant for clarity), and the content parameter encapsulates the filename, offset, size, and a pointer to the data buffer. This write task is then scheduled using scheduletasks() , and the wait function is used to block until the write operation completes. For the read operation, a buffer is allocated using requestbuffer() . A read DataTask is created similarly to the write task, but with the type set to 𝑅𝐸𝐴𝐷 and the buffer field of the content parameter pointing to the allocated read buffer. This read task is scheduled and waited upon. Finally, readbuffer() retrieves the data from the buffer.
 
 ## 6.2 Considerations
 
@@ -259,12 +259,12 @@ Implementation: DTIO is an open-source C++ project under the GPLv3or later licen
 
 Methodology: We evaluated each component of DTIO and their respective optimizations and features. Due to our target application, these evaluations focus on showcasing formats such as HDF5 and NPZ, as well as the general POSIX interface (via IOR) due to its broad applicability. Section 7.1 demonstrates the performance of aggregation. Section 7.3 demonstrates the performance of the data staging optimization that prefetches data to executors in advance of data being requested. Section 7.2 demonstrates the performance of the caching optimization that resolves I/O from DataTasks. Section 7.4 showcase DTIO's overhead for different small and large I/O sizes. Finally, section 7.5 demonstrates the performance of DTIO in an end-to-end setting on the PtychoNN workload.
 
-Testing Environment: IOR tests were performed on the multitiered Ares research cluster at the Gnosis Research Center, hosted by the Illinois Institute of Technology [[5]](#ref-5). This cluster has 32 compute nodes. Each compute node has a dual IntelÂ® Xeon Scalable Silver 4114 processor and 96 GiB of RAM, along with NVMe PCIe Ã— 8 drive and a SATA SSD. PtychoNN tests were performed on the Polaris supercomputer at Argonne Leadership Computing Facility [[11]](#ref-11). Polaris has 560 nodes. Each node has 4 NVIDIA A100 GPUs, 512 GiB of DDR4 RAM, and 2x 3.2 TB local SSD drives.
+Testing Environment: IOR tests were performed on the multitiered Ares research cluster at the Gnosis Research Center, hosted by the Illinois Institute of Technology [[5]](#ref-5). This cluster has 32 compute nodes. Each compute node has a dual Intel® Xeon Scalable Silver 4114 processor and 96 GiB of RAM, along with NVMe PCIe × 8 drive and a SATA SSD. PtychoNN tests were performed on the Polaris supercomputer at Argonne Leadership Computing Facility [[11]](#ref-11). Polaris has 560 nodes. Each node has 4 NVIDIA A100 GPUs, 512 GiB of DDR4 RAM, and 2x 3.2 TB local SSD drives.
 
 ## 7.1 Aggregation Policies Evaluation
 
 ![Figure 6](/images/publications/dtio/figure6.png)
-*Fig. 6. Impact of Aggregation Strategies on DTIO Write Performance. (a) Fixed-size aggregation shows optimal performance near a 1MB aggregation size, corresponding to the PFS stripe size. (b) Fixed-time aggregation demonstrates optimal performance with a â‰ˆ 32ms window. Both strategies showcase DTIO's ability to achieve up to a 5x performance improvement by converting small 4KB writes into larger, more efficient I/O operations.*
+*Fig. 6. Impact of Aggregation Strategies on DTIO Write Performance. (a) Fixed-size aggregation shows optimal performance near a 1MB aggregation size, corresponding to the PFS stripe size. (b) Fixed-time aggregation demonstrates optimal performance with a ≈ 32ms window. Both strategies showcase DTIO's ability to achieve up to a 5x performance improvement by converting small 4KB writes into larger, more efficient I/O operations.*
 
 In this case, we demonstrate the impact of different aggregation strategies on I/O performance. To do this, we run a small write-only I/O workload using fio. In this case, fio writes in units of 4KB from 24 threads and total 8GiB in size. For the fixed-size aggregator, we vary the amount to aggregate before submitting an I/O request. For the fixed-time aggregator, we vary the window of time to merge I/O requests. DTIO is configured with 4 executors for performing I/O. In figure 6, it can be seen that aggregation has a substantial impact on performance. In both cases, about 5x improvement is gained in the best case. For the fixed-size aggregator, performance peaks around 1MB. For the fixed-time aggregator, performance peaks with a windowofsize32ms,whichiswhentheaveragerequestsizeofawindow is 768KB - almost 1MB. This is because the stripe size of the PFS is 1MB, so the bandwidth becomes saturated. Overall, by allowing I/O taskstobeaggregated,DTIOcanconvertunfavorableaccesspatterns into ideal ones and accomplish significantly higher I/O bandwidth.
 
@@ -275,7 +275,7 @@ In this case, we demonstrate the impact of different aggregation strategies on I
 
 As discussed in Section 4.3, DTIO implements an accelerated I/O resolution optimization, where DataTasks are temporarily stored in a circular buffer. This allows subsequent DataTasks to retrieve data directly from memory instead of disk. To demonstrate the benefits of this optimization, IOR is configured to emulate a producer-consumer workflow that writes and then reads a file of size 1 GiB for various operation sizes. We compare DTIO with and without accelerated resolution, which is configured to use 10% of DRAM for storing unresolved DataTasks.
 
-The write performance is shown in subfigure 7a. Since this is a read optimization, little performance difference was observed as expected. Accelerated resolution (res) does not have a significant overhead in writes -â‰ˆ 12% in the worst case. The read performance is shown in subfigure 7b. DTIO accelerated I/O resolution achieves a reduction in read time by 95.5% at 512 KiB with accelerated resolution and 64.4% reduction at 8 MiB, for an average reduction of 89.2%. This is because without optimization, data is transferred using PFS over disk storage rather than main memory, which the accelerated I/O resolution enables. By enabling DataTasks to be resolved directly from other DataTasks stored in local memory, significant performance improvements can be gained in producer-consumer workloads by replacing inefficient disk-based transfers with high-performance memory transfers.
+The write performance is shown in subfigure 7a. Since this is a read optimization, little performance difference was observed as expected. Accelerated resolution (res) does not have a significant overhead in writes -≈ 12% in the worst case. The read performance is shown in subfigure 7b. DTIO accelerated I/O resolution achieves a reduction in read time by 95.5% at 512 KiB with accelerated resolution and 64.4% reduction at 8 MiB, for an average reduction of 89.2%. This is because without optimization, data is transferred using PFS over disk storage rather than main memory, which the accelerated I/O resolution enables. By enabling DataTasks to be resolved directly from other DataTasks stored in local memory, significant performance improvements can be gained in producer-consumer workloads by replacing inefficient disk-based transfers with high-performance memory transfers.
 
 ## 7.3 Data Staging Evaluation
 
@@ -293,7 +293,7 @@ The performance of the staging optimization shows a significant improvement over
 
 For this evaluation, we wanted to explore where DTIO spends most of its time in order to understand potential bottlenecks and overheads in ordinary scenarios. The overhead is not significant, but it is worth investigating to understand the life cycle of an average operation in the DTIO pipeline. Figure 9 shows the overheads of DTIO under read and write settings. Timers are placed within DTIO to demonstrate how much time DTIO spends in composition, scheduling, and execution phases. Most metadata updates are performed during execution, but the timings for these are separated out for better understanding. We performed two sets of tests, one of 8 MiB operations as can be seen in Figure 9a and the other of 256 KiB operations in Figure 9b with a fixed file size of 1 GiB.
 
-Figure 9a shows that in DTIO, when the I/O operations are larger and fewer, the Metadata operations and Task Scheduler overheads shrink by â‰ˆ 94% and â‰ˆ 96% respectively when compared to doing smaller I/O and a larger number of I/O operations which can be seen in Figure 9b. In the best case, however, the overheads of Metadata and Task Scheduling are negligible, at roughly 1% of the total time each. In both cases, DTIO spends most of its time composing and executing I/O operations. For composing, a copy of the data is created because DTIO runs in a separate address space from the application. For execution, this is where the actual I/O occurs. It is notable that if metadata overhead were to become excessive, DTIO provides batching functionality to allow executors to wait and perform multiple I/O operations and their corresponding metadata updates simultaneously. This slows down throughput, but it can significantly reduce metadata overhead.
+Figure 9a shows that in DTIO, when the I/O operations are larger and fewer, the Metadata operations and Task Scheduler overheads shrink by ≈ 94% and ≈ 96% respectively when compared to doing smaller I/O and a larger number of I/O operations which can be seen in Figure 9b. In the best case, however, the overheads of Metadata and Task Scheduling are negligible, at roughly 1% of the total time each. In both cases, DTIO spends most of its time composing and executing I/O operations. For composing, a copy of the data is created because DTIO runs in a separate address space from the application. For execution, this is where the actual I/O occurs. It is notable that if metadata overhead were to become excessive, DTIO provides batching functionality to allow executors to wait and perform multiple I/O operations and their corresponding metadata updates simultaneously. This slows down throughput, but it can significantly reduce metadata overhead.
 
 ## 7.5 End-to-End Evaluations
 
@@ -321,13 +321,13 @@ This material is based upon work supported in part by the National Science Found
 
 ## References
 
-<a id="ref-1"></a>[1] Gustaf Ahdritz, Nazim Bouatta, Christina Floristean, Sachin Kadyan, Qinghui Xia, William Gerecke, Timothy J O'Donnell, Daniel Berenberg, Ian Fisk, NiccolÃ² Zanichelli, et al. 2024. OpenFold: Retraining AlphaFold2 yields new insights into its learningmechanismsandcapacityforgeneralization. NatureMethods (2024), 1-11.
+<a id="ref-1"></a>[1] Gustaf Ahdritz, Nazim Bouatta, Christina Floristean, Sachin Kadyan, Qinghui Xia, William Gerecke, Timothy J O'Donnell, Daniel Berenberg, Ian Fisk, Niccolò Zanichelli, et al. 2024. OpenFold: Retraining AlphaFold2 yields new insights into its learningmechanismsandcapacityforgeneralization. NatureMethods (2024), 1-11.
 
-<a id="ref-2"></a>[2] Oren Ben-Kiki, Clark Evans, and Brian Ingerson. 2009. Yaml ain't markup language (yamlâ„¢) version 1.1. Working Draft 2008 5, 11 (2009).
+<a id="ref-2"></a>[2] Oren Ben-Kiki, Clark Evans, and Brian Ingerson. 2009. Yaml ain't markup language (yaml™) version 1.1. Working Draft 2008 5, 11 (2009).
 
 <a id="ref-3"></a>[3] Suren Byna, M Scot Breitenfeld, Bin Dong, Quincey Koziol, Elena Pourmal, Dana Robinson, Jerome Soumagne, Houjun Tang, Venkatram Vishwanath, and Richard Warren. 2020. ExaHDF5: Delivering efficient parallel I/O on exascale computing systems. Journal of Computer Science and Technology 35 (2020), 145-160.
 
-<a id="ref-4"></a>[4] HugoCaro, Sulyvan Dollin, Anne Biton, Bryan Brancotte, Dimitri Desvillechabrol, Yoann Dufresne, Blaise Li, Etienne Kornobis, FrÃ©dÃ©ric Lemoine, Nicolas Maillet, et al. 2023. BioConvert: a comprehensive format converter for life sciences. NAR Genomics and Bioinformatics 5, 3 (2023), lqad074.
+<a id="ref-4"></a>[4] HugoCaro, Sulyvan Dollin, Anne Biton, Bryan Brancotte, Dimitri Desvillechabrol, Yoann Dufresne, Blaise Li, Etienne Kornobis, Frédéric Lemoine, Nicolas Maillet, et al. 2023. BioConvert: a comprehensive format converter for life sciences. NAR Genomics and Bioinformatics 5, 3 (2023), lqad074.
 
 <a id="ref-5"></a>[5] Gnosis Research Center. 2024. Hardware Overview | Gnosis Research Center. https://grc.iit.edu/resources/hardware-overview
 
@@ -353,7 +353,7 @@ This material is based upon work supported in part by the National Science Found
 
 <a id="ref-16"></a>[16] The HDF Group. 2024. HDFGroup/hdf5: Official HDF5(R) Library Repository. https://github.com/HDFGroup/hdf5
 
-<a id="ref-17"></a>[17] Helgi I IngÃ³lfsson. 2023. MuMMI, a machine learning-driven modeling infrastructure for coupling different simulation scales; showcased for RAS-RAF activation. Biophysical Journal 122, 3 (2023), 463a.
+<a id="ref-17"></a>[17] Helgi I Ingólfsson. 2023. MuMMI, a machine learning-driven modeling infrastructure for coupling different simulation scales; showcased for RAS-RAF activation. Biophysical Journal 122, 3 (2023), 463a.
 
 <a id="ref-18"></a>[18] Anthony Kougkas, Hariharan Devarajan, Jay Lofstead, and Xian-He Sun. 2019. Labios: A distributed label-based i/o system. In Proceedings of the 28th International Symposium on High-Performance Parallel and Distributed Computing . 13-24.
 
@@ -367,7 +367,7 @@ This material is based upon work supported in part by the National Science Found
 
 <a id="ref-23"></a>[23] Argonne National Laboratory. 2024. USCiLab/cereal: A C++11 library for serialization. https://github.com/USCiLab/cereal
 
-<a id="ref-24"></a>[24] Josh Moore, Daniela Basurto-Lozada, SÃ©bastien Besson, John Bogovic, JordÃ£o Bragantini, Eva M Brown, Jean-Marie Burel, Xavier Casas Moreno, Gustavo de Medeiros, Erin E Diel, et al. 2023. OME-Zarr: a cloud-optimized bioimaging file format with international community support. Histochemistry and Cell Biology 160, 3 (2023), 223-251.
+<a id="ref-24"></a>[24] Josh Moore, Daniela Basurto-Lozada, Sébastien Besson, John Bogovic, Jordão Bragantini, Eva M Brown, Jean-Marie Burel, Xavier Casas Moreno, Gustavo de Medeiros, Erin E Diel, et al. 2023. OME-Zarr: a cloud-optimized bioimaging file format with international community support. Histochemistry and Cell Biology 160, 3 (2023), 223-251.
 
 <a id="ref-25"></a>[25] Bogdan Nicolae. 2022. Scalable Multi-Versioning Ordered Key-Value Stores with Persistent Memory Support. In IPDPS 2022: The 36th IEEE International Parallel and Distributed Processing Symposium . Lyon, France, 93-103. doi:10.1109/IPDPS53621.2022.00018
 
@@ -375,7 +375,7 @@ This material is based upon work supported in part by the National Science Found
 
 <a id="ref-27"></a>[27] Robert B Ross, George Amvrosiadis, Philip Carns, Charles D Cranor, Matthieu Dorier, Kevin Harms, Greg Ganger, Garth Gibson, Samuel K Gutierrez, Robert Latham,etal.2020. Mochi:Composingdataservicesforhigh-performancecomputing environments. Journal of Computer Science and Technology 35 (2020), 121-144.
 
-<a id="ref-28"></a>[28] Sangmin Seo, Abdelhalim Amer, Pavan Balaji, Cyril Bordage, George Bosilca, Alex Brooks, Philip Carns, AdriÃ¡n CastellÃ³, Damien Genet, Thomas Herault, et al. 2017. Argobots: A lightweight low-level threading and tasking framework. IEEE Transactions on Parallel and Distributed Systems 29, 3 (2017), 512-526.
+<a id="ref-28"></a>[28] Sangmin Seo, Abdelhalim Amer, Pavan Balaji, Cyril Bordage, George Bosilca, Alex Brooks, Philip Carns, Adrián Castelló, Damien Genet, Thomas Herault, et al. 2017. Argobots: A lightweight low-level threading and tasking framework. IEEE Transactions on Parallel and Distributed Systems 29, 3 (2017), 512-526.
 
 <a id="ref-29"></a>[29] Jerome Soumagne, Dries Kimpe, Judicael Zounmevo, Mohamad Chaarawi, Quincey Koziol, Ahmad Afsahi, and Robert Ross. 2013. Mercury: Enabling remote procedure call for high-performance computing. In 2013 IEEE International Conference on Cluster Computing (CLUSTER) . IEEE, 1-8.
 

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "DaYu: Optimizing Distributed Scientific Workflows by Decoding Dataflow Semantics and Dynamics"
 authors: "Meng Tang, Jaime Cernuda, Jie Ye, Luanzheng Guo, Nathan R. Tallent, Anthony Kougkas, Xian-He Sun"
 type: Conference
@@ -226,7 +226,7 @@ Figure 6 shows the FTG of the full DDMD workflow for the first 3 observations. F
 
 ## C. Image Synthesis
 
-1) Workflow Overview: Advanced diffusion models like DALLÂ·E and Stable Diffusion have revolutionized machine learning with their ability to generate images from text descriptions. Building upon these advancements, the Auto-Regressive Latent Diffusion Model (ARLDM) incorporates historical context and multimodal conditions for enhanced understanding and image synthesis capabilities [[29]](#ref-29). The ARLDM workflow consists of three stages: First, the data preparation stage, where image and text data are prepared and stored in HDF5 format (with images in separate datasets). Next, the training stage, where the model reads image datasets from HDF5 for training. Finally, inference is performed on datasets.
+1) Workflow Overview: Advanced diffusion models like DALL·E and Stable Diffusion have revolutionized machine learning with their ability to generate images from text descriptions. Building upon these advancements, the Auto-Regressive Latent Diffusion Model (ARLDM) incorporates historical context and multimodal conditions for enhanced understanding and image synthesis capabilities [[29]](#ref-29). The ARLDM workflow consists of three stages: First, the data preparation stage, where image and text data are prepared and stored in HDF5 format (with images in separate datasets). Next, the training stage, where the model reads image datasets from HDF5 for training. Finally, inference is performed on datasets.
 
 ARLDM uses a 1D array of variable-length data for image and text storage. We chose this workload due to the prevalence of variable-length sequences in NLP models and the similar management and performance issues shared by sparse data, common in scientific programming [[30]](#ref-30).
 
@@ -244,7 +244,7 @@ Table III: Machine configurations for experiments.
 | Machine     | Compute, Memory                             | Storage options (notes)                                     |
 |-------------|---------------------------------------------|-------------------------------------------------------------|
 | CPU cluster | 2x Intel(R) Xeon Silver 4114, 48 GB RAM     | NFS (default); NVMe SSD (node); SATA SSD (node); HDD (node) |
-| GPU cluster | 2Ã— AMD EPYC; NVidia RTX 2080 Ti; 384 GB RAM | NFS (default); BeeGFS (w/ caching); SSD(node)               |
+| GPU cluster | 2× AMD EPYC; NVidia RTX 2080 Ti; 384 GB RAM | NFS (default); BeeGFS (w/ caching); SSD(node)               |
 
 This spread implies that each dataset has content in all four different file regions. Notably, all datasets share the first region (the default location for metadata), while the actual VL data content of each dataset is stored in different file regions.
 
@@ -404,9 +404,9 @@ This research is supported by the U.S. Department of Energy (DOE) through the Of
 
 <a id="ref-26"></a>[26] A. Nouri, P. E. Davis, P. Subedi, and M. Parashar, 'Exploring the role of machine learning in scientific workflows: Opportunities and challenges,' arXiv preprint arXiv:2110.13999 , 2021.
 
-<a id="ref-27"></a>[27] C. PeÃ±a-Monferrer, R. Manson-Sawko, and V. Elisseev, 'Hpc-cloud native framework for concurrent simulation, analysis and visualization of cfd workflows,' Future Generation Computer Systems , vol. 123, pp. 14-23, 2021.
+<a id="ref-27"></a>[27] C. Peña-Monferrer, R. Manson-Sawko, and V. Elisseev, 'Hpc-cloud native framework for concurrent simulation, analysis and visualization of cfd workflows,' Future Generation Computer Systems , vol. 123, pp. 14-23, 2021.
 
-<a id="ref-28"></a>[28] J. Senk, A. Yegenoglu, O. Amblet, Y. Brukau, A. Davison, D. R. Lester, A. LÃ¼hrs, P. Quaglio, V. Rostami, A. Rowley et al. , 'A collaborative simulation-analysis workflow for computational neuroscience using hpc,' in High-Performance Scientific Computing: First JARAHPC Symposium, JHPCS 2016, Aachen, Germany, October 4-5, 2016, Revised Selected Papers 1 . Springer, 2017, pp. 243-256.
+<a id="ref-28"></a>[28] J. Senk, A. Yegenoglu, O. Amblet, Y. Brukau, A. Davison, D. R. Lester, A. Lührs, P. Quaglio, V. Rostami, A. Rowley et al. , 'A collaborative simulation-analysis workflow for computational neuroscience using hpc,' in High-Performance Scientific Computing: First JARAHPC Symposium, JHPCS 2016, Aachen, Germany, October 4-5, 2016, Revised Selected Papers 1 . Springer, 2017, pp. 243-256.
 
 <a id="ref-29"></a>[29] X. Pan, P. Qin, Y. Li, H. Xue, and W. Chen, 'Synthesizing coherent story with auto-regressive latent diffusion models,' arXiv preprint arXiv:2211.10950 , 2022.
 

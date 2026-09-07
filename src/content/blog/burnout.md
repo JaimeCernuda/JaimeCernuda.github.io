@@ -1,7 +1,7 @@
 ---
 title: "How to manage burn-out as a research assistant"
 summary: "The pressure to publish can be overwhelming. During my third year, I hit a wall. Here are the strategies I used to recover my passion for discovery without sacrificing my mental health."
-date: "Aug 15, 2023"
+date: "2023-08-15"
 category: "Advice"
 readTime: "8 min read"
 popular: false

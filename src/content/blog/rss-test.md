@@ -1,7 +1,7 @@
 ---
 title: "RSS Test Post"
 summary: "This is a fake post to verify the RSS feed generation."
-date: "Dec 26, 2025"
+date: "2025-12-26"
 category: "Engineering"
 readTime: "1 min read"
 popular: false

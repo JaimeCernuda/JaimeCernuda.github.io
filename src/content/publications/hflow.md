@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HFlow: A Dynamic and Elastic Multi-Layered Data Forwarder"
 authors: "Jaime Cernuda, Hariharan Devarajan, Luke Logan, Keith Bateman, Neeraj Rajesh, Jie Ye, Anthony Kougkas, Xian-He Sun"
 type: Conference
@@ -132,7 +132,7 @@ The HFlow API can be seen in table 3. It consists of two components:
 6. ByteFlow Regulator: The ByteFlow Regulator is the core control center of the dynamic and elastic model behind HFlow . At its core, the function of the ByteFlow Regulator is to generate a set of suggestions instructing the HFlow Manager to reshape the resources allocated to any given ByteFlow . The ByteFlow Regulator requires the InFlow and OutFlow , software-level statistics, and hardware resource statistics. With this information, it will generate the suggestions. Algorithm 1 showcases a simplified version where
 
 ```
-Algorithm 1: ByteFlow Regulator Algorithm 1 CalculateRate (jobs) 2 foreach job âˆˆ jobs do 3 InFlow = InFlowMap[job] 4 OutFlow = OutFlowMap[job] 5 variation = | OutFlow -InFlow | 6 if InFlow = 0 âˆ¨ OutFlow = 0 then 7 continue 8 if variation â‰¥ conf.UpdateVariation then 9 AlterNodes(job, OutFlow, InFlow) 10 return 11 AlterNodes (job, OutFlow, InFlow) 12 if OutFlow â‰¥ InFlow then 13 multiplier = AlterType::SHRINK 14 else 15 multiplier = AlterType::GROW 16 variation = | OutFlow -InFlow | 17 difference = variation - (conf.UpdateV ariation/2) 18 nodeVar = difference*multiplier/conf.UpdateStep 19 ResourceAllocation resources(job, nodeV ar ,0, 0) 20 HFlowManager.ChangeResourceAllocation(resources) 21 return
+Algorithm 1: ByteFlow Regulator Algorithm 1 CalculateRate (jobs) 2 foreach job ∈ jobs do 3 InFlow = InFlowMap[job] 4 OutFlow = OutFlowMap[job] 5 variation = | OutFlow -InFlow | 6 if InFlow = 0 ∨ OutFlow = 0 then 7 continue 8 if variation ≥ conf.UpdateVariation then 9 AlterNodes(job, OutFlow, InFlow) 10 return 11 AlterNodes (job, OutFlow, InFlow) 12 if OutFlow ≥ InFlow then 13 multiplier = AlterType::SHRINK 14 else 15 multiplier = AlterType::GROW 16 variation = | OutFlow -InFlow | 17 difference = variation - (conf.UpdateV ariation/2) 18 nodeVar = difference*multiplier/conf.UpdateStep 19 ResourceAllocation resources(job, nodeV ar ,0, 0) 20 HFlowManager.ChangeResourceAllocation(resources) 21 return
 ```
 
 ```
@@ -250,7 +250,7 @@ From Figure 9, we see that HFlow performs at least as well as the typical IOFL a
 
 In order to prevent load imbalance and over-provisioning in HFlow, InterIORs are provisioned based on the load of the entire system. The goal of this test is to demonstrate the performance impact that the elastic resource provisioning of BBs has on real applications. To do this, we ran an application called Cosmic Tagger, which is a convolutional neural network to separate cosmic pixels, background pixels, and neutrino pixels from an image dataset. It is divided into 3 phases: data-intensive, compute-intensive, and light I/O. We compare provisioning 2 BB nodes, 8 BB nodes, and elastically provisioning between 1 and 15 BB nodes, and we scale the applications to run on 4 to 32 nodes. This will show that, as the scale of the application changes, a fixed allocation of resources will not always be optimal and can lead to load imbalance and over-provisioning.
 
-From Figure 10a, we see that when HFlow runs on 4 nodes, allocating 2 nodes for the application results Ëœ 2x less performance since it's not sufficient for the data-intensive phase. Either allocating 8 nodes statically or using elastic provisioning yields the best results. However, 8 BBs results in under-utilization in each of these phases. The elastic approach resulted in no BBs being allocated in the compute phase, 2 BBs in the light I/O phase, and 4 BBs in the data-intensive phase. Furthermore, as the application scales, the performance achieved by HFlow is 3x better than that of the fixed mapping. This is because HFlow was able to adapt to the demands of the different application phases whereas the static mappings became increasingly more imbalanced.
+From Figure 10a, we see that when HFlow runs on 4 nodes, allocating 2 nodes for the application results ˜ 2x less performance since it's not sufficient for the data-intensive phase. Either allocating 8 nodes statically or using elastic provisioning yields the best results. However, 8 BBs results in under-utilization in each of these phases. The elastic approach resulted in no BBs being allocated in the compute phase, 2 BBs in the light I/O phase, and 4 BBs in the data-intensive phase. Furthermore, as the application scales, the performance achieved by HFlow is 3x better than that of the fixed mapping. This is because HFlow was able to adapt to the demands of the different application phases whereas the static mappings became increasingly more imbalanced.
 
 3) HFlow as a Data Stager: Data Staging is used for prefetching and caching data. Typically, this requires all of the data to be loaded into the staging area before computations can be performed on it. However, HFlow can be used to perform computations on parts of the data while the rest is being loaded. The goal of this test is to show the performance benefit of using HFlow to asynchronously move data as opposed to the typical DS approach. To do this, we show the performance of KMeans at different scales, which was accomplished via loading an entire dataset into the staging area as opposed to loading 10% of the dataset into the staging area and performing computations while data is asynchronously loaded in. From Figure 10b, we see that when 4 nodes are used to run KMeans, the performances of both approaches are roughly the same. This is because the computation performed on 10% of the dataset is so fast that the data for the next computation is not fully loaded, resulting in data stalls. However, as the scale increases, the performance of HFlow becomes increasingly better, up to 2.5x, than that of the typical approach. The reason for this is that the speed of the compute phase is matched with the inflow of data, removing data stalls and overlapping data movement with computations.
 
@@ -306,7 +306,7 @@ This work is supported by National Science Foundation under OCI-1835764 and CSR-
 
 <a id="ref-16"></a>[16] B. Yang, X. Ji, X. Ma, X. Wang, T. Zhang, X. Zhu, N. El-Sayed, H. Lan, Y. Yang, J. Zhai, W. Liu, and W. Xue, 'End-to-end i/o monitoring on a leading supercomputer,' in 16th USENIX Symposium on Networked Systems Design and Implementation (NSDI 19) . Boston, MA: USENIX Association, Feb. 2019, pp. 379-394. [Online]. Available: https://www.usenix.org/conference/nsdi19/presentation/yang
 
-<a id="ref-17"></a>[17] F. Zahid, E. G. Gran, B. BogdaÂ´ nski, B. D. Johnsen, and T. Skeie, 'Efficient network isolation and load balancing in multi-tenant hpc clusters,' Future Generation Computer Systems , vol. 72, pp. 145 - 162, 2017. [Online]. Available: http://www.sciencedirect.com/science/article/pii/S0167739X16300735
+<a id="ref-17"></a>[17] F. Zahid, E. G. Gran, B. Bogda´ nski, B. D. Johnsen, and T. Skeie, 'Efficient network isolation and load balancing in multi-tenant hpc clusters,' Future Generation Computer Systems , vol. 72, pp. 145 - 162, 2017. [Online]. Available: http://www.sciencedirect.com/science/article/pii/S0167739X16300735
 
 <a id="ref-18"></a>[18] G. K. Lockwood, D. Hazen, Q. Koziol, R. S. Canon, K. Antypas, J. Balewski, N. Balthaser, W. Bhimji, J. Botts, J. Broughton, T. L. Butler, G. F. Butler, R. Cheema, C. Daley, T. Declerck, L. Gerhardt, W. E. Hurlbert, K. A. Kallback-Rose, S. Leak, J. Lee, R. Lee, J. Liu, K. Lozinskiy, D. Paul, N. Prabhat, C. Snavely, J. Srinivasan, T. Stone Gibbins, and N. J. Wright, 'Storage 2020: A vision for the future of hpc storage,' 10 2017. [Online]. Available: https://www.osti.gov/biblio/1632124
 
@@ -346,7 +346,7 @@ This work is supported by National Science Foundation under OCI-1835764 and CSR-
 
 <a id="ref-36"></a>[36] A. Flink, 'Apache flink,stateful computations over data streams,' 2020. [Online]. Available: https://flink.apache.org/
 
-<a id="ref-37"></a>[37] T. Akidau, R. Bradshaw, C. Chambers, S. Chernyak, R. J. FernÂ´ andez, F. FernÂ´ andez-Moctezuma, R. Lax, S. Mcveety, D. Mills, F. Perry, E. Schmidt, and S. Whittle Google, 'The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing,' Tech. Rep., 2150.
+<a id="ref-37"></a>[37] T. Akidau, R. Bradshaw, C. Chambers, S. Chernyak, R. J. Fern´ andez, F. Fern´ andez-Moctezuma, R. Lax, S. Mcveety, D. Mills, F. Perry, E. Schmidt, and S. Whittle Google, 'The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing,' Tech. Rep., 2150.
 
 <a id="ref-38"></a>[38] A. Kafka, 'Apache kafka, a distributed streaming platform,' 2020. [Online]. Available: https://kafka.apache.org/
 
@@ -360,7 +360,7 @@ This work is supported by National Science Foundation under OCI-1835764 and CSR-
 
 <a id="ref-43"></a>[43] G. K. Lockwood, D. Hazen, Q. Koziol, R. Canon, K. Antypas, J. Balewski, N. Balthaser, W. Bhimji, J. Botts, J. Broughton et al. , 'Storage 2020: A vision for the future of hpc storage,' 2017.
 
-<a id="ref-44"></a>[44] IIT, 'Ares cluster,' http://www.cs.iit.edu/ \ âˆ¼ scs/resources.html \ #content6-8p, 2019, accessed: 2019-04-24.
+<a id="ref-44"></a>[44] IIT, 'Ares cluster,' http://www.cs.iit.edu/ \ ∼ scs/resources.html \ #content6-8p, 2019, accessed: 2019-04-24.
 
 <a id="ref-45"></a>[45] H. Devarajan, A. Kougkas, K. Bateman, and X. H. Sun, 'Hcl: Distributing parallel data structures in extreme scales,' in 2020 IEEE International Conference on Cluster Computing (CLUSTER) , 2020, pp. 248-258.
 
