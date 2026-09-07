@@ -119,21 +119,85 @@ List pages: `header.{title, subtitle}` plus `folder`; blog adds `header.image`, 
 - Layout rendered nothing until `footer.md` loaded.
 - Dark mode applied after hydration, so light-mode users saw a dark flash.
 
-## Placeholders to fix
+## What changed in the migration
 
-Filled in Step 5.
+- Stack: Astro 7.3 static output, `@astrojs/react` (islands and static ReUI renders), `@astrojs/mdx`, `@astrojs/sitemap`, `@astrojs/rss`, Tailwind v4 through `@tailwindcss/vite`, `@tailwindcss/typography`, shadcn CLI with the ReUI registry. Node 22 in CI.
+- URLs are unchanged. `build.format: 'file'` writes `publications/hades.html` so GitHub Pages serves `/publications/hades` directly with a 200; `trailingSlash: 'never'` keeps links, canonical tags, sitemap, and RSS free of trailing slashes.
+- Content moved from `public/content` to `src/content` with Zod schemas in `src/content.config.ts`. The seven frontmatter-only files became YAML (`src/content/site/*.yaml`, `src/content/pages/*.yaml`). Cross references are slugs validated with `reference()`; a typo fails the build.
+- Every page has a title, meta description, canonical, Open Graph and Twitter tags. The home page carries a JSON-LD `Person`; every publication page carries a JSON-LD `ScholarlyArticle` derived from its frontmatter (DOI parsed from the BibTeX when present).
+- Markdown is rendered by Astro's Sätteri processor with smart punctuation disabled. The 546 raw `<a id="ref-N">` anchors, the GFM tables, and the jarvis footnote all survive. Figures get `loading="lazy"` through `satteri-imgattr`.
+- Fonts are self-hosted from `public/fonts`: the Space Grotesk variable files from Google Fonts and a Material Symbols subset containing only the 28 icon names in use (9.8 KB instead of the 1.1 MB full font). No third-party requests remain.
+- Images referenced from YAML (`/images/Jaime_2.png`, `/images/blog_light.png`, `/images/blog_dark.png`) are served as resized WebP variants generated at build time (`src/lib/images.ts`). The originals in `public/images` are untouched and still served at their old URLs. The 5.3 MB portrait was the largest contentful paint on the home and CV pages (28 s in Lighthouse); the hero now loads a 28 KB WebP.
+- ReUI components (static renders, no client JS): `Badge` for tags, venue, year, type, and project status; `Frame` around the featured publication, the featured project, and the CV profile card; `Timeline` for the news archive and the home news column (`src/components/NewsTimeline.tsx`). Grid cards keep their original markup because their overlay-link layout depends on it.
+- Islands (React, hydrated on the client): `ThemeToggle` (`client:idle`), `CiteButton` with a native dialog (`client:visible`), `CopyToClipboard` (`client:visible`). The footer email icon is a plain `mailto:` link so pages without other interactive parts ship only the theme toggle.
+- Dark mode is the `.dark` class on `<html>`, server-rendered as the default (as before) and removed before paint by an inline script when localStorage holds `theme=light`.
+- News was replaced with the real timeline from the Gnosis Research Center site (user decision). Seven 2026 publications were added (three eScience 2026 papers, four GCASR 2026 posters). hstream.md gained an `image` field so the home page's featured card no longer hardcodes a figure path.
+- Encoding repair on moved files: UTF-8 BOMs stripped, CRLF normalized to LF, and double-encoded text restored (`Â·` to `·`, `â†’` to `→`, `â€“` to `–`, `Ã©` to `é`, and similar) in 11 publication bodies and the apollo and hstream citation blocks. Blog dates normalized to ISO (`2023-08-15`) and rendered as `Aug 15, 2023`.
+- Home page selections now follow `home.yaml`: featured publication `hstream` (previously broken), selected publications `hades`, `hflow`, `chronolog` (previously a hardcoded list showing jarvis, hstream, hflow, hades).
+- The CV page renders every publication from the collection (as before) and uses each entry's real BibTeX for the cite dialog instead of generating one.
+- The projects grid links each GitHub icon to the project's own `links.code` instead of the profile URL.
+- Removed with the SPA: `public/404.html` and the redirect decoder (a real `404.astro` replaces them), the RSS and sitemap scripts, `eslint.config.js` and the `lint` script, `migrate_pubs.ps1`, `Page.md`, `vite.config.js`, `postcss.config.js`, `tailwind.config.js`, `gray-matter`, `react-router-dom`, `react-markdown`, `rehype-raw`, `rehype-slug`, `remark-gfm`, `vite-plugin-node-polyfills`.
 
 ## Entry diff
 
-Filled in Step 2.
+| Collection | Before | After | Notes |
+|---|---|---|---|
+| publications | 15 | 22 | added acropolis, agent-error-simulator, rich-io-centric-operators, pre-rope-vs-post-rope, agentic-search-efficiency, speculative-dispatching, correct-is-not-io-efficient |
+| projects | 3 | 3 | chronolog, coeus, iowarp |
+| blog | 4 | 4 | burnout, cvpr-zero-shot, rss-test, thesis-reflections |
+| site data | home.md, cv.md, news.md, footer.md | home.yaml, cv.yaml, news.yaml (rewritten), footer.yaml | cv.yaml gained `page_subtitle` (the old hardcoded CV subtitle) |
+| list pages | publications.md, projects.md, blog.md | publications.yaml, projects.yaml, blog.yaml | `folder` key dropped |
 
-## Dropped client behaviors
-
-Filled in Step 5.
+Routes before: 9 plus rss.xml and sitemap.xml. Routes after: 36 HTML pages (9 routes expanded over 22 publications, 3 projects, 4 posts, plus 404), rss.xml, sitemap-index.xml, sitemap-0.xml, robots.txt, and a static sitemap.xml index that points to sitemap-0.xml so the old sitemap URL keeps working.
 
 ## Per-page JS
 
-Filled in Step 5.
+Measured on the built `dist/` (Step 5). Every page shares the same hashed React runtime file, so it is downloaded once and cached across pages. Islands hydrate at idle or when visible; total blocking time is 0 ms on every page.
+
+| Page | Islands | JS files | Raw KB (+ inline loader) | Gzip KB |
+|---|---|---|---|---|
+| / | ThemeToggle, CopyToClipboard, CiteButton | CiteButton, CopyToClipboard, ThemeToggle, client, jsx-runtime, react | 192.4 (+5.3) | 61.3 |
+| /publications | ThemeToggle, CiteButton | CiteButton, ThemeToggle, client, jsx-runtime, react | 191.4 (+5.3) | 60.7 |
+| /projects | ThemeToggle | ThemeToggle, client, jsx-runtime, react | 188.3 (+4.9) | 59.5 |
+| /cv | ThemeToggle, CopyToClipboard, CiteButton | CiteButton, CopyToClipboard, ThemeToggle, client, jsx-runtime, react | 192.4 (+5.3) | 61.3 |
+| /blog | ThemeToggle | ThemeToggle, client, jsx-runtime, react | 188.3 (+4.9) | 59.5 |
+| /news | ThemeToggle | ThemeToggle, client, jsx-runtime, react | 188.3 (+4.9) | 59.5 |
+| /publications/hades | ThemeToggle, CiteButton | CiteButton, ThemeToggle, client, jsx-runtime, react | 191.4 (+5.3) | 60.7 |
+| /projects/iowarp | ThemeToggle | ThemeToggle, client, jsx-runtime, react | 188.3 (+4.9) | 59.5 |
+| /blog/burnout | ThemeToggle | ThemeToggle, client, jsx-runtime, react | 188.3 (+4.9) | 59.5 |
+| /404 | ThemeToggle | ThemeToggle, client, jsx-runtime, react | 188.3 (+4.9) | 59.5 |
+
+`client` is the React DOM runtime (184 KB raw, 56 KB gzip) that any React island needs. The theme toggle alone pulls it onto every page. A follow-up that turns the three islands into plain `<script>` components would cut every page to under 3 KB of JS; it was not done here because the brief asked for React islands.
+
+The old site shipped one bundle of about 500 KB of JavaScript before any content appeared, plus the markdown parser and router; content-only pages now ship none beyond the toggle.
+
+## Placeholders to fix
+
+Content carried over as-is. Nothing below was edited.
+
+- `home.yaml` and `footer.yaml` social links: Google Scholar, GitHub, and LinkedIn point at site roots (`https://scholar.google.com`, `https://github.com`, `https://linkedin.com`). Real profiles: `https://scholar.google.com/citations?user=sKe6n3kAAAAJ`, `https://github.com/JaimeCernuda`, `https://www.linkedin.com/in/jaime-cernuda`. The "Chicago, IL" link is `#`. Once these are real, the JSON-LD `sameAs` list fills in automatically (it skips bare domains).
+- `home.yaml` stats: "10+" papers (collection now has 22), "150+" citations, "2" grants, "5+" years. Hand-maintained.
+- Title wording: `home.yaml`, `cv.yaml`, and `blog.yaml` say "Research Assistant Professor". The GRC site says "Assistant Research Professor, Head of Student Development". The JSON-LD uses the GRC wording per the user's choice.
+- `cv.yaml` ends in 2025: PhD "2019 - 2025", Research Assistant "Sept. 2019 - 2025", no 2026 faculty role, no defense or conferral dates. `cv.yaml` `publications` list (11 hand-copied entries) is kept but unused; the page renders the collection. `awards` is empty.
+- `cv.yaml` `page_subtitle` is the old hardcoded "Specializing in Computer Vision, Self-Supervised Learning, and 3D Scene Understanding." (wrong field).
+- `pages/publications.yaml` subtitle mentions "Deep Learning and Medical Imaging". `pages/blog.yaml` subtitle mentions "AI ethics". `footer.yaml` contact text says "pushing the boundaries of AI".
+- Blog: all four posts are template content (a CVPR zero-shot paper, thesis reflections, burnout, and "RSS Test Post" dated 2025-12-26, which is the first item in the feed). `thesis-reflections.md` contains `![Testing Left Align | 300px | left](/images/blog_light.png)`; the old renderer parsed that alt text as caption, width, and alignment. It now renders as a plain image with that literal alt text.
+- Projects: all three `image` paths (`/images/projects/*.png`) do not exist, so cards show an empty image area (as before). `coeus.md` and `chronolog.md` link to `grc.iit.edu` pages that may not resolve yet.
+- `publications/hades.md` references `figure10.png` and `figure11.png` which are not on disk. `publications/rich-operators.md` (SSDBM 2025 poster) links to a poster URL that returns 404, and the GRC site lists that poster without Jaime as an author; a local copy exists at `grc-context/research/projects/iowarp/posters/xu2025_rich_operators_in_situ_processing_ssdbm25_poster.pdf`.
+- New 2026 entries: `pre-rope-vs-post-rope.md` and `agentic-search-efficiency.md` have no abstract on the GRC site, so their bodies are empty and the pages show metadata only. The three eScience 2026 papers have no PDF yet. Author initials were kept where full names were not verifiable (M. Taufer, N. Tan, K. Assogba, M. Rafique, J. Teves, C. Brinker, L. Pouchard).
+- `public/images/Jaime.jpg` and 18 publication figures are referenced by nothing.
+
+## Dropped client behaviors
+
+By design, to keep every page free of JavaScript except the three islands:
+
+- Publications and projects list filters (year, type, tag, topic, status selects), search boxes, and the grid/table view toggle. Publications are grouped by year with static jump links; the table view is gone.
+- Blog pagination (6 per page), the category filter buttons, and the search box. All posts render on one page; categories show as static chips.
+- Table of contents scroll spy and the CV "On this page" scroll spy. Links still jump to sections; the page scrolls smoothly through CSS.
+- History-based "Back to X" labels (`state={{from}}`) and `navigate(-1)`. Detail pages link back to their list page.
+- The mobile menu uses a CSS-only checkbox instead of React state.
+- SPA scroll restoration and the in-memory content cache (not needed in a multi-page site).
+- The old featured-project card and grid used `https://github.com/JaimeCernuda` for every GitHub icon; the new cards use each project's `links.code`.
 
 ## Live verification
 
