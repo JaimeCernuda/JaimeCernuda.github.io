@@ -10,6 +10,7 @@ tags:
   - HPC
   - Hierarchical Storage
 description: "HStream is a hierarchical data streaming engine designed for high-throughput scientific applications. It features an adaptive parallelism controller and a hierarchical memory manager to handle bursty I/O and alleviate memory pressure in HPC environments."
+image: "/images/publications/hstream/figure3.png"
 links:
   pdf: "/papers/hstream.pdf"
   code: "https://github.com/grc-iit/HStream"

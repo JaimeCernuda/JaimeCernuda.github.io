@@ -1,0 +1,25 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+---
+
+<Base title="Page not found" description="The page you requested does not exist." path="/404">
+  <div class="w-full max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center flex flex-col items-center gap-6">
+    <span class="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">404</span>
+    <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white">Page not found</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-400 max-w-lg">
+      The page you requested does not exist or has moved. Try one of these instead.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="/" class="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-bold transition-colors">
+        <Icon name="home" class="text-[18px]" /> Home
+      </a>
+      <a href="/publications" class="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold transition-colors">
+        <Icon name="article" class="text-[18px]" /> Publications
+      </a>
+      <a href="/blog" class="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold transition-colors">
+        <Icon name="rss_feed" class="text-[18px]" /> Blog
+      </a>
+    </div>
+  </div>
+</Base>

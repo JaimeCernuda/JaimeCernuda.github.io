@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import Prose from '@/components/Prose.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
+import { formatDate } from '@/lib/dates';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blog');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { title, summary, date, category, readTime } = entry.data;
+const { Content, headings } = await render(entry);
+const hasHeadings = headings.some((h) => h.depth <= 3);
+const path = `/blog/${entry.id}`;
+---
+
+<Base title={title} description={summary} type="article" path={path}>
+  <div id="top" class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <a href="/blog" class="inline-flex items-center gap-2 text-primary font-bold hover:underline mb-6">
+      <Icon name="arrow_back" class="text-sm" />
+      Back to Blog
+    </a>
+
+    <div class="flex flex-col xl:flex-row gap-12 items-start">
+      <TableOfContents headings={headings} title={title} />
+
+      <article class:list={['max-w-3xl mx-auto w-full', hasHeadings && 'xl:mx-0']}>
+        <div class="mb-8">
+          <div class="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-3">
+            <span class="bg-primary/10 text-primary px-2 py-1 rounded font-bold text-xs uppercase tracking-wide">{category}</span>
+            <span>•</span>
+            <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>
+            <span>•</span>
+            <span>{readTime}</span>
+          </div>
+          <h1 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-4">{title}</h1>
+          <p class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-6">{summary}</p>
+        </div>
+
+        <div class="w-full h-px bg-gray-200 dark:bg-gray-800 my-8"></div>
+
+        <Prose>
+          <Content />
+        </Prose>
+      </article>
+    </div>
+  </div>
+</Base>

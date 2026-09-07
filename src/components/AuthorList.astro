@@ -1,0 +1,21 @@
+---
+import { splitAuthors } from '@/lib/authors';
+
+interface Props {
+  authors: string;
+}
+const tokens = splitAuthors(Astro.props.authors);
+---
+
+{
+  tokens.map((t, i) => (
+    <span>
+      {t.me ? (
+        <strong class="text-gray-900 dark:text-white font-bold">{t.name}</strong>
+      ) : (
+        <span class="text-gray-600 dark:text-gray-400">{t.name}</span>
+      )}
+      {i < tokens.length - 1 && ', '}
+    </span>
+  ))
+}

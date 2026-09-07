@@ -1,0 +1,104 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import AuthorList from '@/components/AuthorList.astro';
+import GitHubIcon from '@/components/GitHubIcon.astro';
+import Icon from '@/components/Icon.astro';
+import Prose from '@/components/Prose.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
+import CiteButton from '@/components/islands/CiteButton';
+import { hasBody, publicationDescription } from '@/lib/content';
+import { articleJsonLd } from '@/lib/jsonld';
+import { absoluteUrl } from '@/lib/urls';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('publications');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { title, venue, year, type, authors, tags, links, citation, image } = entry.data;
+const { Content, headings } = await render(entry);
+const path = `/publications/${entry.id}`;
+const description = publicationDescription(entry);
+const jsonLd = articleJsonLd(entry, absoluteUrl(path, Astro.site), description);
+const secondaryButton =
+  'flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-bold transition-colors';
+---
+
+<Base title={title} description={description} type="article" path={path} image={image} jsonLd={jsonLd}>
+  <div id="top" class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <a href="/publications" class="inline-flex items-center gap-2 text-primary hover:text-blue-600 transition-colors mb-8 font-medium">
+      <Icon name="arrow_back" class="text-[20px]" />
+      Back to Publications
+    </a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <aside class="lg:col-span-3 order-2 lg:order-1">
+        <TableOfContents headings={hasBody(entry) ? headings : []} title={title} />
+      </aside>
+
+      <article class="lg:col-span-9 order-1 lg:order-2">
+        <header class="mb-12">
+          <div class="flex flex-wrap gap-3 mb-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-primary/10 text-primary">{venue}</span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">{year}</span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300">{type}</span>
+          </div>
+
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black leading-tight text-gray-900 dark:text-white mb-6">{title}</h1>
+
+          <div class="text-lg leading-relaxed mb-8"><AuthorList authors={authors} /></div>
+
+          {
+            tags.length > 0 && (
+              <div class="flex flex-wrap gap-2 mb-8">
+                {tags.map((tag) => (
+                  <span class="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )
+          }
+
+          <div class="flex flex-wrap gap-4">
+            {
+              links.pdf && (
+                <a href={links.pdf} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg font-bold transition-colors shadow-sm shadow-primary/30">
+                  <Icon name="description" />
+                  Read PDF
+                </a>
+              )
+            }
+            {
+              links.poster && (
+                <a href={links.poster} target="_blank" rel="noopener noreferrer" class={links.pdf ? secondaryButton : 'flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg font-bold transition-colors shadow-sm shadow-primary/30'}>
+                  <Icon name="image" />
+                  View Poster
+                </a>
+              )
+            }
+            {
+              links.code && (
+                <a href={links.code} target="_blank" rel="noopener noreferrer" class={secondaryButton}>
+                  <GitHubIcon class="w-5 h-5" />
+                  View Code
+                </a>
+              )
+            }
+            <CiteButton client:visible citation={citation} label="Cite" iconClassName="" className={`${secondaryButton} cursor-pointer`} />
+          </div>
+        </header>
+
+        {
+          hasBody(entry) && (
+            <Prose>
+              <Content />
+            </Prose>
+          )
+        }
+      </article>
+    </div>
+  </div>
+</Base>

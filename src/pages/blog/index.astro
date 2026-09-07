@@ -1,0 +1,131 @@
+---
+import { getCollection, getEntries, getEntry } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import PostCard from '@/components/PostCard.astro';
+import { formatDate } from '@/lib/dates';
+
+const page = await getEntry('pages', 'blog');
+if (!page) throw new Error('src/content/pages/blog.yaml is missing');
+const { header, sidebar } = page.data;
+
+// Order comes from the posts list in blog.yaml; any post missing from the
+// list is appended newest first so nothing is hidden.
+const listed = page.data.posts ? await getEntries(page.data.posts) : [];
+const listedIds = new Set(listed.map((p) => p.id));
+const unlisted = (await getCollection('blog'))
+  .filter((p) => !listedIds.has(p.id))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const posts = [...listed, ...unlisted];
+
+const categories = [...new Set(posts.map((p) => p.data.category))];
+const popular = posts.filter((p) => p.data.popular).slice(0, 3);
+
+const lightGradient = 'linear-gradient(rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%)';
+const darkGradient = 'linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%)';
+const lightImage = header.image;
+const darkImage = header.image_dark ?? header.image;
+---
+
+<Base title={header.title} description={header.subtitle} path="/blog">
+  <div class="flex flex-1 justify-center py-8 w-full">
+    <div class="flex flex-col max-w-[1600px] flex-1 w-full px-4 sm:px-6 lg:px-8">
+      <div class="mb-12">
+        <div
+          class="flex min-h-[320px] md:min-h-[400px] flex-col gap-6 rounded-2xl items-start justify-end px-6 pb-10 md:px-12 shadow-2xl relative overflow-hidden group"
+        >
+          {
+            lightImage && (
+              <div
+                class="absolute inset-0 bg-cover bg-center bg-no-repeat dark:hidden"
+                style={`background-image: ${lightGradient}, url("${lightImage}")`}
+              />
+            )
+          }
+          {
+            darkImage && (
+              <div
+                class="absolute inset-0 bg-cover bg-center bg-no-repeat hidden dark:block"
+                style={`background-image: ${darkGradient}, url("${darkImage}")`}
+              />
+            )
+          }
+          <div class="flex flex-col gap-3 text-left z-10 max-w-3xl">
+            <h1 class="text-gray-900 dark:text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">{header.title}</h1>
+            <h2 class="text-gray-700 dark:text-gray-200 text-lg md:text-xl font-normal leading-relaxed max-w-2xl">{header.subtitle}</h2>
+          </div>
+          <div class="mt-6 z-10">
+            <a
+              href="/rss.xml"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-lg font-bold transition-all shadow-lg shadow-primary/30"
+            >
+              <Icon name="rss_feed" />
+              Subscribe via RSS
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-12">
+        <div class="lg:col-span-8 flex flex-col gap-8">
+          {
+            posts.length > 0 ? (
+              posts.map((post) => <PostCard post={post} />)
+            ) : (
+              <div class="p-10 text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-surface-dark rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+                No posts yet.
+              </div>
+            )
+          }
+        </div>
+
+        <aside class="lg:col-span-4 flex flex-col gap-8">
+          {
+            sidebar && (
+              <div class="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center text-center">
+                <div class="w-24 h-24 rounded-full bg-gray-200 mb-4 overflow-hidden border-2 border-primary/20">
+                  <img class="w-full h-full object-cover" src={sidebar.profile.image} alt={sidebar.profile.name} loading="lazy" />
+                </div>
+                <h4 class="text-lg font-bold text-gray-900 dark:text-white">{sidebar.profile.name}</h4>
+                <p class="text-xs text-primary font-medium mb-3">{sidebar.profile.role}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4">{sidebar.profile.bio}</p>
+                <a href="/cv" class="text-sm font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors flex items-center gap-1">
+                  More about me <Icon name="arrow_forward" class="text-[16px]" />
+                </a>
+              </div>
+            )
+          }
+
+          <div class="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
+            <h4 class="text-base font-bold text-gray-900 dark:text-white mb-4">Categories</h4>
+            <div class="flex flex-wrap gap-2">
+              {
+                categories.map((cat) => (
+                  <span class="px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">{cat}</span>
+                ))
+              }
+            </div>
+          </div>
+
+          {
+            popular.length > 0 && (
+              <div class="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
+                <h4 class="text-base font-bold text-gray-900 dark:text-white mb-4">Popular Reads</h4>
+                <div class="flex flex-col gap-4">
+                  {popular.map((post) => (
+                    <a href={`/blog/${post.id}`} class="group">
+                      <h5 class="text-sm font-semibold text-gray-800 dark:text-gray-300 group-hover:text-primary transition-colors mb-1">{post.data.title}</h5>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">{formatDate(post.data.date)}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+        </aside>
+      </div>
+    </div>
+  </div>
+</Base>

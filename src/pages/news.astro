@@ -1,0 +1,19 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import NewsTimeline from '@/components/NewsTimeline.astro';
+
+const entry = await getEntry('news', 'news');
+if (!entry) throw new Error('src/content/site/news.yaml is missing');
+const items = entry.data.news;
+---
+
+<Base title="News Archive" description="Updates, announcements, and recent activities." path="/news">
+  <div class="w-full max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">News Archive</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400">Updates, announcements, and recent activities.</p>
+    </div>
+    <NewsTimeline items={items} variant="full" />
+  </div>
+</Base>

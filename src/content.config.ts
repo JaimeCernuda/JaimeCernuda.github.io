@@ -32,6 +32,8 @@ const publications = defineCollection({
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     description: z.string().optional(),
+    /** Representative figure shown on the home page when featured. */
+    image: z.string().optional(),
     links: publicationLinks.default({}),
     citation: z.string(),
   }),

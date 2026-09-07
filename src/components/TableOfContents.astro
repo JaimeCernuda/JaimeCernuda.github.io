@@ -1,0 +1,49 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  title?: string;
+}
+const { headings, title } = Astro.props;
+
+const norm = (s: string) => s.trim().toLowerCase();
+const items = headings
+  .filter((h) => h.depth <= 3 && h.slug !== 'footnote-label')
+  .filter((h, i) => !(i === 0 && title && norm(h.text) === norm(title)));
+---
+
+{
+  (items.length > 0 || title) && (
+    <nav
+      class="hidden xl:block sticky top-24 self-start w-64 pr-8 max-h-[calc(100vh-6rem)] overflow-y-auto"
+      aria-label="On this page"
+    >
+      <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">On this page</h4>
+      <ul class="space-y-2 text-sm border-l border-gray-200 dark:border-gray-800">
+        {title && (
+          <li>
+            <a
+              href="#top"
+              class="block py-1 border-l-2 -ml-[2px] transition-colors border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+              style="padding-left: 1rem"
+            >
+              {title}
+            </a>
+          </li>
+        )}
+        {items.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              class="block py-1 border-l-2 -ml-[2px] transition-colors border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+              style={`padding-left: ${1 + (h.depth - 1) * 0.75}rem`}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

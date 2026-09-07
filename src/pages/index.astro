@@ -1,16 +1,263 @@
 ---
-// Placeholder page for the skeleton build. Replaced in Step 3.
-import '@/styles/global.css';
+import { getEntries, getEntry } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import AuthorList from '@/components/AuthorList.astro';
+import GitHubIcon from '@/components/GitHubIcon.astro';
+import Icon from '@/components/Icon.astro';
+import NewsTimeline from '@/components/NewsTimeline.astro';
+import CiteButton from '@/components/islands/CiteButton';
+import CopyToClipboard from '@/components/islands/CopyToClipboard';
+import { sortByYear } from '@/lib/content';
+import { inlineMarkdown, markdownToText } from '@/lib/inlineMarkdown';
+import { personJsonLd } from '@/lib/jsonld';
+
+const home = await getEntry('home', 'home');
+if (!home) throw new Error('src/content/site/home.yaml is missing');
+const { hero, stats } = home.data;
+
+const featuredProjects = await getEntries(home.data.featured_projects);
+const featuredPublication = await getEntry(home.data.featured_publication);
+const selectedPublications = sortByYear(await getEntries(home.data.selected_publications));
+
+const newsEntry = await getEntry('news', 'news');
+const news = newsEntry?.data.news ?? [];
+
+const firstBodyImage = featuredPublication?.body?.match(/!\[[^\]]*\]\(([^)\s]+)\)/)?.[1];
+const featuredImage = featuredPublication?.data.image ?? firstBodyImage;
+
+const email = hero.social_links.find((l) => l.url.startsWith('mailto:'))?.url.replace('mailto:', '') ?? '';
+const description = markdownToText(hero.subtitle).split(/(?<=\.)\s/)[0];
+const jsonLd = personJsonLd({ name: hero.title, image: hero.image, email, socialLinks: hero.social_links });
+const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1';
 ---
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jaime Cernuda</title>
-  </head>
-  <body>
-    <main class="min-h-screen flex items-center justify-center font-display">
-      <h1 class="text-4xl font-black text-primary">Jaime Cernuda</h1>
-    </main>
-  </body>
-</html>
+
+<Base title="Jaime Cernuda - Research Portfolio" description={description} type="profile" path="/" jsonLd={jsonLd}>
+  <div class="flex flex-col w-full">
+    <section class="relative pt-10 pb-12 lg:pt-20 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
+      <div class="flex flex-col-reverse lg:grid lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-8 flex flex-col gap-6 text-left">
+          <a
+            href="#collaborate"
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-light border border-gray-300 w-fit dark:bg-surface-dark dark:border-gray-800 hover:border-primary/50 hover:shadow-sm transition-all cursor-pointer group"
+          >
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse group-hover:scale-125 transition-transform"></span>
+            <span class="text-xs font-medium text-gray-600 tracking-wide uppercase dark:text-gray-300 group-hover:text-primary transition-colors">{hero.status}</span>
+          </a>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">{hero.title}</h1>
+          <div
+            class="text-lg sm:text-xl text-gray-600 leading-relaxed dark:text-gray-400 prose dark:prose-invert max-w-none"
+            set:html={inlineMarkdown(hero.subtitle)}
+          />
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-6 mt-6 text-gray-500 dark:text-gray-400">
+            {
+              hero.social_links.map((link) =>
+                link.url.startsWith('mailto:') ? (
+                  <CopyToClipboard
+                    client:visible
+                    text={link.url.replace('mailto:', '')}
+                    icon={link.icon}
+                    iconClassName="text-xl"
+                    label={link.name}
+                    labelClassName="text-sm font-medium"
+                    className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer"
+                  />
+                ) : (
+                  <a
+                    href={link.url}
+                    target={link.url.startsWith('http') ? '_blank' : undefined}
+                    rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    class="flex items-center gap-2 hover:text-primary transition-colors"
+                  >
+                    <Icon name={link.icon} class="text-xl" />
+                    <span class="text-sm font-medium">{link.name}</span>
+                  </a>
+                ),
+              )
+            }
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 w-full flex justify-center lg:justify-end">
+          <div
+            class="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-full lg:h-auto lg:aspect-square max-w-sm rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 group border-4 border-white dark:border-surface-dark"
+          >
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+              style={`background-image: url("${hero.image}")`}
+              role="img"
+              aria-label={hero.title}
+            >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-gray-200 dark:border-border-dark bg-surface-light-lighter dark:bg-surface-dark/30 py-8">
+      <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center md:text-left">
+          {
+            stats.map((stat) => (
+              <div class="flex flex-col gap-0.5">
+                <p class="text-2xl sm:text-3xl font-bold text-primary">{stat.value}</p>
+                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">{stat.label}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-8 flex flex-col gap-16">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
+              <a href="/projects" class="hidden sm:flex items-center text-sm font-bold text-primary hover:underline">
+                View All <Icon name="arrow_forward" class="text-lg ml-1" />
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {
+                featuredProjects.map((project) => (
+                  <div class="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5 relative">
+                    <a href={`/projects/${project.id}`} class="absolute inset-0 z-0" aria-label={`View case study for ${project.data.title}`} />
+                    <div
+                      class="h-48 w-full bg-cover bg-center relative z-10 pointer-events-none bg-gray-100 dark:bg-surface-dark-lighter"
+                      style={project.data.image ? `background-image: url("${project.data.image}")` : undefined}
+                    >
+                      <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all" />
+                    </div>
+                    <div class="flex flex-col flex-1 p-5 relative z-10 pointer-events-none">
+                      <div class="flex flex-wrap gap-2 mb-2">
+                        {project.data.tags.slice(0, 3).map((tag, i) => (
+                          <span
+                            class:list={[
+                              'px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded',
+                              i === 0 ? 'bg-primary/10 text-primary' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400',
+                            ]}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{project.data.title}</h3>
+                      <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 flex-1">{project.data.description}</p>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          {
+            featuredPublication && (
+              <div class="mb-16">
+                <div class="flex items-center justify-between mb-6">
+                  <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Featured Research</h2>
+                </div>
+                <div class="group relative bg-surface-light dark:bg-surface-dark rounded-2xl overflow-hidden border border-gray-200 dark:border-border-dark shadow-lg hover:shadow-xl hover:border-primary/50 transition-all">
+                  <a href={`/publications/${featuredPublication.id}`} class="absolute inset-0 z-0" aria-label={`View details for ${featuredPublication.data.title}`} />
+                  <div class="grid grid-cols-1 md:grid-cols-2 relative z-10 pointer-events-none">
+                    <div class="h-64 md:h-auto bg-white dark:bg-gray-800 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-200 dark:border-border-dark">
+                      {featuredImage ? (
+                        <img
+                          src={featuredImage}
+                          alt={`Figure from ${featuredPublication.data.title}`}
+                          loading="lazy"
+                          class="max-w-full max-h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <Icon name="article" class="text-9xl text-primary/40" />
+                      )}
+                    </div>
+                    <div class="p-8 flex flex-col justify-center">
+                      <div class="flex items-center gap-2 mb-4">
+                        <span class="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">{featuredPublication.data.venue}</span>
+                        <span class="text-xs font-mono text-gray-500">{featuredPublication.data.year}</span>
+                      </div>
+                      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3 leading-tight group-hover:text-primary transition-colors">
+                        {featuredPublication.data.title}
+                      </h3>
+                      <div class="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-3">
+                        <AuthorList authors={featuredPublication.data.authors} />
+                      </div>
+                      <div class="flex gap-4 pointer-events-auto">
+                        <a href={`/publications/${featuredPublication.id}`} class="inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-blue-600 transition-colors">
+                          Read Paper <Icon name="arrow_forward" class="text-lg" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Selected Publications</h2>
+              <a href="/publications" class="hidden sm:flex items-center text-sm font-bold text-primary hover:underline">
+                View All <Icon name="arrow_forward" class="text-lg ml-1" />
+              </a>
+            </div>
+            <div class="flex flex-col gap-4">
+              {
+                selectedPublications.map((pub) => (
+                  <div class="group relative p-5 rounded-lg border border-gray-200 dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary/40 transition-all flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
+                    <a href={`/publications/${pub.id}`} class="absolute inset-0 z-10" aria-label={`View details for ${pub.data.title}`} />
+                    <div class="relative z-20 pointer-events-none">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">{pub.data.venue}</span>
+                        <span class="text-xs font-mono text-gray-500">{pub.data.year}</span>
+                      </div>
+                      <h4 class="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors leading-snug mb-1">{pub.data.title}</h4>
+                      <div class="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
+                        <AuthorList authors={pub.data.authors} />
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 shrink-0 relative z-20 pointer-events-auto w-full sm:w-auto">
+                      <a href={`/publications/${pub.id}`} class={rowLink}>
+                        <span class="w-5 inline-flex justify-center items-center"><Icon name="article" class="text-[18px]" /></span> Read Paper
+                      </a>
+                      {pub.data.links.pdf && (
+                        <a href={pub.data.links.pdf} target="_blank" rel="noopener noreferrer" class={rowLink}>
+                          <span class="w-5 inline-flex justify-center items-center"><Icon name="description" class="text-[18px]" /></span> PDF
+                        </a>
+                      )}
+                      {pub.data.links.code && (
+                        <a href={pub.data.links.code} target="_blank" rel="noopener noreferrer" class={rowLink}>
+                          <span class="w-5 inline-flex justify-center items-center"><GitHubIcon class="w-[18px] h-[18px]" /></span> Code
+                        </a>
+                      )}
+                      <CiteButton client:visible citation={pub.data.citation} label="Cite" wrapIcon className={`${rowLink} cursor-pointer`} />
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4">
+          <div class="sticky top-24">
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-border-dark p-6 shadow-sm">
+              <div class="flex items-center gap-2 mb-6">
+                <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Latest News</h2>
+              </div>
+              <NewsTimeline items={news.slice(0, 8)} variant="compact" />
+              <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
+                <a href="/news" class="text-xs font-bold text-primary hover:underline">View Archive</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,70 @@
+---
+import '@/styles/global.css';
+import SEO from '@/components/SEO.astro';
+import Navbar from '@/components/Navbar.astro';
+import Footer from '@/components/Footer.astro';
+import { cleanPath } from '@/lib/urls';
+
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article' | 'profile';
+  image?: string;
+  /** Route path without .html. Defaults to the current URL. */
+  path?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, type, image, path, jsonLd } = Astro.props;
+const currentPath = path ?? cleanPath(Astro.url.pathname);
+const isHome = currentPath === '/';
+---
+
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>
+      // Dark is the server-rendered default. Remove it before paint when the
+      // visitor chose light mode earlier.
+      (function () {
+        try {
+          if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <SEO
+      title={title}
+      description={description}
+      type={type}
+      image={image}
+      path={currentPath}
+      jsonLd={jsonLd}
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Jaime Cernuda" href="/rss.xml" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="min-h-screen flex flex-col font-display selection:bg-primary/30 selection:text-white">
+      <Navbar currentPath={currentPath} />
+      <main class="flex-1 flex flex-col w-full">
+        <slot />
+      </main>
+      <Footer isHome={isHome} />
+    </div>
+  </body>
+</html>

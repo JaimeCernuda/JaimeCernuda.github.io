@@ -1,0 +1,43 @@
+---
+import { absoluteUrl } from '@/lib/urls';
+
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article' | 'profile';
+  image?: string;
+  /** Route path without .html, e.g. "/publications/hades". */
+  path: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const SITE_NAME = 'Jaime Cernuda';
+const {
+  title,
+  description,
+  type = 'website',
+  image = '/images/Jaime_2.png',
+  path,
+  jsonLd,
+} = Astro.props;
+
+const canonical = absoluteUrl(path, Astro.site);
+const imageUrl = new URL(image, Astro.site ?? 'https://jcernuda.com').href;
+const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

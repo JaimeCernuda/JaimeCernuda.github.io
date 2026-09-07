@@ -1,0 +1,86 @@
+---
+import Icon from './Icon.astro';
+import ThemeToggle from './islands/ThemeToggle';
+
+interface Props {
+  currentPath: string;
+}
+const { currentPath } = Astro.props;
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/publications', label: 'Publications' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/news', label: 'News' },
+  { href: '/cv', label: 'CV' },
+  { href: '/blog', label: 'Blog' },
+];
+const isActive = (href: string) => currentPath === href;
+---
+
+<header
+  class="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md"
+>
+  <!-- CSS-only mobile menu state; no JavaScript needed. -->
+  <input type="checkbox" id="nav-toggle" class="peer sr-only md:hidden" aria-label="Toggle navigation menu" />
+  <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative flex items-center justify-between h-16">
+      <div class="flex items-center gap-3 relative z-20">
+        <div class="flex items-center justify-center w-9 h-9 bg-primary/10 rounded-lg text-primary">
+          <Icon name="science" class="text-[22px]" />
+        </div>
+        <a href="/" class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Jaime Cernuda</a>
+      </div>
+
+      <nav
+        class="hidden md:flex items-center justify-center gap-8 lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 z-10 lg:w-full pointer-events-none"
+        aria-label="Main"
+      >
+        <div class="pointer-events-auto flex gap-8">
+          {
+            links.map((l) => (
+              <a
+                href={l.href}
+                aria-current={isActive(l.href) ? 'page' : undefined}
+                class:list={[
+                  'text-sm font-medium transition-colors',
+                  isActive(l.href)
+                    ? 'text-primary'
+                    : 'text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary',
+                ]}
+              >
+                {l.label}
+              </a>
+            ))
+          }
+        </div>
+      </nav>
+
+      <div class="flex items-center justify-end gap-4 relative z-20">
+        <ThemeToggle client:idle />
+        <label
+          for="nav-toggle"
+          class="md:hidden p-2 text-gray-700 hover:text-primary dark:text-gray-500 dark:hover:text-white cursor-pointer"
+        >
+          <Icon name="menu" />
+          <span class="sr-only">Menu</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="md:hidden hidden peer-checked:flex bg-background-light dark:bg-background-dark border-b border-gray-200 dark:border-gray-800 px-4 py-4 flex-col gap-4"
+  >
+    {
+      links.map((l) => (
+        <a
+          href={l.href}
+          class:list={['text-sm font-medium', isActive(l.href) ? 'text-primary' : 'text-gray-700 dark:text-gray-300']}
+        >
+          {l.label}
+        </a>
+      ))
+    }
+  </div>
+</header>
