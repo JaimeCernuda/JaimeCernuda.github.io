@@ -27,3 +27,5 @@ dist-ssr
 # Legacy
 website_pages/
 grc-context/
+# Astro
+.astro/

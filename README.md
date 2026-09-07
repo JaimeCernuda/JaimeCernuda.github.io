@@ -1,16 +1,25 @@
-# React + Vite
+# jcernuda.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal academic site for Jaime Cernuda. Built with Astro 7 as a fully static site and deployed to GitHub Pages on every push to `master` (see `.github/workflows/deploy.yml`).
 
-Currently, two official plugins are available:
+## Commands
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+npm install        # install dependencies
+npm run dev        # local dev server at http://localhost:4321
+npm run build      # static build into dist/
+npm run preview    # serve dist/ locally
+npm run check      # type-check .astro and .ts files
+```
 
-## React Compiler
+## Content
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+All content lives in `src/content` and is validated by the Zod schemas in `src/content.config.ts`.
 
-## Expanding the ESLint configuration
+- Add a paper: create `src/content/publications/<slug>.md` with the same frontmatter as the existing files. The slug becomes the URL `/publications/<slug>`.
+- Add a project: create `src/content/projects/<slug>.md`.
+- Add a blog post: create `src/content/blog/<slug>.md` and add the slug to `posts` in `src/content/pages/blog.yaml`.
+- Add a news item: prepend an entry to `news` in `src/content/site/news.yaml`.
+- Home page selections (featured projects, featured and selected publications) are slugs in `src/content/site/home.yaml`; a wrong slug fails the build.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+PDFs go in `public/papers`, figures in `public/images/publications/<slug>`.
