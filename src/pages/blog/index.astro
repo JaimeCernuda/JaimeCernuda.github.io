@@ -4,6 +4,7 @@ import Base from '@/layouts/Base.astro';
 import Icon from '@/components/Icon.astro';
 import PostCard from '@/components/PostCard.astro';
 import { formatDate } from '@/lib/dates';
+import { optimizedImage } from '@/lib/images';
 
 const page = await getEntry('pages', 'blog');
 if (!page) throw new Error('src/content/pages/blog.yaml is missing');
@@ -23,8 +24,11 @@ const popular = posts.filter((p) => p.data.popular).slice(0, 3);
 
 const lightGradient = 'linear-gradient(rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%)';
 const darkGradient = 'linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%)';
-const lightImage = header.image;
-const darkImage = header.image_dark ?? header.image;
+const lightImage = header.image ? await optimizedImage(header.image, { width: 1600 }) : undefined;
+const darkImage = header.image_dark
+  ? await optimizedImage(header.image_dark, { width: 1600 })
+  : lightImage;
+const avatar = sidebar ? await optimizedImage(sidebar.profile.image, { width: 192 }) : undefined;
 ---
 
 <Base title={header.title} description={header.subtitle} path="/blog">
@@ -86,7 +90,7 @@ const darkImage = header.image_dark ?? header.image;
             sidebar && (
               <div class="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center text-center">
                 <div class="w-24 h-24 rounded-full bg-gray-200 mb-4 overflow-hidden border-2 border-primary/20">
-                  <img class="w-full h-full object-cover" src={sidebar.profile.image} alt={sidebar.profile.name} loading="lazy" />
+                  <img class="w-full h-full object-cover" src={avatar} alt={sidebar.profile.name} width="96" height="96" loading="lazy" />
                 </div>
                 <h4 class="text-lg font-bold text-gray-900 dark:text-white">{sidebar.profile.name}</h4>
                 <p class="text-xs text-primary font-medium mb-3">{sidebar.profile.role}</p>

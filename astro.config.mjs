@@ -4,6 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { satteri } from '@astrojs/markdown-satteri';
+import imgAttr from 'satteri-imgattr';
 
 // Static site for GitHub Pages at the apex domain.
 // build.format 'file' emits publications/hades.html so that GitHub Pages
@@ -18,7 +19,11 @@ export default defineConfig({
   markdown: {
     // Smart punctuation is off so that quotes and dashes in the paper
     // bodies render exactly as written.
-    processor: satteri({ features: { smartPunctuation: false } }),
+    processor: satteri({
+      features: { smartPunctuation: false },
+      // Paper bodies embed up to 16 figures each; defer them until scrolled to.
+      hastPlugins: [imgAttr({ defaults: { loading: 'lazy', decoding: 'async' } })],
+    }),
   },
   vite: { plugins: [tailwindcss()] },
 });

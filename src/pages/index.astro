@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import CiteButton from '@/components/islands/CiteButton';
 import CopyToClipboard from '@/components/islands/CopyToClipboard';
 import { sortByYear } from '@/lib/content';
+import { optimizedImage } from '@/lib/images';
 import { inlineMarkdown, markdownToText } from '@/lib/inlineMarkdown';
 import { personJsonLd } from '@/lib/jsonld';
 
@@ -26,6 +27,7 @@ const news = newsEntry?.data.news ?? [];
 const firstBodyImage = featuredPublication?.body?.match(/!\[[^\]]*\]\(([^)\s]+)\)/)?.[1];
 const featuredImage = featuredPublication?.data.image ?? firstBodyImage;
 
+const heroImage = await optimizedImage(hero.image, { width: 768 });
 const email = hero.social_links.find((l) => l.url.startsWith('mailto:'))?.url.replace('mailto:', '') ?? '';
 const description = markdownToText(hero.subtitle).split(/(?<=\.)\s/)[0];
 const jsonLd = personJsonLd({ name: hero.title, image: hero.image, email, socialLinks: hero.social_links });
@@ -85,7 +87,7 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
           >
             <div
               class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-              style={`background-image: url("${hero.image}")`}
+              style={`background-image: url("${heroImage}")`}
               role="img"
               aria-label={hero.title}
             >

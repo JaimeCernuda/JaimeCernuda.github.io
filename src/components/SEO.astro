@@ -1,4 +1,5 @@
 ---
+import { optimizedImage } from '@/lib/images';
 import { absoluteUrl } from '@/lib/urls';
 
 interface Props {
@@ -22,7 +23,11 @@ const {
 } = Astro.props;
 
 const canonical = absoluteUrl(path, Astro.site);
-const imageUrl = new URL(image, Astro.site ?? 'https://jcernuda.com').href;
+// Social cards get a 1200px JPEG variant; the original PNG stays available.
+const imageUrl = new URL(
+  await optimizedImage(image, { width: 1200, format: 'jpeg', quality: 82 }),
+  Astro.site ?? 'https://jcernuda.com',
+).href;
 const fullTitle = path === '/' ? title : `${title} | ${SITE_NAME}`;
 ---
 
