@@ -201,8 +201,34 @@ By design, to keep every page free of JavaScript except the three islands:
 
 ## Live verification
 
-Filled in Step 7.
+Checked on 2026-09-07 after the deploy workflow run 34170477682 finished (27 s, green).
+
+| Check | Result |
+|---|---|
+| `curl https://jcernuda.com/` | 200, title "Jaime Cernuda - Research Portfolio", hero text present, JSON-LD Person present, no SPA redirect script |
+| `curl -I https://jcernuda.com/publications/hades` | 200, no `Location` header (GitHub Pages serves the extensionless URL from `hades.html`) |
+| `curl https://jcernuda.com/publications/hades` | title and ScholarlyArticle JSON-LD present, canonical `https://jcernuda.com/publications/hades` |
+| `/publications`, `/projects`, `/cv`, `/blog`, `/news` | 200 |
+| `/sitemap-index.xml`, `/sitemap-0.xml`, `/sitemap.xml` (legacy index), `/rss.xml` | 200, application/xml |
+| `/robots.txt` | 200, served from the repo, points at `/sitemap-index.xml` (Cloudflare's managed robots.txt no longer applies) |
+| `/fonts/*.woff2` | 200, font/woff2 |
+| `/google7ac676167e12bcad.html` | 200 |
+| `/some-missing-page` | 404 with the new "Page not found" page |
+| `/publications/hades/` (trailing slash) | 404. The old site never linked with trailing slashes and the sitemap never listed them, so nothing points there. |
 
 ## Lighthouse
 
-Filled in Step 7.
+`npx lighthouse <url> --only-categories=performance,seo --quiet` against the live site on 2026-09-07 (Lighthouse 13.4.1, default mobile emulation; desktop rows use `--form-factor=desktop --screenEmulation.disabled`).
+
+| Page | Mode | Performance | SEO | FCP | LCP | TBT | CLS | Page weight |
+|---|---|---|---|---|---|---|---|---|
+| / | mobile | 99 | 100 | 1.4 s | 2.0 s | 0 ms | 0 | 263 KB |
+| /publications/hades | mobile | 99 | 100 | 1.5 s | 1.8 s | 0 ms | 0 | 211 KB |
+| / | desktop | 83 | 100 | 1.3 s | 2.4 s | 0 ms | 0 | 263 KB |
+| /publications/hades | desktop | 76 | 100 | 2.0 s | 2.5 s | 0 ms | 0 | 210 KB |
+
+Before the image and font work, the local build scored 67 on the home page with a 28.6 s LCP (the 5.3 MB portrait) and every page downloaded a 1.1 MB icon font. No SEO audit fails on any page.
+
+## Manual step left
+
+Submit `https://jcernuda.com/sitemap-index.xml` in Google Search Console (the property is already verified through `google7ac676167e12bcad.html`). The old `https://jcernuda.com/sitemap.xml` still resolves as an index that points at the new file, so an existing submission keeps working. The six open Dependabot pull requests target the removed React/Vite dependency tree and can be closed.
