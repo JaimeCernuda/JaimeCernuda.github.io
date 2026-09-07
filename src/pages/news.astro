@@ -1,7 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Base from '@/layouts/Base.astro';
-import NewsTimeline from '@/components/NewsTimeline.astro';
+import NewsTimeline from '@/components/NewsTimeline';
 
 const entry = await getEntry('news', 'news');
 if (!entry) throw new Error('src/content/site/news.yaml is missing');

@@ -1,0 +1,21 @@
+---
+/**
+ * Small uppercase tag chip built on the ReUI Badge (static render, no JS).
+ * Keeps the old chip styling while sharing the Badge base.
+ */
+import { Badge } from '@/components/ui/badge';
+
+interface Props {
+  size?: 'xs' | 'sm';
+  class?: string;
+}
+const { size = 'xs', class: className } = Astro.props;
+const text = size === 'xs' ? 'text-[10px]' : 'text-xs';
+---
+
+<Badge
+  variant="outline"
+  className={`${text} font-bold uppercase tracking-wider px-2 py-1 h-auto min-w-0 rounded bg-gray-100 dark:bg-surface-dark-lighter dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400 border-gray-200 dark:border-border-dark ${className ?? ''}`}
+>
+  <slot />
+</Badge>

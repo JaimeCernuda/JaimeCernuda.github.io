@@ -4,6 +4,8 @@ import Base from '@/layouts/Base.astro';
 import GitHubIcon from '@/components/GitHubIcon.astro';
 import Icon from '@/components/Icon.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
+import { Badge } from '@/components/ui/badge';
+import { Frame, FramePanel } from '@/components/ui/frame';
 import { sortByYear } from '@/lib/content';
 
 const page = await getEntry('pages', 'projects');
@@ -24,7 +26,8 @@ const rest = all.filter((p) => p !== featured);
 
     {
       featured && (
-        <div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark relative group hover:border-primary/50 transition-colors">
+        <Frame className="[--frame-radius:var(--radius-2xl)]">
+          <FramePanel className="p-0! flex flex-col items-stretch justify-start shadow-lg bg-white dark:bg-surface-dark border-gray-100 dark:border-gray-800 group hover:border-primary/50 transition-colors">
           <a href={`/projects/${featured.id}`} class="absolute inset-0 z-10" aria-label={`View ${featured.data.title}`} />
           <div class="flex flex-col lg:flex-row relative z-20 pointer-events-none">
             <div
@@ -58,20 +61,19 @@ const rest = all.filter((p) => p !== featured);
               </div>
               <p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">{featured.data.description}</p>
               <div class="flex flex-wrap gap-2 mb-2">
-                <span
-                  class:list={[
-                    'text-xs font-bold uppercase tracking-wider px-2 py-1 rounded border',
-                    featured.data.status === 'On-going'
-                      ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800'
-                      : 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800',
-                  ]}
+                <Badge
+                  variant={featured.data.status === 'On-going' ? 'info-light' : 'success-light'}
+                  className="text-xs font-bold uppercase tracking-wider px-2 py-1 h-auto rounded"
                 >
                   {featured.data.status}
-                </span>
+                </Badge>
                 {featured.data.tags.map((tag) => (
-                  <span class="text-xs font-medium text-gray-500 dark:text-gray-300 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 rounded border border-gray-200 dark:border-border-dark">
+                  <Badge
+                    variant="outline"
+                    className="text-xs font-medium text-gray-500 dark:text-gray-300 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 h-auto rounded border-gray-200 dark:border-border-dark"
+                  >
                     {tag}
-                  </span>
+                  </Badge>
                 ))}
               </div>
               <div class="flex flex-wrap gap-3 mt-2 pointer-events-auto">
@@ -90,7 +92,8 @@ const rest = all.filter((p) => p !== featured);
               </div>
             </div>
           </div>
-        </div>
+          </FramePanel>
+        </Frame>
       )
     }
 

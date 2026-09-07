@@ -4,6 +4,7 @@ import Base from '@/layouts/Base.astro';
 import Icon from '@/components/Icon.astro';
 import PublicationCard from '@/components/PublicationCard.astro';
 import CiteButton from '@/components/islands/CiteButton';
+import { Frame, FramePanel } from '@/components/ui/frame';
 import { groupByYear, publicationDescription } from '@/lib/content';
 
 const page = await getEntry('pages', 'publications');
@@ -29,7 +30,8 @@ const buttonClass =
 
     {
       featured && (
-        <div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark relative group hover:border-primary/50 transition-colors">
+        <Frame className="[--frame-radius:var(--radius-2xl)]">
+          <FramePanel className="p-0! flex flex-col items-stretch justify-start shadow-lg bg-white dark:bg-surface-dark border-gray-100 dark:border-gray-800 group hover:border-primary/50 transition-colors">
           <a href={`/publications/${featured.id}`} class="absolute inset-0 z-10" aria-label={`Read ${featured.data.title}`} />
           <div class="flex flex-col lg:flex-row relative z-20 pointer-events-none">
             <div class="w-full lg:w-2/5 h-64 lg:h-auto bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center p-8 relative">
@@ -69,7 +71,8 @@ const buttonClass =
               </div>
             </div>
           </div>
-        </div>
+          </FramePanel>
+        </Frame>
       )
     }
 

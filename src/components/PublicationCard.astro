@@ -4,6 +4,8 @@ import AuthorList from './AuthorList.astro';
 import GitHubIcon from './GitHubIcon.astro';
 import Icon from './Icon.astro';
 import CiteButton from './islands/CiteButton';
+import Tag from './Tag.astro';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   entry: CollectionEntry<'publications'>;
@@ -11,8 +13,6 @@ interface Props {
 const { entry } = Astro.props;
 const { title, venue, type, year, authors, tags, links, citation } = entry.data;
 const href = `/publications/${entry.id}`;
-const tagClass =
-  'text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400';
 ---
 
 <div
@@ -24,7 +24,7 @@ const tagClass =
       <span class="text-sm font-bold text-gray-700 dark:text-gray-300">{venue}</span>
       <span class="text-xs text-gray-500">{type}</span>
     </div>
-    <span class="text-xs font-mono text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">{year}</span>
+    <Badge variant="secondary" className="text-xs font-mono font-medium text-gray-500 px-2 py-1 h-auto">{year}</Badge>
   </div>
 
   <div class="block relative z-20 pointer-events-none">
@@ -43,9 +43,9 @@ const tagClass =
     tags.length > 0 && (
       <div class="flex flex-wrap gap-1.5 mt-1 relative z-20 pointer-events-none">
         {tags.slice(0, 3).map((tag) => (
-          <span class={tagClass}>{tag}</span>
+          <Tag>{tag}</Tag>
         ))}
-        {tags.length > 3 && <span class={tagClass}>+{tags.length - 3}</span>}
+        {tags.length > 3 && <Tag>+{tags.length - 3}</Tag>}
       </div>
     )
   }

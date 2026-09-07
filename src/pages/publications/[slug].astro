@@ -7,6 +7,8 @@ import Icon from '@/components/Icon.astro';
 import Prose from '@/components/Prose.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
 import CiteButton from '@/components/islands/CiteButton';
+import Tag from '@/components/Tag.astro';
+import { Badge } from '@/components/ui/badge';
 import { hasBody, publicationDescription } from '@/lib/content';
 import { articleJsonLd } from '@/lib/jsonld';
 import { absoluteUrl } from '@/lib/urls';
@@ -41,9 +43,15 @@ const secondaryButton =
       <article class="lg:col-span-9 order-1 lg:order-2">
         <header class="mb-12">
           <div class="flex flex-wrap gap-3 mb-6">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-primary/10 text-primary">{venue}</span>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">{year}</span>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300">{type}</span>
+            <Badge variant="primary-light" radius="full" className="px-3 py-1 h-auto text-sm font-bold">{venue}</Badge>
+            <Badge variant="secondary" radius="full" className="px-3 py-1 h-auto text-sm font-medium text-gray-600 dark:text-gray-300">{year}</Badge>
+            <Badge
+              variant="outline"
+              radius="full"
+              className="px-3 py-1 h-auto text-sm font-medium border-transparent bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300"
+            >
+              {type}
+            </Badge>
           </div>
 
           <h1 class="text-3xl md:text-4xl lg:text-5xl font-black leading-tight text-gray-900 dark:text-white mb-6">{title}</h1>
@@ -54,9 +62,7 @@ const secondaryButton =
             tags.length > 0 && (
               <div class="flex flex-wrap gap-2 mb-8">
                 {tags.map((tag) => (
-                  <span class="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded border border-gray-200 dark:border-border-dark bg-gray-100 dark:bg-surface-dark-lighter text-gray-500 dark:text-gray-400">
-                    {tag}
-                  </span>
+                  <Tag size="sm">{tag}</Tag>
                 ))}
               </div>
             )

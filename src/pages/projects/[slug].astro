@@ -5,6 +5,7 @@ import GitHubIcon from '@/components/GitHubIcon.astro';
 import Icon from '@/components/Icon.astro';
 import Prose from '@/components/Prose.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
+import { Badge } from '@/components/ui/badge';
 
 export async function getStaticPaths() {
   const entries = await getCollection('projects');
@@ -40,9 +41,12 @@ const path = `/projects/${entry.id}`;
           <div class="flex flex-wrap gap-2 mb-6">
             {
               tags.map((tag) => (
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-300 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 rounded border border-gray-200 dark:border-border-dark">
+                <Badge
+                  variant="outline"
+                  className="text-xs font-medium text-gray-500 dark:text-gray-300 bg-gray-100 dark:bg-surface-dark-lighter px-2 py-1 h-auto rounded border-gray-200 dark:border-border-dark"
+                >
                   {tag}
-                </span>
+                </Badge>
               ))
             }
           </div>

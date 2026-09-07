@@ -69,6 +69,12 @@
   }
 }
 
+/* Astro renders framework-component children inside these wrappers. */
+astro-slot,
+astro-static-slot {
+  display: contents;
+}
+
 /* Tighten Prose Spacing */
 .prose p {
   margin-top: 0.5em;
@@ -141,6 +147,7 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-destructive-foreground: var(--destructive-foreground);
 }
 
 :root {
@@ -160,11 +167,11 @@
   --accent-foreground: #1f2937;
   --destructive: oklch(0.577 0.245 27.325);
   --success: #16a34a;
-  --success-foreground: #ffffff;
+  --success-foreground: #166534;
   --info: #2563eb;
-  --info-foreground: #ffffff;
+  --info-foreground: #1e40af;
   --warning: #d97706;
-  --warning-foreground: #ffffff;
+  --warning-foreground: #92400e;
   --invert: #101622;
   --invert-foreground: #ffffff;
   --border: #e5e7eb;
@@ -184,6 +191,7 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --destructive-foreground: var(--color-red-800);
 }
 
 .dark {
@@ -226,4 +234,5 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --destructive-foreground: var(--color-red-600);
 }
