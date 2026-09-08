@@ -4,12 +4,14 @@ import GitHubIcon from './GitHubIcon.astro';
 import Icon from './Icon.astro';
 import Tag from './Tag.astro';
 import { Badge } from '@/components/ui/badge';
+import { existingPublicImage } from '@/lib/files';
 
 interface Props {
   entry: CollectionEntry<'projects'>;
 }
 const { entry } = Astro.props;
-const { title, description, year, category, status, tags, links, image } = entry.data;
+const { title, description, year, category, status, tags, links } = entry.data;
+const image = existingPublicImage(entry.data.image);
 const href = `/projects/${entry.id}`;
 ---
 
@@ -17,25 +19,23 @@ const href = `/projects/${entry.id}`;
   class="group relative flex flex-col bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors"
 >
   <a href={href} class="absolute inset-0 z-10" aria-label={`View case study for ${title}`}></a>
-  <div class="h-48 overflow-hidden relative pointer-events-none">
-    {
-      image ? (
-        <>
-          <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10" />
-          <img
-            class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-            src={image}
-            alt={title}
-            loading="lazy"
-          />
-        </>
-      ) : (
-        <div class="h-full w-full flex items-center justify-center bg-gray-100 dark:bg-surface-dark-lighter">
-          <Icon name="folder" class="text-6xl text-gray-300 dark:text-gray-600" />
-        </div>
-      )
-    }
-  </div>
+  {
+    image ? (
+      <div class="h-48 overflow-hidden relative pointer-events-none">
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10" />
+        <img
+          class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+          src={image}
+          alt={title}
+          loading="lazy"
+        />
+      </div>
+    ) : (
+      <div class="h-24 relative pointer-events-none bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center">
+        <Icon name="folder" class="text-5xl text-primary/40" />
+      </div>
+    )
+  }
   <div class="flex flex-col flex-1 p-5 gap-4 pointer-events-none">
     <div class="flex items-start justify-between gap-4">
       <div class="flex-1">

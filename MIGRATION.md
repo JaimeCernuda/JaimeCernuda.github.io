@@ -136,6 +136,7 @@ List pages: `header.{title, subtitle}` plus `folder`; blog adds `header.image`, 
 - Home page selections now follow `home.yaml`: featured publication `hstream` (previously broken), selected publications `hades`, `hflow`, `chronolog` (previously a hardcoded list showing jarvis, hstream, hflow, hades).
 - The CV page renders every publication from the collection (as before) and uses each entry's real BibTeX for the cite dialog instead of generating one.
 - The projects grid links each GitHub icon to the project's own `links.code` instead of the profile URL.
+- After the first live review: the home hero was tightened (smaller heading and paragraph sizes, less vertical padding, social links in one row, a slightly smaller portrait) so the intro, stats, and the start of the projects section fit in a 1350x940 viewport. Project cards whose `image` path does not exist in `public/` show a compact gradient strip with a folder icon instead of an empty 192 px box (`src/lib/files.ts` checks the file at build time).
 - Removed with the SPA: `public/404.html` and the redirect decoder (a real `404.astro` replaces them), the RSS and sitemap scripts, `eslint.config.js` and the `lint` script, `migrate_pubs.ps1`, `Page.md`, `vite.config.js`, `postcss.config.js`, `tailwind.config.js`, `gray-matter`, `react-router-dom`, `react-markdown`, `rehype-raw`, `rehype-slug`, `remark-gfm`, `vite-plugin-node-polyfills`.
 
 ## Entry diff

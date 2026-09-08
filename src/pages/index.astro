@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import CiteButton from '@/components/islands/CiteButton';
 import CopyToClipboard from '@/components/islands/CopyToClipboard';
 import { sortByYear } from '@/lib/content';
+import { existingPublicImage } from '@/lib/files';
 import { optimizedImage } from '@/lib/images';
 import { inlineMarkdown, markdownToText } from '@/lib/inlineMarkdown';
 import { personJsonLd } from '@/lib/jsonld';
@@ -36,9 +37,9 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
 
 <Base title="Jaime Cernuda - Research Portfolio" description={description} type="profile" path="/" jsonLd={jsonLd}>
   <div class="flex flex-col w-full">
-    <section class="relative pt-10 pb-12 lg:pt-20 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
+    <section class="relative pt-8 pb-10 lg:pt-12 lg:pb-14 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
       <div class="flex flex-col-reverse lg:grid lg:grid-cols-12 gap-8 items-center">
-        <div class="lg:col-span-8 flex flex-col gap-6 text-left">
+        <div class="lg:col-span-8 flex flex-col gap-5 text-left">
           <a
             href="#collaborate"
             class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-light border border-gray-300 w-fit dark:bg-surface-dark dark:border-gray-800 hover:border-primary/50 hover:shadow-sm transition-all cursor-pointer group"
@@ -46,13 +47,13 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse group-hover:scale-125 transition-transform"></span>
             <span class="text-xs font-medium text-gray-600 tracking-wide uppercase dark:text-gray-300 group-hover:text-primary transition-colors">{hero.status}</span>
           </a>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">{hero.title}</h1>
+          <h1 class="text-4xl sm:text-5xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">{hero.title}</h1>
           <div
-            class="text-lg sm:text-xl text-gray-600 leading-relaxed dark:text-gray-400 prose dark:prose-invert max-w-none"
+            class="text-base sm:text-lg text-gray-600 leading-relaxed dark:text-gray-400 prose dark:prose-invert max-w-2xl"
             set:html={inlineMarkdown(hero.subtitle)}
           />
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-6 mt-6 text-gray-500 dark:text-gray-400">
+          <div class="flex flex-wrap gap-x-6 gap-y-2 mt-1 text-gray-500 dark:text-gray-400">
             {
               hero.social_links.map((link) =>
                 link.url.startsWith('mailto:') ? (
@@ -83,7 +84,7 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
 
         <div class="lg:col-span-4 w-full flex justify-center lg:justify-end">
           <div
-            class="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-full lg:h-auto lg:aspect-square max-w-sm rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 group border-4 border-white dark:border-surface-dark"
+            class="relative w-56 h-56 sm:w-72 sm:h-72 lg:w-full lg:h-auto lg:aspect-square max-w-xs xl:max-w-sm rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 group border-4 border-white dark:border-surface-dark"
           >
             <div
               class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -128,12 +129,18 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
                 featuredProjects.map((project) => (
                   <div class="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5 relative">
                     <a href={`/projects/${project.id}`} class="absolute inset-0 z-0" aria-label={`View case study for ${project.data.title}`} />
-                    <div
-                      class="h-48 w-full bg-cover bg-center relative z-10 pointer-events-none bg-gray-100 dark:bg-surface-dark-lighter"
-                      style={project.data.image ? `background-image: url("${project.data.image}")` : undefined}
-                    >
-                      <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all" />
-                    </div>
+                    {existingPublicImage(project.data.image) ? (
+                      <div
+                        class="h-48 w-full bg-cover bg-center relative z-10 pointer-events-none"
+                        style={`background-image: url("${project.data.image}")`}
+                      >
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all" />
+                      </div>
+                    ) : (
+                      <div class="h-24 w-full relative z-10 pointer-events-none bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center">
+                        <Icon name="folder" class="text-5xl text-primary/40" />
+                      </div>
+                    )}
                     <div class="flex flex-col flex-1 p-5 relative z-10 pointer-events-none">
                       <div class="flex flex-wrap gap-2 mb-2">
                         {project.data.tags.slice(0, 3).map((tag, i) => (
