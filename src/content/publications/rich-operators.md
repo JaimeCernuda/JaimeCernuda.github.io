@@ -10,7 +10,7 @@ tags:
   - Metadata Management
   - Storage
 links:
-  poster: "http://cs.iit.edu/~scs/assets/files/hua2025operators.pdf"
+  poster: "/papers/rich-operators-poster.pdf"
 citation: |
   @inproceedings{xu2025operators,
     title={Rich Operators for Advanced In Situ Processing},
