@@ -23,7 +23,7 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
 <Base title="Curriculum Vitae" description={summary} type="profile" path="/cv">
   <div class="flex-grow w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
-      <aside class="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-8rem)] overflow-y-auto space-y-6">
+      <aside class="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden space-y-6">
         <Frame>
           <FramePanel className="p-6 overflow-visible bg-surface-light dark:bg-surface-dark border-gray-200 dark:border-border-dark transition-colors">
           <div class="flex flex-col items-center text-center">
@@ -121,7 +121,7 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
                         <h3 class="font-bold text-lg text-gray-900 dark:text-white">{edu.degree}</h3>
                         <p class="text-primary font-medium">{edu.school}</p>
                       </div>
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">{edu.year}</span>
+                      <span class="inline-flex items-center shrink-0 whitespace-nowrap px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">{edu.year}</span>
                     </div>
                     {edu.details.map((detail) => (
                       <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">{detail}</p>
@@ -154,7 +154,7 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
                         <h3 class="font-bold text-lg text-gray-900 dark:text-white">{exp.role}</h3>
                         <p class="text-primary font-medium">{exp.company}</p>
                       </div>
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">{exp.year}</span>
+                      <span class="inline-flex items-center shrink-0 whitespace-nowrap px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">{exp.year}</span>
                     </div>
                     <ul class="list-disc list-outside ml-5 space-y-1 text-sm text-gray-500 dark:text-gray-400">
                       {exp.details.map((detail) => (

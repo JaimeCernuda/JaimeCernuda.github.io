@@ -21,17 +21,18 @@ const isHome = currentPath === '/';
 ---
 
 <!doctype html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <script is:inline>
-      // Dark is the server-rendered default. Remove it before paint when the
-      // visitor chose light mode earlier.
+      // Light is the default. Apply dark before paint only when the visitor
+      // chose it earlier with the toggle.
       (function () {
         try {
-          if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.classList.remove('dark');
+          if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
           }
         } catch (e) {}
       })();
