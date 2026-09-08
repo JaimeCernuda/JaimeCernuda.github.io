@@ -22,6 +22,13 @@ hero:
     - name: "LinkedIn"
       icon: "work"
       url: "https://linkedin.com"
+  actions:
+    - label: "View Research Projects"
+      url: "/projects"
+      primary: true
+    - label: "Download CV"
+      url: "/cv/CV_Jaime_latest.pdf"
+      icon: "download"
 stats:
   - label: "Papers Published"
     value: "10+"

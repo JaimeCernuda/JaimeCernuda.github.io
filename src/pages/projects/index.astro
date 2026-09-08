@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Frame, FramePanel } from '@/components/ui/frame';
 import { sortByYear } from '@/lib/content';
 import { existingPublicImage } from '@/lib/files';
+import { optimizedImage } from '@/lib/images';
 
 const page = await getEntry('pages', 'projects');
 if (!page) throw new Error('src/content/pages/projects.yaml is missing');
@@ -17,6 +18,7 @@ const all = sortByYear(await getCollection('projects'));
 const featured = all.find((p) => p.data.featured);
 const rest = all.filter((p) => p !== featured);
 const featuredImage = existingPublicImage(featured?.data.image);
+const featuredImageSrc = featuredImage ? await optimizedImage(featuredImage, { width: 800 }) : undefined;
 ---
 
 <Base title={header.title} description={header.subtitle} path="/projects">
@@ -33,14 +35,10 @@ const featuredImage = existingPublicImage(featured?.data.image);
           <a href={`/projects/${featured.id}`} class="absolute inset-0 z-10" aria-label={`View ${featured.data.title}`} />
           <div class="flex flex-col lg:flex-row relative z-20 pointer-events-none">
             <div
-              class:list={[
-                'w-full lg:w-2/5 h-48 lg:h-auto lg:min-h-[16rem] bg-cover bg-center relative flex items-center justify-center',
-                !featuredImage && 'bg-gradient-to-br from-primary/20 to-blue-500/20',
-              ]}
-              style={featuredImage ? `background-image: url("${featuredImage}")` : undefined}
+              class="w-full lg:w-2/5 h-56 lg:h-auto lg:min-h-[16rem] relative flex items-center justify-center p-8 bg-gradient-to-br from-primary/10 to-blue-500/10"
             >
-              {featuredImage ? (
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-black/10" />
+              {featuredImageSrc ? (
+                <img class="max-h-40 lg:max-h-56 max-w-full object-contain" src={featuredImageSrc} alt={featured.data.title} />
               ) : (
                 <Icon name="folder" class="text-8xl text-primary/40" />
               )}

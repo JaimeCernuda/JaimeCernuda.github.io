@@ -4,10 +4,10 @@ import type { ImageMetadata } from 'astro';
 // The originals stay in public/ (and keep serving at their old URLs). This map
 // lets pages request resized, WebP variants generated at build time instead of
 // shipping multi-megabyte PNGs as the largest contentful paint.
-const publicImages = import.meta.glob<ImageMetadata>('/public/images/*.{png,jpg,jpeg}', {
-  eager: true,
-  import: 'default',
-});
+const publicImages = import.meta.glob<ImageMetadata>(
+  ['/public/images/*.{png,jpg,jpeg}', '/public/images/projects/*.{png,jpg,jpeg}'],
+  { eager: true, import: 'default' },
+);
 
 export interface OptimizeOptions {
   width: number;

@@ -76,6 +76,17 @@ const home = defineCollection({
       subtitle: z.string(),
       status: z.string(),
       image: z.string(),
+      /** Call-to-action buttons under the intro. */
+      actions: z
+        .array(
+          z.object({
+            label: z.string(),
+            url: z.string(),
+            icon: z.string().optional(),
+            primary: z.boolean().default(false),
+          }),
+        )
+        .default([]),
       social_links: z.array(socialLink),
     }),
     stats: z.array(z.object({ label: z.string(), value: z.string() })),

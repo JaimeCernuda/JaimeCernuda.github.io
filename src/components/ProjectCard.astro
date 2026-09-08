@@ -5,6 +5,7 @@ import Icon from './Icon.astro';
 import Tag from './Tag.astro';
 import { Badge } from '@/components/ui/badge';
 import { existingPublicImage } from '@/lib/files';
+import { optimizedImage } from '@/lib/images';
 
 interface Props {
   entry: CollectionEntry<'projects'>;
@@ -12,6 +13,7 @@ interface Props {
 const { entry } = Astro.props;
 const { title, description, year, category, status, tags, links } = entry.data;
 const image = existingPublicImage(entry.data.image);
+const imageSrc = image ? await optimizedImage(image, { width: 640 }) : undefined;
 const href = `/projects/${entry.id}`;
 ---
 
@@ -20,12 +22,11 @@ const href = `/projects/${entry.id}`;
 >
   <a href={href} class="absolute inset-0 z-10" aria-label={`View case study for ${title}`}></a>
   {
-    image ? (
-      <div class="h-48 overflow-hidden relative pointer-events-none">
-        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10" />
+    imageSrc ? (
+      <div class="h-48 relative pointer-events-none bg-gradient-to-br from-primary/10 to-blue-500/10 flex items-center justify-center p-6">
         <img
-          class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-          src={image}
+          class="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-500"
+          src={imageSrc}
           alt={title}
           loading="lazy"
         />

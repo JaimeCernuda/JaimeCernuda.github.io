@@ -18,7 +18,12 @@ const home = await getEntry('home', 'home');
 if (!home) throw new Error('src/content/site/home.yaml is missing');
 const { hero, stats } = home.data;
 
-const featuredProjects = await getEntries(home.data.featured_projects);
+const featuredProjects = await Promise.all(
+  (await getEntries(home.data.featured_projects)).map(async (project) => {
+    const image = existingPublicImage(project.data.image);
+    return { project, imageSrc: image ? await optimizedImage(image, { width: 640 }) : undefined };
+  }),
+);
 const featuredPublication = await getEntry(home.data.featured_publication);
 const selectedPublications = sortByYear(await getEntries(home.data.selected_publications));
 
@@ -49,11 +54,33 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
           </a>
           <h1 class="text-4xl sm:text-5xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">{hero.title}</h1>
           <div
-            class="text-base sm:text-lg text-gray-600 leading-relaxed dark:text-gray-400 prose dark:prose-invert max-w-2xl"
+            class="max-w-2xl leading-relaxed prose dark:prose-invert prose-a:text-primary [&>p:first-child]:text-lg sm:[&>p:first-child]:text-xl [&>p:first-child]:font-medium [&>p:first-child]:text-gray-800 dark:[&>p:first-child]:text-gray-200 [&>p:not(:first-child)]:text-base [&>p:not(:first-child)]:text-gray-600 dark:[&>p:not(:first-child)]:text-gray-400"
             set:html={inlineMarkdown(hero.subtitle)}
           />
 
-          <div class="flex flex-wrap gap-x-6 gap-y-2 mt-1 text-gray-500 dark:text-gray-400">
+          {
+            hero.actions.length > 0 && (
+              <div class="flex flex-wrap gap-3">
+                {hero.actions.map((action) => (
+                  <a
+                    href={action.url}
+                    download={action.url.endsWith('.pdf') ? true : undefined}
+                    class:list={[
+                      'inline-flex items-center gap-2 h-11 px-5 rounded-lg text-sm font-bold transition-colors',
+                      action.primary
+                        ? 'bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/25'
+                        : 'bg-surface-light dark:bg-surface-dark border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white hover:border-primary/50',
+                    ]}
+                  >
+                    {action.icon && <Icon name={action.icon} class="text-[20px]" />}
+                    {action.label}
+                  </a>
+                ))}
+              </div>
+            )
+          }
+
+          <div class="flex flex-wrap gap-x-6 gap-y-2 pt-5 border-t border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400">
             {
               hero.social_links.map((link) =>
                 link.url.startsWith('mailto:') ? (
@@ -126,15 +153,17 @@ const rowLink = 'text-xs font-bold text-gray-500 hover:text-primary transition-c
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               {
-                featuredProjects.map((project) => (
+                featuredProjects.map(({ project, imageSrc }) => (
                   <div class="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5 relative">
                     <a href={`/projects/${project.id}`} class="absolute inset-0 z-0" aria-label={`View case study for ${project.data.title}`} />
-                    {existingPublicImage(project.data.image) ? (
-                      <div
-                        class="h-48 w-full bg-cover bg-center relative z-10 pointer-events-none"
-                        style={`background-image: url("${project.data.image}")`}
-                      >
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all" />
+                    {imageSrc ? (
+                      <div class="h-48 w-full relative z-10 pointer-events-none bg-gradient-to-br from-primary/10 to-blue-500/10 flex items-center justify-center p-6">
+                        <img
+                          class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
+                          src={imageSrc}
+                          alt={project.data.title}
+                          loading="lazy"
+                        />
                       </div>
                     ) : (
                       <div class="h-24 w-full relative z-10 pointer-events-none bg-gradient-to-br from-primary/20 to-blue-500/20 flex items-center justify-center">
