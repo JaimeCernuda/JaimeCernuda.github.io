@@ -1,22 +1,32 @@
 ---
 /**
- * Site mark: a "JC" monogram on the primary color. Used in the navbar and,
- * as public/favicon.svg, in the browser tab.
+ * Site mark: the "JC" interlock monogram, rebuilt as vector geometry from the
+ * design sheet. Fill follows `currentColor`, so color it with a text utility.
+ * The two masks cut hairline gaps where the strokes cross: the J passes in
+ * front of the C at the top, the C in front of the J at the hook.
  */
 interface Props {
   class?: string;
 }
-const { class: className = 'w-9 h-9' } = Astro.props;
+const { class: className = 'h-8 w-auto' } = Astro.props;
+
+const J = 'M100 35A35 35 0 0 1 135 0H170V240A85 85 0 0 1 0 240V175H70V240A15 15 0 0 0 100 240Z';
+const C = 'M346.65 163A110 110 0 1 0 346.65 247H272.13A50 50 0 1 1 272.13 163Z';
 ---
 
-<svg class={className} viewBox="0 0 64 64" role="img" aria-label="Jaime Cernuda" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="14" fill="#135bec"></rect>
-  <path
-    d="M27.5 18h7.4v20.4c0 3.7-1 6.5-3 8.3-2 1.9-4.8 2.8-8.4 2.8-3.3 0-6-.8-8-2.5L18.6 41c1.3 1.1 2.9 1.7 4.7 1.7 1.4 0 2.4-.4 3.1-1.1.7-.8 1.1-2 1.1-3.6V18z"
-    fill="#ffffff"
-  ></path>
-  <path
-    d="M47.6 49.6c-3.2 0-5.9-.7-8.2-2.1-2.3-1.4-4-3.3-5.2-5.8-1.2-2.5-1.8-5.3-1.8-8.5s.6-6 1.8-8.5c1.2-2.5 3-4.4 5.2-5.8 2.3-1.4 5-2.1 8.2-2.1 2.1 0 4 .3 5.7 1 1.7.6 3.1 1.5 4.3 2.6l-4.2 5.2c-1.6-1.4-3.5-2.1-5.5-2.1-2.3 0-4.1.9-5.5 2.6-1.4 1.7-2 4.1-2 7.1s.7 5.4 2 7.1c1.4 1.7 3.2 2.6 5.5 2.6 2.1 0 3.9-.7 5.6-2.2l4.2 5.2c-1.2 1.2-2.7 2.1-4.4 2.7-1.7.7-3.6 1-5.7 1z"
-    fill="#ffffff"
-  ></path>
+<svg class={className} viewBox="-6 -6 367 342" role="img" aria-label="Jaime Cernuda" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="jc-top"><rect x="-20" y="-20" width="420" height="210"></rect></clipPath>
+    <clipPath id="jc-bottom"><rect x="-20" y="190" width="420" height="220"></rect></clipPath>
+    <mask id="jc-mc" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="400">
+      <rect x="-20" y="-20" width="420" height="400" fill="#fff"></rect>
+      <path d={J} fill="#000" stroke="#000" stroke-width="9" clip-path="url(#jc-top)"></path>
+    </mask>
+    <mask id="jc-mj" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="400">
+      <rect x="-20" y="-20" width="420" height="400" fill="#fff"></rect>
+      <path d={C} fill="#000" stroke="#000" stroke-width="9" clip-path="url(#jc-bottom)"></path>
+    </mask>
+  </defs>
+  <path d={C} fill="currentColor" mask="url(#jc-mc)"></path>
+  <path d={J} fill="currentColor" mask="url(#jc-mj)"></path>
 </svg>
