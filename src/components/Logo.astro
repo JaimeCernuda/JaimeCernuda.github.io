@@ -1,32 +1,14 @@
 ---
 /**
- * Site mark: the "JC" interlock monogram, rebuilt as vector geometry from the
- * design sheet. Fill follows `currentColor`, so color it with a text utility.
- * The two masks cut hairline gaps where the strokes cross: the J passes in
- * front of the C at the top, the C in front of the J at the hook.
+ * Site mark: the JC interlock monogram from logo/positive.svg (design source in
+ * logo/master.svg). Fill follows currentColor, so color it with a text utility.
  */
 interface Props {
   class?: string;
 }
-const { class: className = 'h-8 w-auto' } = Astro.props;
-
-const J = 'M100 35A35 35 0 0 1 135 0H170V240A85 85 0 0 1 0 240V175H70V240A15 15 0 0 0 100 240Z';
-const C = 'M346.65 163A110 110 0 1 0 346.65 247H272.13A50 50 0 1 1 272.13 163Z';
+const { class: className = "h-8 w-auto" } = Astro.props;
 ---
 
-<svg class={className} viewBox="-6 -6 367 342" role="img" aria-label="Jaime Cernuda" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <clipPath id="jc-top"><rect x="-20" y="-20" width="420" height="210"></rect></clipPath>
-    <clipPath id="jc-bottom"><rect x="-20" y="190" width="420" height="220"></rect></clipPath>
-    <mask id="jc-mc" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="400">
-      <rect x="-20" y="-20" width="420" height="400" fill="#fff"></rect>
-      <path d={J} fill="#000" stroke="#000" stroke-width="9" clip-path="url(#jc-top)"></path>
-    </mask>
-    <mask id="jc-mj" maskUnits="userSpaceOnUse" x="-20" y="-20" width="420" height="400">
-      <rect x="-20" y="-20" width="420" height="400" fill="#fff"></rect>
-      <path d={C} fill="#000" stroke="#000" stroke-width="9" clip-path="url(#jc-bottom)"></path>
-    </mask>
-  </defs>
-  <path d={C} fill="currentColor" mask="url(#jc-mc)"></path>
-  <path d={J} fill="currentColor" mask="url(#jc-mj)"></path>
+<svg class={className} viewBox="-0.53 -0.03 152.26 149.26" role="img" aria-label="Jaime Cernuda" xmlns="http://www.w3.org/2000/svg">
+  <path fill="currentColor" d="m 92.580045,146.208 c -9.15205,-1.27863 -18.98544,-3.93784 -25.61611,-10.64191 9.47528,-3.9645 18.54039,-10.59895 22.51676,-19.18882 26.016465,10.81675 29.876535,-11.26042 32.916195,-11.23715 8.8021,-0.0636 17.60419,-0.12729 26.40629,-0.19094 -2.40068,19.5806 -18.44023,35.96741 -37.56423,40.03286 -6.07551,1.33301 -12.463085,1.44823 -18.658905,1.22596 z M 36.037527,132.51911 C 18.829937,129.61665 4.5246859,114.68352 2.9980859,97.181013 c -0.71891,-6.2415 -0.45092,-12.53203 -0.50672,-18.80027 H 31.529077 c 0.43665,6.02609 -0.69562,12.36194 1.32803,18.12184 4.48291,10.890177 21.37092,11.616867 27.2652,1.73433 3.649013,-6.40978 1.53368,-14.18945 2.58702,-21.20824 0.593513,-19.07789 16.999408,-35.36415 35.731018,-37.28478 16.404305,-2.35017 34.047465,4.67985 43.112285,18.83173 4.06982,6.21738 5.56401,13.73855 6.41942,21.01323 H 119.0892 c -2.15179,-7.88201 -10.40884,-13.69773 -18.60047,-11.50463 -7.166655,1.55377 -12.079785,8.88542 -11.106485,16.10935 0.58463,12.06547 -1.72449,24.864267 -10.05578,34.092187 -9.77853,11.60475 -25.716828,16.46599 -40.520778,14.54981 -0.92507,-0.0787 -1.85347,-0.16007 -2.76816,-0.31646 z m 15.72423,-71.152757 c 0.13112,-12.36889 -0.10487,-24.8028 0.25583,-37.131016 C 57.877797,0.82691238 84.409255,0.53214541 84.459125,5.5245534 l -0.0312,31.9813696 c -17.55444,7.31755 -29.152808,26.21427 -28.054078,45.17523 -0.15511,4.44148 0.81179,14.6724 -4.24354,14.59356 -0.85876,-11.93319 -0.23191,-23.94608 -0.36854,-35.90836 z"></path>
 </svg>
