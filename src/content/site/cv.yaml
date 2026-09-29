@@ -4,7 +4,7 @@ profile:
   email: "jcernudagarcia@hawk.illinoistech.edu"
   website: "jcernuda.com"
   location: "Chicago, IL"
-  image: "/images/Jaime_2.png"
+  image: "/images/Jaime_nobg.png"
 summary: "PhD researcher specializing in high-performance computing infrastructure with expertise in distributed storage systems, real-time data processing, and exascale computing environments. Developed novel approaches to real-time data management and adaptive resource management for scientific computing applications. Currently advancing the intersection of HPC and artificial intelligence through agentic system architectures to address complex challenges in scientific computing. Proven track record of building HPC-scale middleware systems."
 education:
   - degree: "PhD (Computer Science)"
